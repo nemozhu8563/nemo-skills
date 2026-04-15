@@ -134,7 +134,7 @@
       "type": "skill_dir",
       "source": "skills/interdisciplinary-research",
       "destination": ".skills/interdisciplinary-research",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "json-canvas",

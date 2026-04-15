@@ -20,8 +20,8 @@
 | `bullet-viral-post` | `skill_dir` | `defer` | Planned for later review |
 | `decompose-article` | `skill_dir` | `defer` | Planned for later review |
 | `idea-spark` | `skill_dir` | `defer` | Planned for later review |
-| `interdisciplinary-research` | `skill_dir` | `defer` | Planned for later review |
-| `json-canvas` | `skill_dir` | `migrate_now` | Batch 1 |
+| `interdisciplinary-research` | `skill_dir` | `migrate_now` | Batch 2 pilot: includes bundled asset file |
+| `json-canvas` | `skill_dir` | `migrate_now` | Batch 1 migrated |
 | `kie-image-gen` | `skill_dir` | `defer` | Planned for later review |
 | `llm-wiki` | `skill_dir` | `defer` | Planned for later review |
 | `llm-wiki-bootstrap` | `skill_dir` | `defer` | Planned for later review |
@@ -30,8 +30,8 @@
 | `llm-wiki-weekly-lint` | `skill_dir` | `defer` | Planned for later review |
 | `markitdown-client` | `skill_dir` | `defer` | Planned for later review |
 | `obsidian-archive` | `skill_dir` | `defer` | Planned for later review |
-| `obsidian-bases` | `skill_dir` | `migrate_now` | Batch 1 |
-| `obsidian-markdown` | `skill_dir` | `migrate_now` | Batch 1 |
+| `obsidian-bases` | `skill_dir` | `migrate_now` | Batch 1 migrated |
+| `obsidian-markdown` | `skill_dir` | `migrate_now` | Batch 1 migrated |
 | `publish-article` | `skill_dir` | `defer` | Planned for later review |
 | `wechat-article-writer` | `skill_dir` | `defer` | Planned for later review |
 | `wechat-publisher` | `skill_dir` | `defer` | Planned for later review |

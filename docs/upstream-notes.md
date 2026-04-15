@@ -9,5 +9,5 @@ Track origin and maintenance posture here before migrating later batches.
 
 ## Needs later review
 - `baoyu-*`: likely derived from upstream/public repos; keep source notes here before migration.
-- `interdisciplinary-research`: defer because it includes additional assets and should be migrated after the publish/verify flow is proven.
+- `interdisciplinary-research`: promoted into the second batch after the managed-copy flow was proven on the first three skills; keep the bundled demo PDF with the skill directory.
 - `content-reviewer.md` / `inbox-processor.md`: standalone prompts, defer until prompt-file publish path is exercised.
