@@ -21,3 +21,20 @@
 - `obsidian-bases`
 - `obsidian-markdown`
 - `json-canvas`
+
+## Batch 2
+- `interdisciplinary-research`
+
+## Batch 3 (baoyu family)
+- `baoyu-article-illustrator`
+- `baoyu-comic`
+- `baoyu-compress-image`
+- `baoyu-cover-image`
+- `baoyu-danger-gemini-web`
+- `baoyu-danger-x-to-markdown`
+- `baoyu-image-gen`
+- `baoyu-infographic`
+- `baoyu-post-to-x`
+- `baoyu-slide-deck`
+- `baoyu-url-to-markdown`
+- `baoyu-xhs-images`

@@ -5,18 +5,18 @@
 | `article-clip-obsidian` | `skill_dir` | `defer` | Planned for later review |
 | `article-illustrate` | `skill_dir` | `defer` | Planned for later review |
 | `article-review` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-article-illustrator` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-comic` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-compress-image` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-cover-image` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-danger-gemini-web` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-danger-x-to-markdown` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-image-gen` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-infographic` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-post-to-x` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-slide-deck` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-url-to-markdown` | `skill_dir` | `defer` | Planned for later review |
-| `baoyu-xhs-images` | `skill_dir` | `defer` | Planned for later review |
+| `baoyu-article-illustrator` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
+| `baoyu-comic` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
+| `baoyu-compress-image` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
+| `baoyu-cover-image` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
+| `baoyu-danger-gemini-web` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
+| `baoyu-danger-x-to-markdown` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
+| `baoyu-image-gen` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
+| `baoyu-infographic` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
+| `baoyu-post-to-x` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
+| `baoyu-slide-deck` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
+| `baoyu-url-to-markdown` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
+| `baoyu-xhs-images` | `skill_dir` | `migrate_now` | Batch 3 migrated (baoyu family) |
 | `bullet-viral-post` | `skill_dir` | `defer` | Planned for later review |
 | `decompose-article` | `skill_dir` | `defer` | Planned for later review |
 | `idea-spark` | `skill_dir` | `defer` | Planned for later review |

@@ -29,84 +29,84 @@
       "type": "skill_dir",
       "source": "skills/baoyu-article-illustrator",
       "destination": ".skills/baoyu-article-illustrator",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "baoyu-comic",
       "type": "skill_dir",
       "source": "skills/baoyu-comic",
       "destination": ".skills/baoyu-comic",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "baoyu-compress-image",
       "type": "skill_dir",
       "source": "skills/baoyu-compress-image",
       "destination": ".skills/baoyu-compress-image",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "baoyu-cover-image",
       "type": "skill_dir",
       "source": "skills/baoyu-cover-image",
       "destination": ".skills/baoyu-cover-image",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "baoyu-danger-gemini-web",
       "type": "skill_dir",
       "source": "skills/baoyu-danger-gemini-web",
       "destination": ".skills/baoyu-danger-gemini-web",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "baoyu-danger-x-to-markdown",
       "type": "skill_dir",
       "source": "skills/baoyu-danger-x-to-markdown",
       "destination": ".skills/baoyu-danger-x-to-markdown",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "baoyu-image-gen",
       "type": "skill_dir",
       "source": "skills/baoyu-image-gen",
       "destination": ".skills/baoyu-image-gen",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "baoyu-infographic",
       "type": "skill_dir",
       "source": "skills/baoyu-infographic",
       "destination": ".skills/baoyu-infographic",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "baoyu-post-to-x",
       "type": "skill_dir",
       "source": "skills/baoyu-post-to-x",
       "destination": ".skills/baoyu-post-to-x",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "baoyu-slide-deck",
       "type": "skill_dir",
       "source": "skills/baoyu-slide-deck",
       "destination": ".skills/baoyu-slide-deck",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "baoyu-url-to-markdown",
       "type": "skill_dir",
       "source": "skills/baoyu-url-to-markdown",
       "destination": ".skills/baoyu-url-to-markdown",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "baoyu-xhs-images",
       "type": "skill_dir",
       "source": "skills/baoyu-xhs-images",
       "destination": ".skills/baoyu-xhs-images",
-      "status": "defer"
+      "status": "migrate_now"
     },
     {
       "id": "bullet-viral-post",
