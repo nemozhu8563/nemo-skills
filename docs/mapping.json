@@ -1,0 +1,266 @@
+{
+  "version": 1,
+  "source_repo_root": "C:\\Users\\zkl\\OneDrive\\Obsdian\\nemo-skills",
+  "vault_root": "C:\\Users\\zkl\\OneDrive\\Obsdian\\Obsidian",
+  "entries": [
+    {
+      "id": "article-clip-obsidian",
+      "type": "skill_dir",
+      "source": "skills/article-clip-obsidian",
+      "destination": ".skills/article-clip-obsidian",
+      "status": "defer"
+    },
+    {
+      "id": "article-illustrate",
+      "type": "skill_dir",
+      "source": "skills/article-illustrate",
+      "destination": ".skills/article-illustrate",
+      "status": "defer"
+    },
+    {
+      "id": "article-review",
+      "type": "skill_dir",
+      "source": "skills/article-review",
+      "destination": ".skills/article-review",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-article-illustrator",
+      "type": "skill_dir",
+      "source": "skills/baoyu-article-illustrator",
+      "destination": ".skills/baoyu-article-illustrator",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-comic",
+      "type": "skill_dir",
+      "source": "skills/baoyu-comic",
+      "destination": ".skills/baoyu-comic",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-compress-image",
+      "type": "skill_dir",
+      "source": "skills/baoyu-compress-image",
+      "destination": ".skills/baoyu-compress-image",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-cover-image",
+      "type": "skill_dir",
+      "source": "skills/baoyu-cover-image",
+      "destination": ".skills/baoyu-cover-image",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-danger-gemini-web",
+      "type": "skill_dir",
+      "source": "skills/baoyu-danger-gemini-web",
+      "destination": ".skills/baoyu-danger-gemini-web",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-danger-x-to-markdown",
+      "type": "skill_dir",
+      "source": "skills/baoyu-danger-x-to-markdown",
+      "destination": ".skills/baoyu-danger-x-to-markdown",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-image-gen",
+      "type": "skill_dir",
+      "source": "skills/baoyu-image-gen",
+      "destination": ".skills/baoyu-image-gen",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-infographic",
+      "type": "skill_dir",
+      "source": "skills/baoyu-infographic",
+      "destination": ".skills/baoyu-infographic",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-post-to-x",
+      "type": "skill_dir",
+      "source": "skills/baoyu-post-to-x",
+      "destination": ".skills/baoyu-post-to-x",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-slide-deck",
+      "type": "skill_dir",
+      "source": "skills/baoyu-slide-deck",
+      "destination": ".skills/baoyu-slide-deck",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-url-to-markdown",
+      "type": "skill_dir",
+      "source": "skills/baoyu-url-to-markdown",
+      "destination": ".skills/baoyu-url-to-markdown",
+      "status": "defer"
+    },
+    {
+      "id": "baoyu-xhs-images",
+      "type": "skill_dir",
+      "source": "skills/baoyu-xhs-images",
+      "destination": ".skills/baoyu-xhs-images",
+      "status": "defer"
+    },
+    {
+      "id": "bullet-viral-post",
+      "type": "skill_dir",
+      "source": "skills/bullet-viral-post",
+      "destination": ".skills/bullet-viral-post",
+      "status": "defer"
+    },
+    {
+      "id": "decompose-article",
+      "type": "skill_dir",
+      "source": "skills/decompose-article",
+      "destination": ".skills/decompose-article",
+      "status": "defer"
+    },
+    {
+      "id": "idea-spark",
+      "type": "skill_dir",
+      "source": "skills/idea-spark",
+      "destination": ".skills/idea-spark",
+      "status": "defer"
+    },
+    {
+      "id": "interdisciplinary-research",
+      "type": "skill_dir",
+      "source": "skills/interdisciplinary-research",
+      "destination": ".skills/interdisciplinary-research",
+      "status": "defer"
+    },
+    {
+      "id": "json-canvas",
+      "type": "skill_dir",
+      "source": "skills/json-canvas",
+      "destination": ".skills/json-canvas",
+      "status": "migrate_now"
+    },
+    {
+      "id": "kie-image-gen",
+      "type": "skill_dir",
+      "source": "skills/kie-image-gen",
+      "destination": ".skills/kie-image-gen",
+      "status": "defer"
+    },
+    {
+      "id": "llm-wiki",
+      "type": "skill_dir",
+      "source": "skills/llm-wiki",
+      "destination": ".skills/llm-wiki",
+      "status": "defer"
+    },
+    {
+      "id": "llm-wiki-bootstrap",
+      "type": "skill_dir",
+      "source": "skills/llm-wiki-bootstrap",
+      "destination": ".skills/llm-wiki-bootstrap",
+      "status": "defer"
+    },
+    {
+      "id": "llm-wiki-ingest",
+      "type": "skill_dir",
+      "source": "skills/llm-wiki-ingest",
+      "destination": ".skills/llm-wiki-ingest",
+      "status": "defer"
+    },
+    {
+      "id": "llm-wiki-query-writeback",
+      "type": "skill_dir",
+      "source": "skills/llm-wiki-query-writeback",
+      "destination": ".skills/llm-wiki-query-writeback",
+      "status": "defer"
+    },
+    {
+      "id": "llm-wiki-weekly-lint",
+      "type": "skill_dir",
+      "source": "skills/llm-wiki-weekly-lint",
+      "destination": ".skills/llm-wiki-weekly-lint",
+      "status": "defer"
+    },
+    {
+      "id": "markitdown-client",
+      "type": "skill_dir",
+      "source": "skills/markitdown-client",
+      "destination": ".skills/markitdown-client",
+      "status": "defer"
+    },
+    {
+      "id": "obsidian-archive",
+      "type": "skill_dir",
+      "source": "skills/obsidian-archive",
+      "destination": ".skills/obsidian-archive",
+      "status": "defer"
+    },
+    {
+      "id": "obsidian-bases",
+      "type": "skill_dir",
+      "source": "skills/obsidian-bases",
+      "destination": ".skills/obsidian-bases",
+      "status": "migrate_now"
+    },
+    {
+      "id": "obsidian-markdown",
+      "type": "skill_dir",
+      "source": "skills/obsidian-markdown",
+      "destination": ".skills/obsidian-markdown",
+      "status": "migrate_now"
+    },
+    {
+      "id": "publish-article",
+      "type": "skill_dir",
+      "source": "skills/publish-article",
+      "destination": ".skills/publish-article",
+      "status": "defer"
+    },
+    {
+      "id": "wechat-article-writer",
+      "type": "skill_dir",
+      "source": "skills/wechat-article-writer",
+      "destination": ".skills/wechat-article-writer",
+      "status": "defer"
+    },
+    {
+      "id": "wechat-publisher",
+      "type": "skill_dir",
+      "source": "skills/wechat-publisher",
+      "destination": ".skills/wechat-publisher",
+      "status": "defer"
+    },
+    {
+      "id": "writing-clone",
+      "type": "skill_dir",
+      "source": "skills/writing-clone",
+      "destination": ".skills/writing-clone",
+      "status": "defer"
+    },
+    {
+      "id": "zhihu-collection-sync",
+      "type": "skill_dir",
+      "source": "skills/zhihu-collection-sync",
+      "destination": ".skills/zhihu-collection-sync",
+      "status": "defer"
+    },
+    {
+      "id": "content-reviewer",
+      "type": "prompt_file",
+      "source": "prompts/content-reviewer.md",
+      "destination": ".skills/content-reviewer.md",
+      "status": "defer"
+    },
+    {
+      "id": "inbox-processor",
+      "type": "prompt_file",
+      "source": "prompts/inbox-processor.md",
+      "destination": ".skills/inbox-processor.md",
+      "status": "defer"
+    }
+  ]
+}

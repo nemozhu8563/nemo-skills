@@ -1,0 +1,8 @@
+# temp publish artifacts
+.nemo-stage-*
+*.tmp
+*.bak
+
+# python cache if helper tooling is used
+__pycache__/
+*.pyc
