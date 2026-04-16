@@ -1,0 +1,19 @@
+{
+  "name": "wechat-publisher",
+  "description": "Publish Obsidian Markdown to WeChat Official Account drafts. Trigger when asked to 发到公众号、推到公众号草稿箱、发布到微信公众平台、把 md 发公众号、发送到公众号.",
+  "version": "1.0.0",
+  "author": "Claude Code",
+  "main": "index.js",
+  "parameters": {
+    "filePath": {
+      "type": "string",
+      "description": "Path to the Obsidian Markdown file",
+      "required": true
+    },
+    "template": {
+      "type": "string",
+      "description": "Template name (default: template-tech)",
+      "required": false
+    }
+  }
+}

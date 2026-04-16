@@ -6,3 +6,6 @@
 # python cache if helper tooling is used
 __pycache__/
 *.pyc
+
+# rebuildable install artifacts
+skills/*/node_modules/

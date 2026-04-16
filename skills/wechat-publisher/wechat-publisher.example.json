@@ -1,0 +1,13 @@
+{
+  "wechat": {
+    "appId": "your_app_id",
+    "appSecret": "your_app_secret"
+  },
+  "proxy": {
+    "enabled": false,
+    "url": "http://127.0.0.1:10808"
+  },
+  "defaults": {
+    "template": "template-tech"
+  }
+}
