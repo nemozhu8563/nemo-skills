@@ -1,0 +1,4 @@
+interface:
+  display_name: "LLM Wiki 自动检查"
+  short_description: "自动吸收安全知识回流并报告需要确认项、保留项和下次候选"
+  default_prompt: "使用 -wiki-weekly-lint 检查一个 domain 或 vault 切片：先自动吸收安全的 source、solution、project 回流，再输出中文知识质量检查报告，只列出需要确认、保留原位和下次候选。"

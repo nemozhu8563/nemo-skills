@@ -1,0 +1,3 @@
+interface:
+  display_name: "Zhihu Collection Sync"
+  short_description: "Sync Zhihu collections into canonical Obsidian clipping format"

@@ -7,260 +7,288 @@
       "id": "article-clip-obsidian",
       "type": "skill_dir",
       "source": "skills/article-clip-obsidian",
-      "destination": ".skills/article-clip-obsidian",
-      "status": "defer"
+      "destination": ".agents/skills/article-clip-obsidian",
+      "status": "migrate_now"
     },
     {
       "id": "article-illustrate",
       "type": "skill_dir",
       "source": "skills/article-illustrate",
-      "destination": ".skills/article-illustrate",
-      "status": "defer"
+      "destination": ".agents/skills/article-illustrate",
+      "status": "migrate_now"
     },
     {
       "id": "article-review",
       "type": "skill_dir",
       "source": "skills/article-review",
-      "destination": ".skills/article-review",
-      "status": "defer"
+      "destination": ".agents/skills/article-review",
+      "status": "delete"
     },
     {
       "id": "baoyu-article-illustrator",
       "type": "skill_dir",
       "source": "skills/baoyu-article-illustrator",
-      "destination": ".skills/baoyu-article-illustrator",
+      "destination": ".agents/skills/baoyu-article-illustrator",
       "status": "migrate_now"
     },
     {
       "id": "baoyu-comic",
       "type": "skill_dir",
       "source": "skills/baoyu-comic",
-      "destination": ".skills/baoyu-comic",
-      "status": "migrate_now"
+      "destination": ".agents/skills/baoyu-comic",
+      "status": "delete"
     },
     {
       "id": "baoyu-compress-image",
       "type": "skill_dir",
       "source": "skills/baoyu-compress-image",
-      "destination": ".skills/baoyu-compress-image",
-      "status": "migrate_now"
+      "destination": ".agents/skills/baoyu-compress-image",
+      "status": "delete"
     },
     {
       "id": "baoyu-cover-image",
       "type": "skill_dir",
       "source": "skills/baoyu-cover-image",
-      "destination": ".skills/baoyu-cover-image",
+      "destination": ".agents/skills/baoyu-cover-image",
       "status": "migrate_now"
     },
     {
       "id": "baoyu-danger-gemini-web",
       "type": "skill_dir",
       "source": "skills/baoyu-danger-gemini-web",
-      "destination": ".skills/baoyu-danger-gemini-web",
-      "status": "migrate_now"
+      "destination": ".agents/skills/baoyu-danger-gemini-web",
+      "status": "delete"
     },
     {
       "id": "baoyu-danger-x-to-markdown",
       "type": "skill_dir",
       "source": "skills/baoyu-danger-x-to-markdown",
-      "destination": ".skills/baoyu-danger-x-to-markdown",
-      "status": "migrate_now"
+      "destination": ".agents/skills/baoyu-danger-x-to-markdown",
+      "status": "delete"
     },
     {
       "id": "baoyu-image-gen",
       "type": "skill_dir",
       "source": "skills/baoyu-image-gen",
-      "destination": ".skills/baoyu-image-gen",
+      "destination": ".agents/skills/baoyu-image-gen",
       "status": "migrate_now"
     },
     {
       "id": "baoyu-infographic",
       "type": "skill_dir",
       "source": "skills/baoyu-infographic",
-      "destination": ".skills/baoyu-infographic",
+      "destination": ".agents/skills/baoyu-infographic",
       "status": "migrate_now"
     },
     {
       "id": "baoyu-post-to-x",
       "type": "skill_dir",
       "source": "skills/baoyu-post-to-x",
-      "destination": ".skills/baoyu-post-to-x",
+      "destination": ".agents/skills/baoyu-post-to-x",
       "status": "migrate_now"
     },
     {
       "id": "baoyu-slide-deck",
       "type": "skill_dir",
       "source": "skills/baoyu-slide-deck",
-      "destination": ".skills/baoyu-slide-deck",
+      "destination": ".agents/skills/baoyu-slide-deck",
+      "status": "delete"
+    },
+    {
+      "id": "baoyu-translate",
+      "type": "skill_dir",
+      "source": "skills/baoyu-translate",
+      "destination": ".agents/skills/baoyu-translate",
       "status": "migrate_now"
     },
     {
       "id": "baoyu-url-to-markdown",
       "type": "skill_dir",
       "source": "skills/baoyu-url-to-markdown",
-      "destination": ".skills/baoyu-url-to-markdown",
+      "destination": ".agents/skills/baoyu-url-to-markdown",
       "status": "migrate_now"
     },
     {
       "id": "baoyu-xhs-images",
       "type": "skill_dir",
       "source": "skills/baoyu-xhs-images",
-      "destination": ".skills/baoyu-xhs-images",
-      "status": "migrate_now"
+      "destination": ".agents/skills/baoyu-xhs-images",
+      "status": "archive"
     },
     {
       "id": "bullet-viral-post",
       "type": "skill_dir",
       "source": "skills/bullet-viral-post",
-      "destination": ".skills/bullet-viral-post",
-      "status": "defer"
+      "destination": ".agents/skills/bullet-viral-post",
+      "status": "pending_user_decision"
+    },
+    {
+      "id": "content-reviewer",
+      "type": "skill_dir",
+      "source": "skills/content-reviewer",
+      "destination": ".agents/skills/content-reviewer",
+      "status": "delete"
     },
     {
       "id": "decompose-article",
       "type": "skill_dir",
       "source": "skills/decompose-article",
-      "destination": ".skills/decompose-article",
-      "status": "defer"
+      "destination": ".agents/skills/decompose-article",
+      "status": "delete"
+    },
+    {
+      "id": "humanizer-zh",
+      "type": "skill_dir",
+      "source": "skills/humanizer-zh",
+      "destination": ".agents/skills/humanizer-zh",
+      "status": "delete"
     },
     {
       "id": "idea-spark",
       "type": "skill_dir",
       "source": "skills/idea-spark",
-      "destination": ".skills/idea-spark",
-      "status": "defer"
+      "destination": ".agents/skills/idea-spark",
+      "status": "delete"
+    },
+    {
+      "id": "inbox-processor",
+      "type": "skill_dir",
+      "source": "skills/inbox-processor",
+      "destination": ".agents/skills/inbox-processor",
+      "status": "delete"
     },
     {
       "id": "interdisciplinary-research",
       "type": "skill_dir",
       "source": "skills/interdisciplinary-research",
-      "destination": ".skills/interdisciplinary-research",
+      "destination": ".agents/skills/interdisciplinary-research",
       "status": "migrate_now"
     },
     {
       "id": "json-canvas",
       "type": "skill_dir",
       "source": "skills/json-canvas",
-      "destination": ".skills/json-canvas",
+      "destination": ".agents/skills/json-canvas",
       "status": "migrate_now"
     },
     {
       "id": "kie-image-gen",
       "type": "skill_dir",
       "source": "skills/kie-image-gen",
-      "destination": ".skills/kie-image-gen",
-      "status": "defer"
+      "destination": ".agents/skills/kie-image-gen",
+      "status": "migrate_now"
     },
     {
       "id": "llm-wiki",
       "type": "skill_dir",
       "source": "skills/llm-wiki",
-      "destination": ".skills/llm-wiki",
-      "status": "defer"
+      "destination": ".agents/skills/llm-wiki",
+      "status": "migrate_now"
     },
     {
       "id": "llm-wiki-bootstrap",
       "type": "skill_dir",
       "source": "skills/llm-wiki-bootstrap",
-      "destination": ".skills/llm-wiki-bootstrap",
-      "status": "defer"
+      "destination": ".agents/skills/llm-wiki-bootstrap",
+      "status": "migrate_now"
     },
     {
       "id": "llm-wiki-ingest",
       "type": "skill_dir",
       "source": "skills/llm-wiki-ingest",
-      "destination": ".skills/llm-wiki-ingest",
-      "status": "defer"
+      "destination": ".agents/skills/llm-wiki-ingest",
+      "status": "migrate_now"
     },
     {
       "id": "llm-wiki-query-writeback",
       "type": "skill_dir",
       "source": "skills/llm-wiki-query-writeback",
-      "destination": ".skills/llm-wiki-query-writeback",
-      "status": "defer"
+      "destination": ".agents/skills/llm-wiki-query-writeback",
+      "status": "migrate_now"
     },
     {
       "id": "llm-wiki-weekly-lint",
       "type": "skill_dir",
       "source": "skills/llm-wiki-weekly-lint",
-      "destination": ".skills/llm-wiki-weekly-lint",
-      "status": "defer"
+      "destination": ".agents/skills/llm-wiki-weekly-lint",
+      "status": "migrate_now"
     },
     {
       "id": "markitdown-client",
       "type": "skill_dir",
       "source": "skills/markitdown-client",
-      "destination": ".skills/markitdown-client",
-      "status": "defer"
+      "destination": ".agents/skills/markitdown-client",
+      "status": "delete"
+    },
+    {
+      "id": "nemo-writer",
+      "type": "skill_dir",
+      "source": "skills/nemo-writer",
+      "destination": ".agents/skills/nemo-writer",
+      "status": "migrate_now"
     },
     {
       "id": "obsidian-archive",
       "type": "skill_dir",
       "source": "skills/obsidian-archive",
-      "destination": ".skills/obsidian-archive",
-      "status": "defer"
+      "destination": ".agents/skills/obsidian-archive",
+      "status": "delete"
     },
     {
       "id": "obsidian-bases",
       "type": "skill_dir",
       "source": "skills/obsidian-bases",
-      "destination": ".skills/obsidian-bases",
+      "destination": ".agents/skills/obsidian-bases",
       "status": "migrate_now"
     },
     {
       "id": "obsidian-markdown",
       "type": "skill_dir",
       "source": "skills/obsidian-markdown",
-      "destination": ".skills/obsidian-markdown",
+      "destination": ".agents/skills/obsidian-markdown",
       "status": "migrate_now"
     },
     {
       "id": "publish-article",
       "type": "skill_dir",
       "source": "skills/publish-article",
-      "destination": ".skills/publish-article",
-      "status": "defer"
+      "destination": ".agents/skills/publish-article",
+      "status": "migrate_now"
+    },
+    {
+      "id": "tryvalo-imagegen",
+      "type": "skill_dir",
+      "source": "skills/tryvalo-imagegen",
+      "destination": ".agents/skills/tryvalo-imagegen",
+      "status": "migrate_now"
     },
     {
       "id": "wechat-article-writer",
       "type": "skill_dir",
       "source": "skills/wechat-article-writer",
-      "destination": ".skills/wechat-article-writer",
-      "status": "defer"
+      "destination": ".agents/skills/wechat-article-writer",
+      "status": "merge"
     },
     {
       "id": "wechat-publisher",
       "type": "skill_dir",
       "source": "skills/wechat-publisher",
-      "destination": ".skills/wechat-publisher",
-      "status": "defer"
+      "destination": ".agents/skills/wechat-publisher",
+      "status": "migrate_now"
     },
     {
       "id": "writing-clone",
       "type": "skill_dir",
       "source": "skills/writing-clone",
-      "destination": ".skills/writing-clone",
-      "status": "defer"
+      "destination": ".agents/skills/writing-clone",
+      "status": "merge"
     },
     {
       "id": "zhihu-collection-sync",
       "type": "skill_dir",
       "source": "skills/zhihu-collection-sync",
-      "destination": ".skills/zhihu-collection-sync",
-      "status": "defer"
-    },
-    {
-      "id": "content-reviewer",
-      "type": "prompt_file",
-      "source": "prompts/content-reviewer.md",
-      "destination": ".skills/content-reviewer.md",
-      "status": "defer"
-    },
-    {
-      "id": "inbox-processor",
-      "type": "prompt_file",
-      "source": "prompts/inbox-processor.md",
-      "destination": ".skills/inbox-processor.md",
-      "status": "defer"
+      "destination": ".agents/skills/zhihu-collection-sync",
+      "status": "migrate_now"
     }
   ]
 }

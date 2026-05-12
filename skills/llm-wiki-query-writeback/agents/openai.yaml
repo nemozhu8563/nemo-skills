@@ -1,0 +1,7 @@
+interface:
+  display_name: "LLM Wiki Query Write-Back"
+  short_description: "Answer from one domain wiki and control write-back"
+  default_prompt: "Use $llm-wiki-query-writeback to answer this question from the target domain wiki and surface any durable write-back."
+
+policy:
+  allow_implicit_invocation: true

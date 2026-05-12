@@ -1,11 +1,11 @@
 ---
 name: baoyu-image-gen
-description: AI SDK-based image generation using official OpenAI and Google APIs. Supports text-to-image, reference images, aspect ratios, and quality presets.
+description: Main image-generation router for ordinary image requests. Uses configured providers such as OpenAI, Google, kie-image-gen, or tryvalo-imagegen depending on the task and available credentials.
 ---
 
 # Image Generation (AI SDK)
 
-Official API-based image generation via AI SDK. Supports OpenAI (DALL-E, GPT Image) and Google (Imagen, Gemini multimodal).
+Main image-generation router for ordinary image requests. It uses the configured provider that best matches the task and available credentials, including official OpenAI/Google API paths and local provider skills such as `kie-image-gen` or `tryvalo-imagegen`.
 
 ## Script Directory
 

@@ -1,0 +1,7 @@
+interface:
+  display_name: "LLM Wiki"
+  short_description: "Route LLM Wiki bootstrap, ingest, extraction, query, and lint"
+  default_prompt: "Use $llm-wiki to process my Obsidian source or conversation into the right wiki workflow."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,152 @@
+---
+name: article-clip-obsidian
+description: Acquire articles through web-access, normalize them into an article package, and convert them to Obsidian format. Use when user asks to "download article", "clip article", "save article", provides an article URL, or wants to save web content to their Obsidian vault.
+---
+
+# Article Clip Obsidian
+
+Acquire articles with `web-access`, normalize the capture into `content.md + assets/`, then convert it to the vault's Obsidian clipping format.
+
+## Source of Truth
+
+This skill is managed from the sibling `nemo-skills` repository. Edit the source skill there, then publish into the vault. Do not hand-edit the generated vault copy under `.skills/article-clip-obsidian/`.
+
+## Workflow
+
+### 1. Acquire Article Through web-access
+
+All network access must load and follow the `web-access` skill first.
+
+Use `web-access` to choose the lightest reliable acquisition route:
+- Public article or documentation page: Jina/WebFetch/curl can be enough.
+- WeChat, Zhihu, X/Twitter, Xiaohongshu, login-required pages, or dynamic pages: use Chrome CDP through `web-access`.
+- When CDP is used, follow `web-access` requirements: run its dependency check, show its automation-risk notice to the user, use a self-created background tab, check site-pattern references when available, and close the tab when done.
+
+The acquisition result must be normalized into a capture JSON with this shape:
+
+```json
+{
+  "url": "https://example.com/article",
+  "title": "Article title",
+  "author": "Author name",
+  "published_at": "2026-05-01T09:00:00+08:00",
+  "captured_at": "2026-05-03T10:20:00+08:00",
+  "platform": "example.com",
+  "markdown": "# Article title\n\nArticle body...",
+  "assets": [
+    { "path": "C:/tmp/article-assets/001.jpg", "filename": "001.jpg" }
+  ]
+}
+```
+
+Required fields:
+- `url`
+- non-empty `markdown`
+
+Recommended fields:
+- `title`
+- `author`
+- `published_at`
+- `captured_at`
+- `platform`
+- `assets` when images were downloaded locally
+
+If `published_at`, `title`, `author`, or `platform` is missing, the adapter will use safe fallbacks. If `url` or `markdown` is missing, the adapter fails.
+
+### 2. Create Article Package
+
+Run the adapter against the capture JSON:
+
+```bash
+node .skills/article-clip-obsidian/web-access-adapter.js \
+  /tmp/article-capture.json \
+  /tmp/article-clip-temp
+```
+
+The adapter creates:
+- `/tmp/article-clip-temp/content.md`
+- `/tmp/article-clip-temp/assets/` when local images were provided
+
+The adapter also scans Markdown image references such as `![alt](https://...)`. Any remaining remote image is downloaded into the package `assets/` directory and rewritten to `./assets/NNN.ext`. If a remote image cannot be downloaded after retries, the adapter fails instead of silently leaving a remote image in the note.
+
+### 3. Convert to Obsidian Format
+
+Run the conversion script from the vault root:
+
+```bash
+node .skills/article-clip-obsidian/convert.js \
+  /tmp/article-clip-temp/content.md \
+  02_Sources/_clippings \
+  assets
+```
+
+The converter:
+- Generates filename: `YYYYMMDDHHmm 标题.md` using `fetched_at`
+- Uses `published_at` for frontmatter `created`
+- Transforms frontmatter to the vault clipping standard
+- Moves local images to `assets/YYYYMMDDHHmm 标题/`
+- Updates local image references to wiki-link format: `![[assets/YYYYMMDDHHmm 标题/001.jpg]]`
+- Converts linked Markdown images like `[![alt](./assets/001.jpg)](https://...)` into plain Obsidian embeds like `![[assets/YYYYMMDDHHmm 标题/001.jpg]]`
+
+### 4. Legacy Fallback: article-clip
+
+If `web-access` acquisition fails and the target is known to work better with `article-clip`, use it as a fallback:
+
+```bash
+article-clip "URL" --out /tmp/article-clip-temp --verbose
+```
+
+Then run `convert.js` as in step 3.
+
+This fallback is for compatibility only. The default acquisition path is `web-access`.
+
+### 5. Report Results
+
+After conversion, report:
+- Note location
+- Number of images processed
+- Acquisition route used: web-access route or legacy article-clip fallback
+- Any issues encountered
+
+Example: `Article saved to 02_Sources/_clippings/202603061234 文章标题.md with 5 images. Acquisition: web-access CDP.`
+
+## Obsidian Format Standards
+
+Frontmatter:
+
+```yaml
+---
+type: source
+status: 待读
+tags: [待处理]
+created: YYYY-MM-DD
+source: "文章标题"
+refs:
+  - "原始URL"
+ddc: "000"
+author: "作者名"
+---
+```
+
+File structure:
+- Markdown: `02_Sources/_clippings/YYYYMMDDHHmm 标题.md`
+- Images: `assets/YYYYMMDDHHmm 标题/001.jpg`, `002.jpg`, etc.
+- Flat structure in `_clippings`
+
+## Error Handling
+
+- **web-access dependency check fails**: Follow `web-access` setup guidance before trying CDP. If CDP is not needed, use a lighter web-access route.
+- **Login required**: Ask the user to log in through their normal Chrome only when the target content cannot be obtained without login.
+- **Empty capture**: Do not convert. Re-check the web-access route, scroll/lazy-load state, DOM extraction target, or fallback path.
+- **Adapter fails**: Fix the capture JSON so it includes a valid `url` and non-empty `markdown`. If the failure is remote image localization, retry the capture or download the listed image manually and include it in `assets`.
+- **article-clip fallback fails**: Report the failure and return to `web-access` route selection instead of retrying blindly.
+- **Output file may already exist**: Check before overwriting; ask the user or choose a new capture when duplicate output would destroy useful content.
+- **Zhihu placeholder images**: If Zhihu exports only failed `data:image/svg+xml` lazy-load placeholders and no actual image references, the converter removes the noisy `图片下载提示` section.
+
+## Notes
+
+- Use capture time (`captured_at` / `fetched_at`) for filename timestamp.
+- Use publication time (`published_at`) for frontmatter `created`.
+- Preserve original content structure and formatting where possible.
+- Handle Chinese characters properly in filenames.
+- Clean up temporary capture/package directories after successful conversion.

@@ -1,11 +1,11 @@
 ---
 name: baoyu-article-illustrator
-description: Smart article illustration skill. Analyzes article content and generates illustrations at positions requiring visual aids with multiple style options. Use when user asks to "add illustrations to article", "generate images for article", or "illustrate article".
+description: Provider/sub-skill for article body illustrations. It is normally called by `article-illustrate`; invoke directly only when the user explicitly asks to work on body illustrations without cover generation.
 ---
 
 # Smart Article Illustration Skill
 
-Analyze article structure and content, identify positions requiring visual aids, and generate illustrations with flexible style options.
+Analyze article structure and content, identify positions requiring visual aids, and generate illustrations with flexible style options. For cover plus body illustration workflows, use `article-illustrate` as the user-facing entrypoint.
 
 ## Usage
 

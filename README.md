@@ -10,31 +10,46 @@
 
 ## Current vault target
 - Vault root: `C:\Users\zkl\OneDrive\Obsdian\Obsidian`
-- Managed destination root: `C:\Users\zkl\OneDrive\Obsdian\Obsidian\.skills`
+- Managed destination root: `C:\Users\zkl\OneDrive\Obsdian\Obsidian\.agents\skills`
+- Rollback backup root: `C:\Users\zkl\OneDrive\Obsdian\Obsidian\.agents\.nemo-backups\skills`
 
 ## Default safety rules
 - Because both this repo and the vault live under OneDrive, live links / junctions are default-forbidden.
 - The default mode is publish/materialize managed copies.
 - Generated copies carry `do not edit here` warnings and drift metadata.
 
-## Batch 1
-- `obsidian-bases`
-- `obsidian-markdown`
-- `json-canvas`
+## Current publish set
 
-## Batch 2
-- `interdisciplinary-research`
+The publish set is controlled by `docs/mapping.json`. Only entries with `status: "migrate_now"` are eligible for `scripts/publish-to-vault.ps1`.
 
-## Batch 3 (baoyu family)
-- `baoyu-article-illustrator`
-- `baoyu-comic`
-- `baoyu-compress-image`
-- `baoyu-cover-image`
-- `baoyu-danger-gemini-web`
-- `baoyu-danger-x-to-markdown`
+Primary entrypoints:
+
+- `article-clip-obsidian`
+- `article-illustrate`
 - `baoyu-image-gen`
 - `baoyu-infographic`
 - `baoyu-post-to-x`
-- `baoyu-slide-deck`
 - `baoyu-url-to-markdown`
-- `baoyu-xhs-images`
+- `baoyu-translate`
+- `interdisciplinary-research`
+- `json-canvas`
+- `llm-wiki`
+- `nemo-writer`
+- `obsidian-bases`
+- `obsidian-markdown`
+- `publish-article`
+- `wechat-publisher`
+- `zhihu-collection-sync`
+
+Provider/sub-skill surfaces:
+
+- `baoyu-cover-image`
+- `baoyu-article-illustrator`
+- `kie-image-gen`
+- `tryvalo-imagegen`
+- `llm-wiki-bootstrap`
+- `llm-wiki-ingest`
+- `llm-wiki-query-writeback`
+- `llm-wiki-weekly-lint`
+
+Retired or non-publish entries are documented in `docs/skill-retention.md`.

@@ -1,0 +1,7 @@
+interface:
+  display_name: "LLM Wiki Bootstrap"
+  short_description: "Bootstrap one registry-backed wiki domain from existing sources"
+  default_prompt: "Use $llm-wiki-bootstrap to continue initializing a target domain from existing sources."
+
+policy:
+  allow_implicit_invocation: true

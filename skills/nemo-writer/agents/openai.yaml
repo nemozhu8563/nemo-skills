@@ -1,0 +1,4 @@
+interface:
+  display_name: "Nemo Writer Test"
+  short_description: "Create Chinese technical essays in Nemo style"
+  default_prompt: "Use $nemo-writer-test to turn my real notes and operating records into a Chinese technical article in my own style."

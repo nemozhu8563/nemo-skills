@@ -1,0 +1,8 @@
+interface:
+  display_name: "TryValo ImageGen"
+  short_description: "Generate images through TryValo/new-api."
+  default_prompt: "Use $tryvalo-imagegen to generate a high-quality gpt-image-2 image from my prompt."
+
+policy:
+  allow_implicit_invocation: true
+

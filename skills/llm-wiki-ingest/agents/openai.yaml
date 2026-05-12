@@ -1,0 +1,7 @@
+interface:
+  display_name: "LLM Wiki Ingest"
+  short_description: "Extract one source into durable LLM Wiki knowledge"
+  default_prompt: "Use $llm-wiki-ingest to extract this source into the right wiki pages and update its processing status."
+
+policy:
+  allow_implicit_invocation: true

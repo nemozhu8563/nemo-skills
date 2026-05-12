@@ -17,9 +17,26 @@ $entries = Get-NemoEntries -Mapping $mapping -EntryId $EntryId
 if (-not $entries -or @($entries).Count -eq 0) {
     throw 'No entries selected for rollback.'
 }
-$backupRoot = Join-Path $VaultRoot ".skills/.nemo-backups/$BatchId"
+$backupRoot = Join-Path $VaultRoot ".agents/.nemo-backups/skills/$BatchId"
 if (-not (Test-Path -LiteralPath $backupRoot)) {
     throw "Backup batch not found: $backupRoot"
+}
+
+$missingBackups = New-Object System.Collections.Generic.List[string]
+foreach ($entry in $entries) {
+    $destinationPath = Join-Path $VaultRoot $entry.destination
+    $backupPath = if ($entry.type -eq 'skill_dir') {
+        Join-Path $backupRoot $entry.destination
+    }
+    else {
+        Join-Path $backupRoot (Join-Path 'files' (Split-Path -Leaf $destinationPath))
+    }
+    if (-not (Test-Path -LiteralPath $backupPath)) {
+        $missingBackups.Add("$($entry.id): $backupPath") | Out-Null
+    }
+}
+if ($missingBackups.Count -gt 0) {
+    throw "Rollback preflight failed; missing backups: $($missingBackups -join '; ')"
 }
 
 $results = New-Object System.Collections.Generic.List[object]

@@ -1,11 +1,11 @@
 ---
 name: baoyu-cover-image
-description: Generate elegant cover images for articles. Analyzes content and creates eye-catching hand-drawn style cover images with multiple style options. Use when user asks to "generate cover image", "create article cover", or "make a cover for article".
+description: Provider/sub-skill for article cover images. It is normally called by `article-illustrate`; invoke directly only when the user explicitly asks for a standalone article cover image.
 ---
 
 # Cover Image Generator
 
-Generate hand-drawn style cover images for articles with multiple style options.
+Generate hand-drawn style cover images for articles with multiple style options. For full article visuals, use `article-illustrate` as the user-facing entrypoint.
 
 ## Usage
 

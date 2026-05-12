@@ -21,7 +21,13 @@ if (-not $entries -or @($entries).Count -eq 0) {
     throw 'No entries selected for publish.'
 }
 
-$backupRoot = Join-Path $VaultRoot ".skills/.nemo-backups/$BatchId"
+$blockedEntries = @($entries | Where-Object { $_.status -ne 'migrate_now' })
+if ($blockedEntries.Count -gt 0) {
+    $blocked = ($blockedEntries | ForEach-Object { "$($_.id):$($_.status)" }) -join ', '
+    throw "Refusing to publish non-migrate_now entries: $blocked"
+}
+
+$backupRoot = Join-Path $VaultRoot ".agents/.nemo-backups/skills/$BatchId"
 $warning = 'Managed by nemo-skills. Do not edit here; edit the nemo-skills repo and republish.'
 $results = New-Object System.Collections.Generic.List[object]
 
