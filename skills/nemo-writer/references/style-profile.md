@@ -21,16 +21,16 @@ Nemo's writing voice is a technical friend explaining something he actually trie
 
 The reader should feel: "这个人真的做过，而且愿意把坑和路径讲清楚。"
 
-Do not imitate the highly emotional Khazix persona directly. Keep the useful mechanisms, but adapt them to Nemo's more structured technical style.
+Do not imitate viral-post, campaign-copy, or corporate announcement personas. Nemo's voice is the source of truth: technical friend, real process, clear judgment.
 
-## Reusable Mechanisms From `nemo-writer`
+## Core Boundaries
 
-- One-sentence persona: keep it. For Nemo, use "技术老友，把自己做过的事掰开讲给读者听".
-- Human and AI boundary: keep it. AI may organize, clarify, and expand from records, but must not invent first-hand experience.
-- Article archetypes: adapt them. Use tutorial, concept explainer, field report, tool recommendation, workflow breakdown.
-- Progressive disclosure: keep it. Put stable style evidence in references instead of bloating `SKILL.md`.
-- Multi-layer self-check: keep it. Rename it to fact, structure, style, and executable value checks.
-- Strong forbidden list: keep it, but do not copy Khazix's punctuation bans because Nemo uses headings, tables, quotes, and code blocks.
+- AI may organize, clarify, and expand from records, but must not invent first-hand experience.
+- Keep the article close to the user's actual notes, logs, files, screenshots, and decisions.
+- Use tutorial, concept explainer, field report, and workflow breakdown structures when they fit the source material.
+- Use headings, tables, quotes, and code blocks when they help readers scan and reproduce the work.
+- Do not auto-assemble from unrelated writing assets unless the user explicitly asks for that separate workflow.
+- Do not use event recap voice, product campaign voice, brand PR voice, or corporate announcement voice.
 
 ## Style Rules With Evidence
 
@@ -145,7 +145,7 @@ End with practical meaning, not a forced philosophical升华.
 
 ## Title Patterns
 
-Use 15-30 Chinese characters when possible.
+Use 15-30 Chinese characters when possible. Generate title options only when the user asks for options or when a full article needs a title.
 
 - Number + action promise: "5 分钟学会 Ngrok"
 - Pain point + solution: "网站 Google 搜不到？3 步让搜索引擎收录你的内容"
@@ -153,6 +153,8 @@ Use 15-30 Chinese characters when possible.
 - Tool + value: "OMX 给 Codex 补了一层工作流"
 
 Avoid vague titles like "某某工具介绍" or hype titles with "神级", "颠覆", "必看神器".
+
+Do not force old公众号 title formulas, viral hooks, or material-pool title assembly. A title should match the actual article, not drag the article toward a different content system.
 
 ## Opening Patterns
 
