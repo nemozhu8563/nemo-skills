@@ -1,11 +1,13 @@
 ---
 name: baoyu-article-illustrator
-description: Provider/sub-skill for article body illustrations. It is normally called by `article-illustrate`; invoke directly only when the user explicitly asks to work on body illustrations without cover generation.
+description: Compatibility sub-skill for article body illustrations. For any article-wide visual request, use `article-illustrate`; invoke this directly only when the user explicitly asks for body-illustration-only generation.
 ---
 
 # Smart Article Illustration Skill
 
-Analyze article structure and content, identify positions requiring visual aids, and generate illustrations with flexible style options. For cover plus body illustration workflows, use `article-illustrate` as the user-facing entrypoint.
+Analyze article body structure, identify positions requiring visual aids, and generate body illustrations only. For full article visuals or ambiguous article image requests, use `article-illustrate` as the user-facing entrypoint.
+
+If this skill is invoked for "配图", "文章视觉", or cover plus body illustrations, switch to `article-illustrate`.
 
 ## Usage
 
@@ -294,11 +296,13 @@ Style notes: [specific style characteristics]
 ### Step 6: Generate Images
 
 **Image Generation Skill Selection**:
-1. Check available image generation skills
-2. If multiple skills available, ask user to choose
+1. Use `baoyu-image-gen` as the routing layer.
+2. Prefer Codex official image generation when available.
+3. Use `kie-image-gen`, `tryvalo-imagegen`, Google, or OpenAI API backends only when the user explicitly requests them, when official generation is unavailable, or when a local output path/API-specific behavior is required.
+4. Do not ask the user to choose a provider unless the provider decision changes the requested result and cannot be inferred.
 
 **Generation Flow**:
-1. Call selected image generation skill with prompt file and output path
+1. Call `baoyu-image-gen` with prompt file and output path
 2. Generate images sequentially
 3. After each image, output progress: "Generated X/N"
 4. On failure, auto-retry once

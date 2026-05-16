@@ -1,11 +1,11 @@
 ---
 name: baoyu-infographic
-description: Generate professional infographics with 20 layout types and 17 visual styles. Analyzes content, recommends layout×style combinations, and generates publication-ready infographics. Use when user asks to create "infographic", "信息图", or "visual summary".
+description: Standalone infographic skill. Use when the user asks to create "infographic", "信息图", "visual summary", or one structured explanatory image. Do not use as the default article配图 entrypoint; article visual packages belong in `article-illustrate`.
 ---
 
 # Infographic Generator
 
-Generate professional infographics with two dimensions: layout (information structure) and style (visual aesthetics).
+Generate professional infographics with two dimensions: layout (information structure) and style (visual aesthetics). This is separate from the article-visual flow in `article-illustrate`.
 
 ## Usage
 
@@ -409,11 +409,13 @@ Language: [confirmed language]
 ### Step 6: Generate Image
 
 **Image Generation Skill Selection**:
-1. Check available image generation skills
-2. If multiple skills available, ask user to choose
+1. Use `baoyu-image-gen` as the routing layer.
+2. Prefer Codex official image generation when available.
+3. Use `kie-image-gen`, `tryvalo-imagegen`, Google, or OpenAI API backends only when the user explicitly requests them, when official generation is unavailable, or when a local output path/API-specific behavior is required.
+4. Do not ask the user to choose a provider unless the provider decision changes the requested result and cannot be inferred.
 
 **Generation**:
-Call selected image generation skill with:
+Call `baoyu-image-gen` with:
 - Prompt file path: `prompts/infographic.md`
 - Output path: `infographic.png`
 - Aspect ratio parameter if supported

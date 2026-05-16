@@ -1,11 +1,30 @@
 ---
 name: baoyu-image-gen
-description: Main image-generation router for ordinary image requests. Uses configured providers such as OpenAI, Google, kie-image-gen, or tryvalo-imagegen depending on the task and available credentials.
+description: Main image-generation router for ordinary image requests. Prefer Codex official image generation when available; use local provider scripts such as OpenAI, Google, kie-image-gen, or tryvalo-imagegen only when explicitly requested, needed for file/API automation, or as fallback.
 ---
 
-# Image Generation (AI SDK)
+# Image Generation Router
 
-Main image-generation router for ordinary image requests. It uses the configured provider that best matches the task and available credentials, including official OpenAI/Google API paths and local provider skills such as `kie-image-gen` or `tryvalo-imagegen`.
+Main image-generation router for ordinary image requests.
+
+Default split:
+- **Prompt layer**: Nemo skills decide the visual concept and write the prompt.
+- **Render layer**: Codex official image generation is the default renderer when available.
+- **Provider fallback**: Local scripts and provider skills are fallback or explicitly selected backends.
+
+## Routing Policy
+
+1. If the current Codex session exposes official image generation, use it first.
+2. If the user explicitly names a backend (`tryvalo-imagegen`, `kie-image-gen`, Google, OpenAI API/new-api), use that backend.
+3. If the workflow requires deterministic filesystem output and the official renderer cannot provide a local artifact in this surface, keep the prompt file and use the local provider script as fallback.
+4. If reference-image editing, batch generation, custom API base URLs, or exact CLI automation is required, use the local provider script/backend that supports it.
+5. Do not ask the user to choose among providers unless provider choice materially affects the result and cannot be inferred.
+
+When using Codex official image generation, pass the final prompt directly to the official image-generation capability. Preserve the generated prompt file whenever the calling workflow created one, so the prompt remains part of the article/project asset trail.
+
+## Local Provider CLI
+
+Use this section only for fallback, explicit provider requests, or workflows that need script-controlled output paths.
 
 ## Script Directory
 

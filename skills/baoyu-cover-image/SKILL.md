@@ -1,11 +1,13 @@
 ---
 name: baoyu-cover-image
-description: Provider/sub-skill for article cover images. It is normally called by `article-illustrate`; invoke directly only when the user explicitly asks for a standalone article cover image.
+description: Compatibility sub-skill for standalone article cover images. For any article-wide visual request, use `article-illustrate`; invoke this directly only when the user explicitly asks for cover-only generation.
 ---
 
 # Cover Image Generator
 
-Generate hand-drawn style cover images for articles with multiple style options. For full article visuals, use `article-illustrate` as the user-facing entrypoint.
+Generate article cover images only. For full article visuals or ambiguous article image requests, use `article-illustrate` as the user-facing entrypoint.
+
+If this skill is invoked for "配图", "文章视觉", or cover plus body illustrations, switch to `article-illustrate`.
 
 ## Usage
 
@@ -300,8 +302,10 @@ Note: No title text, pure visual illustration only.
 ### Step 6: Generate Image
 
 **Image Generation Skill Selection**:
-1. Check available image generation skills
-2. If multiple skills available, ask user to choose
+1. Use `baoyu-image-gen` as the routing layer.
+2. Prefer Codex official image generation when available.
+3. Use `kie-image-gen`, `tryvalo-imagegen`, Google, or OpenAI API backends only when the user explicitly requests them, when official generation is unavailable, or when a local output path/API-specific behavior is required.
+4. Do not ask the user to choose a provider unless the provider decision changes the requested result and cannot be inferred.
 
 **Output Path Calculation**:
 - **Obsidian mode**: `{detected-directory}/cover.png` (e.g., `attachments/cover.png`)
@@ -312,7 +316,7 @@ Note: No title text, pure visual illustration only.
 - Other ratios pass through unchanged: `16:9`, `1:1`, etc.
 
 **Generation**:
-Call selected image generation skill with prompt file, output path, and mapped aspect ratio.
+Call `baoyu-image-gen` with prompt file, output path, and mapped aspect ratio. If using Codex official image generation, pass the final prompt directly to the official renderer and keep `cover-prompts.md` as the durable prompt record.
 
 ### Step 7: Output Summary
 
