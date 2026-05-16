@@ -17,8 +17,8 @@ npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md
 # With custom cover image
 npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
 
-# Actually publish
-npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --submit
+# Compose and open preview. Final publish is manual.
+npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md
 ```
 
 ## Markdown Format
@@ -65,10 +65,18 @@ Code blocks become blockquotes (X doesn't support code)
 
 ## Image Handling
 
-1. **Cover Image**: First image or `cover_image` from frontmatter
+1. **Cover Image**: `--cover`, then `assets/<article filename>/cover.png`, then frontmatter, then first image
 2. **Remote Images**: Automatically downloaded to temp directory
 3. **Placeholders**: Images in content use `[[IMAGE_PLACEHOLDER_N]]` format
 4. **Insertion**: Placeholders are found, selected, and replaced with actual images
+
+For Obsidian articles, the preferred cover convention is:
+
+```text
+<vault-root>/assets/<markdown-filename-without-.md>/cover.png
+```
+
+When that file exists, it is used as the cover and all inline screenshots remain inline.
 
 ## Markdown to HTML Script
 
@@ -132,8 +140,9 @@ JSON output:
    - Select the placeholder
    - Copy image to clipboard
    - Paste to replace selection
-9. **Review**: Browser stays open for 60s preview
-10. **Publish**: Only with `--submit` flag
+9. **Verify**: Confirm no image placeholders remain and the expected images are in the editor
+10. **Preview**: Open preview and leave Chrome there
+11. **Publish**: Manual only; the account owner clicks the final X Publish button
 
 ## Example Session
 
@@ -149,7 +158,7 @@ Claude:
 6. Fills title "My Post"
 7. Pastes HTML content
 8. Inserts 3 images at placeholder positions
-9. Reports: "Article composed. Review and use --submit to publish."
+9. Opens preview and reports: "Article composed and preview opened. Publish manually after review."
 ```
 
 ## Troubleshooting
@@ -158,6 +167,8 @@ Claude:
 - **Cover upload fails**: Check file path and format (PNG, JPEG)
 - **Images not inserting**: Verify placeholders exist in pasted content
 - **Content not pasting**: Check HTML clipboard: `npx -y bun ${SKILL_DIR}/scripts/copy-to-clipboard.ts html --file /tmp/test.html`
+- **Clipboard script not found in Chinese/OneDrive paths**: Ensure `x-utils.ts` uses `fileURLToPath(import.meta.url)` for script directory resolution on macOS and Windows.
+- **Nested Bun command fails on Windows**: Ensure helper script calls use `npx.cmd`; macOS/Linux should continue to use `npx`.
 
 ## How It Works
 
@@ -166,6 +177,7 @@ Claude:
    - Converts markdown to HTML
    - Replaces images with unique placeholders
    - Downloads remote images locally
+   - Uses `assets/<article>/cover.png` as the default Obsidian cover when present
    - Returns structured JSON
 
 2. `x-article.ts` publishes via CDP:
@@ -174,3 +186,4 @@ Claude:
    - Navigates and fills editor via DOM manipulation
    - Pastes HTML from system clipboard
    - Finds/selects/replaces each image placeholder
+   - Opens preview and stops there; final publish is manual

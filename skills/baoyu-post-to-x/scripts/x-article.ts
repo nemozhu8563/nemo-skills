@@ -601,6 +601,31 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       console.log('[x-article] All images processed.');
     }
 
+    console.log('[x-article] Verifying editor before preview...');
+    const editorVerification = await cdp.send<{ result: { value: { imageCount: number; placeholderCount: number; textLength: number } } }>('Runtime.evaluate', {
+      expression: `(() => {
+        const editor = document.querySelector('.DraftEditor-editorContainer [data-contents="true"]');
+        const text = editor?.innerText || '';
+        return {
+          imageCount: editor?.querySelectorAll('img').length || 0,
+          placeholderCount: (text.match(/IMAGE_PLACEHOLDER|NEMO_X_IMAGE/g) || []).length,
+          textLength: text.length,
+        };
+      })()`,
+      returnByValue: true,
+    }, { sessionId });
+
+    const editorState = editorVerification.result.value;
+    console.log(`[x-article] Editor verification: ${editorState.imageCount}/${parsed.contentImages.length} images, ${editorState.placeholderCount} placeholders, ${editorState.textLength} chars`);
+
+    if (editorState.placeholderCount > 0) {
+      throw new Error(`Editor still contains ${editorState.placeholderCount} image placeholder(s). Not opening publish flow.`);
+    }
+
+    if (editorState.imageCount < parsed.contentImages.length) {
+      throw new Error(`Editor contains ${editorState.imageCount} image(s), expected at least ${parsed.contentImages.length}. Not opening publish flow.`);
+    }
+
     // Before preview: blur editor to trigger save
     console.log('[x-article] Triggering content save...');
     await cdp.send('Runtime.evaluate', {
@@ -638,25 +663,36 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       console.log('[x-article] Preview button not found');
     }
 
-    // Check for publish button
+    const previewVerification = await cdp.send<{ result: { value: { href: string; hasTitle: boolean; imageCount: number; placeholderCount: number } } }>('Runtime.evaluate', {
+      expression: `(() => {
+        const text = document.body.innerText || '';
+        return {
+          href: location.href,
+          hasTitle: ${JSON.stringify(parsed.title)} ? text.includes(${JSON.stringify(parsed.title)}) : true,
+          imageCount: document.querySelectorAll('img').length,
+          placeholderCount: (text.match(/IMAGE_PLACEHOLDER|NEMO_X_IMAGE/g) || []).length,
+        };
+      })()`,
+      returnByValue: true,
+    }, { sessionId });
+
+    const previewState = previewVerification.result.value;
+    console.log(`[x-article] Preview verification: url=${previewState.href}, title=${previewState.hasTitle}, images=${previewState.imageCount}, placeholders=${previewState.placeholderCount}`);
+
+    if (previewState.placeholderCount > 0) {
+      throw new Error(`Preview still contains ${previewState.placeholderCount} image placeholder(s).`);
+    }
+
+    if (!previewState.hasTitle) {
+      throw new Error('Preview does not contain the expected article title.');
+    }
+
+    // X Articles should stop at preview. The final publish click is intentionally
+    // manual so the account owner can make the last audience/reply decision.
     if (submit) {
-      console.log('[x-article] Publishing...');
-      const publishSelectors = JSON.stringify(I18N_SELECTORS.publishButton);
-      await cdp.send('Runtime.evaluate', {
-        expression: `(() => {
-          const selectors = ${publishSelectors};
-          for (const sel of selectors) {
-            const el = document.querySelector(sel);
-            if (el && !el.disabled) { el.click(); return true; }
-          }
-          return false;
-        })()`,
-      }, { sessionId });
-      await sleep(3000);
-      console.log('[x-article] Article published!');
+      console.log('[x-article] --submit is ignored for X Articles. Preview is ready; publish manually after review.');
     } else {
-      console.log('[x-article] Article composed (draft mode).');
-      console.log('[x-article] Browser remains open for manual review.');
+      console.log('[x-article] Article composed and preview opened. Publish manually after review.');
     }
 
   } finally {
@@ -677,7 +713,7 @@ Usage:
 Options:
   --title <title>     Override title
   --cover <image>     Override cover image
-  --submit            Actually publish (default: draft only)
+  --submit            Ignored for X Articles; final publish is manual
   --profile <dir>     Chrome profile directory
   --help              Show this help
 
@@ -690,7 +726,7 @@ Markdown frontmatter:
 Example:
   npx -y bun x-article.ts article.md
   npx -y bun x-article.ts article.md --cover ./hero.png
-  npx -y bun x-article.ts article.md --submit
+  npx -y bun x-article.ts article.md --submit  # still stops at preview
 `);
   process.exit(0);
 }

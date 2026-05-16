@@ -4,6 +4,7 @@ import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
+import { fileURLToPath } from 'node:url';
 
 export type PlatformCandidates = {
   darwin?: string[];
@@ -216,16 +217,12 @@ export class CdpConnection {
 }
 
 export function getScriptDir(): string {
-  const url = new URL(import.meta.url);
-  // On Windows, pathname starts with '/' like '/C:/...' - remove leading slash
-  const pathname = process.platform === 'win32' && url.pathname.startsWith('/')
-    ? url.pathname.slice(1)
-    : url.pathname;
-  return path.dirname(pathname);
+  return path.dirname(fileURLToPath(import.meta.url));
 }
 
 function runBunScript(scriptPath: string, args: string[]): boolean {
-  const result = spawnSync('npx', ['-y', 'bun', scriptPath, ...args], { stdio: 'inherit' });
+  const npxCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+  const result = spawnSync(npxCommand, ['-y', 'bun', scriptPath, ...args], { stdio: 'inherit' });
   return result.status === 0;
 }
 

@@ -125,8 +125,8 @@ npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md
 # With cover image
 npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
 
-# Publish
-npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --submit
+# Compose and open preview. Final publish is manual.
+npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md
 ```
 
 **Parameters**:
@@ -135,7 +135,7 @@ npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --submit
 | `<markdown>` | Markdown file path (positional argument) |
 | `--cover <path>` | Cover image path |
 | `--title <text>` | Override article title |
-| `--submit` | Actually publish (default: preview only) |
+| `--submit` | Ignored for X Articles; final publish is manual after preview |
 
 **Frontmatter** (optional):
 ```yaml
@@ -144,6 +144,16 @@ title: My Article Title
 cover_image: /path/to/cover.jpg
 ---
 ```
+
+**Default Obsidian cover**:
+
+If no `--cover` is provided, X Articles first checks:
+
+```text
+<vault-root>/assets/<markdown-filename-without-.md>/cover.png
+```
+
+When that file exists, it is used as the cover and the first inline screenshot remains in the article body.
 
 **Markdown Syntax**:
 
@@ -167,8 +177,8 @@ X Articles supports both standard Markdown and Obsidian wikilink syntax:
 ## Notes
 
 - First run requires manual login (session is saved)
-- Always preview before using `--submit`
-- Browser closes automatically after operation
+- X Articles stop at preview by design; the account owner clicks final Publish manually
+- Browser remains open after operation for review
 - Supports macOS, Linux, and Windows
 
 ## Extension Support
@@ -194,6 +204,10 @@ If found, load before workflow. Extension content overrides defaults.
 - 兼容文章末尾的 ## Links 区块，生成 X 长文时自动去掉。
 - 识别到 ![[image.png]] 这类 Obsidian 图片时，要保留为图片占位并走后续替换流程。
 - 如果发布过程卡在浏览器交互或连接阶段，汇报时要区分清楚：是内容转换成功但浏览器接管失败，不要笼统说成没发成功。
+- X Articles 默认只组稿并打开预览页，不自动点击最终发布。
+- 默认优先使用 `assets/<文章文件名>/cover.png` 作为封面，不能把第一张正文截图吞掉当封面。
+- 在 macOS / Windows 的中文、空格或 OneDrive 路径下运行时，脚本目录必须通过 `fileURLToPath(import.meta.url)` 解析，避免 URL 编码路径导致剪贴板脚本找不到。
+- Windows 下从脚本再调用 Bun 时要走 `npx.cmd`，macOS/Linux 继续用 `npx`。
 
 ### Custom Instruction Injection
 

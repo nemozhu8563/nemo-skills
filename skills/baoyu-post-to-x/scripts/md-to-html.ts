@@ -6,6 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
 import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 
 interface ImageInfo {
   placeholder: string;
@@ -100,6 +101,14 @@ function findObsidianVaultRoot(startDir: string): string | null {
     currentDir = path.dirname(currentDir);
   }
   return null;
+}
+
+function findDefaultObsidianCover(markdownPath: string, vaultRoot: string | null): string | null {
+  if (!vaultRoot) return null;
+
+  const articleName = path.basename(markdownPath, path.extname(markdownPath));
+  const coverPath = path.join(vaultRoot, 'assets', articleName, 'cover.png');
+  return fs.existsSync(coverPath) ? coverPath : null;
 }
 
 async function resolveImagePath(imagePath: string, baseDir: string, tempDir: string, vaultRoot: string | null): Promise<string> {
@@ -366,8 +375,18 @@ export async function parseMarkdown(
     }
   }
 
-  // Extract cover image from frontmatter or option
-  let coverImagePath = options?.coverImage ?? frontmatter.cover_image ?? frontmatter.coverImage ?? frontmatter.cover ?? frontmatter.image ?? frontmatter.featureImage ?? frontmatter.feature_image ?? null;
+  // Extract cover image. Obsidian article folders conventionally keep the X/WeChat
+  // cover at assets/<article filename>/cover.png; use that before frontmatter so
+  // the first inline screenshot stays in the article body.
+  let coverImagePath = options?.coverImage
+    ?? findDefaultObsidianCover(markdownPath, vaultRoot)
+    ?? frontmatter.cover_image
+    ?? frontmatter.coverImage
+    ?? frontmatter.cover
+    ?? frontmatter.image
+    ?? frontmatter.featureImage
+    ?? frontmatter.feature_image
+    ?? null;
 
   const images: Array<{ src: string; alt: string; blockIndex: number }> = [];
   let imageCounter = 0;
@@ -469,6 +488,15 @@ Example:
   process.exit(0);
 }
 
+function normalizeRuntimePath(filePath: string): string {
+  const resolved = path.resolve(filePath);
+  return process.platform === 'win32' ? resolved.toLowerCase() : resolved;
+}
+
+function isDirectCliExecution(): boolean {
+  return normalizeRuntimePath(process.argv[1] ?? '') === normalizeRuntimePath(fileURLToPath(import.meta.url));
+}
+
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
   if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
@@ -525,7 +553,9 @@ async function main(): Promise<void> {
   }
 }
 
-await main().catch((err) => {
-  console.error(`Error: ${err instanceof Error ? err.message : String(err)}`);
-  process.exit(1);
-});
+if (isDirectCliExecution()) {
+  await main().catch((err) => {
+    console.error(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    process.exit(1);
+  });
+}
