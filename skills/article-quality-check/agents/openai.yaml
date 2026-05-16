@@ -1,0 +1,4 @@
+interface:
+  display_name: "Article Quality Check"
+  short_description: "按信息密度、论证颗粒度和 AI 指纹检查中文文章。"
+  default_prompt: "按我的文章质检方法检查这篇文章，指出重复、空泛、颗粒度不足和 AI 味。"

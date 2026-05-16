@@ -18,6 +18,13 @@
       "status": "migrate_now"
     },
     {
+      "id": "article-quality-check",
+      "type": "skill_dir",
+      "source": "skills/article-quality-check",
+      "destination": ".agents/skills/article-quality-check",
+      "status": "migrate_now"
+    },
+    {
       "id": "article-review",
       "type": "skill_dir",
       "source": "skills/article-review",
