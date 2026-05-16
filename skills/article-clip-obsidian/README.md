@@ -18,14 +18,14 @@
 
 发布到 vault：
 
-```powershell
-powershell -ExecutionPolicy Bypass -File ..\nemo-skills\scripts\publish-to-vault.ps1 -VaultRoot "$PWD" -EntryId @('article-clip-obsidian')
+```bash
+node scripts/publish-to-vault.mjs --entry-id article-clip-obsidian --mode OverwriteManagedClean
 ```
 
 验证发布：
 
-```powershell
-powershell -ExecutionPolicy Bypass -File ..\nemo-skills\scripts\verify-publish.ps1 -VaultRoot "$PWD" -EntryId @('article-clip-obsidian')
+```bash
+node scripts/verify-publish.mjs --entry-id article-clip-obsidian
 ```
 
 ## Files
