@@ -29,11 +29,6 @@ This file is the human-readable retention source for the current migration. It m
 - `kie-image-gen`
 - `tryvalo-imagegen`
 
-## Merge Into Another Entry
-
-- `writing-clone` -> `nemo-writer`: keep the素材池初稿 mechanism, remove the separate entrypoint.
-- `wechat-article-writer` -> `nemo-writer`: keep公众号文章类型 and style references, remove the separate entrypoint.
-
 ## Delete Or Do Not Migrate
 
 - `article-review`
@@ -49,6 +44,8 @@ This file is the human-readable retention source for the current migration. It m
 - `inbox-processor`
 - `markitdown-client`
 - `obsidian-archive`
+- `wechat-article-writer`
+- `writing-clone`
 
 ## Archive / Pending
 
@@ -58,7 +55,8 @@ This file is the human-readable retention source for the current migration. It m
 ## Boundary Rules
 
 - `dbs-*` stays in the vault `.agents/skills` diagnostic layer and is not managed by this repo mapping.
-- `nemo-writer` is the only Chinese long-form writing entrypoint.
+- `nemo-writer` is the only Nemo-style Chinese technical long-form writing entrypoint.
+- `writing-clone` and `wechat-article-writer` are retired and must not be merged into `nemo-writer`.
 - `dbs-ai-check` is the only AI-style detection entrypoint and stays outside this repo mapping.
 - `article-illustrate` is the user-facing article visual entrypoint; `baoyu-cover-image` and `baoyu-article-illustrator` are provider/sub-skill surfaces.
 - `baoyu-image-gen` is the ordinary image-generation router; `kie-image-gen` and `tryvalo-imagegen` are providers.

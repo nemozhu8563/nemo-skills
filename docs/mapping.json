@@ -274,7 +274,7 @@
       "type": "skill_dir",
       "source": "skills/wechat-article-writer",
       "destination": ".agents/skills/wechat-article-writer",
-      "status": "merge"
+      "status": "delete"
     },
     {
       "id": "wechat-publisher",
@@ -288,7 +288,7 @@
       "type": "skill_dir",
       "source": "skills/writing-clone",
       "destination": ".agents/skills/writing-clone",
-      "status": "merge"
+      "status": "delete"
     },
     {
       "id": "zhihu-collection-sync",

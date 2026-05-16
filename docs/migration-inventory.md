@@ -41,7 +41,7 @@ This inventory is the execution gate for publishing nemo-managed skills into the
 | `obsidian-markdown` | `skill_dir` | `migrate_now` | `keep` | Obsidian Markdown 官方 skill |
 | `publish-article` | `skill_dir` | `migrate_now` | `keep` | 发布后归档和 frontmatter 更新 |
 | `tryvalo-imagegen` | `skill_dir` | `migrate_now` | `provider` | TryValo/new-api/gpt-image-2 图像 provider |
-| `wechat-article-writer` | `skill_dir` | `merge` | `merge` | 公众号文章类型并入 nemo-writer 后不再发布 |
+| `wechat-article-writer` | `skill_dir` | `delete` | `delete` | 旧公众号文章工作流已退役，不并入 nemo-writer |
 | `wechat-publisher` | `skill_dir` | `migrate_now` | `keep` | Markdown 发布到微信公众号草稿箱 |
-| `writing-clone` | `skill_dir` | `merge` | `merge` | 素材池初稿机制并入 nemo-writer 后不再发布 |
+| `writing-clone` | `skill_dir` | `delete` | `delete` | 旧素材池初稿工作流已退役，不并入 nemo-writer |
 | `zhihu-collection-sync` | `skill_dir` | `migrate_now` | `keep` | 批量同步知乎收藏并复用剪藏链路 |
