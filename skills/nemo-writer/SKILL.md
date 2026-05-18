@@ -1,14 +1,14 @@
 ---
 name: nemo-writer
 description: |
-  Nemo 的中文技术长文写作 Skill。用于把真实笔记、项目记录、操作日志、踩坑过程、工具体验、开源项目研究整理成 Nemo 风格的技术文章、教程、实战复盘或概念讲解。触发场景包括：写技术文章、按我的风格写、把笔记整理成文章、把实战过程写成复盘、解释 MCP/Skill/Agent/Workflow 等 AI 工具概念。不要用于无材料的虚构创作、纯小红书短帖、品牌宣传文案、自动拼装稿或需要编造亲身经历的任务。
+  Nemo 的中文技术长文写作 Skill。用于把真实笔记、项目记录、操作日志、踩坑过程、工具体验、开源项目研究整理成 Nemo 风格的技术实验文章、教程、实战复盘或概念讲解；也用于从真实技术实践、AI 工具使用、项目记录、内容创作或独立创业观察中，提炼技术型个人 IP 文章、业务认知复盘和项目判断。触发场景包括：写技术文章、按我的风格写、把笔记整理成文章、把实战过程写成复盘、解释 MCP/Skill/Agent/Workflow 等 AI 工具概念、从项目实践写个人判断。不要用于无材料的虚构创作、纯小红书短帖、品牌宣传文案、自动拼装稿或需要编造亲身经历的任务。
 ---
 
 # Nemo 技术老友写作
 
 ## Overview
 
-Use this skill to write like Nemo: a practical technical friend explaining something he actually tried. The writing should feel clear, direct, grounded in real operations, and useful enough that readers can copy the workflow.
+Use this skill to write like Nemo: a practical technical friend explaining something he actually tried. The writing should feel clear, direct, grounded in real operations, and useful enough that readers can copy the workflow or understand the project judgment behind it.
 
 The voice is not a literary persona. It is a tested working style: real pain point first, plain explanation second, reproducible process third, then pitfalls and a restrained judgment.
 
@@ -20,7 +20,7 @@ Prefer these inputs. Continue with available material, but never invent missing 
 
 - Topic: what the article is about.
 - Source material: notes, links, local files, command logs, screenshots, project records, issue notes, or draft fragments.
-- Target type: tutorial, concept explainer, field report, or workflow breakdown.
+- Target type: technical experiment, tutorial, concept explainer, field report, workflow breakdown, or technical personal-IP essay.
 - Audience: technical beginner, AI tool user, indie builder, or operator.
 - Constraints: what must not be revealed, including secrets, tokens, private account data, internal URLs, and personal details.
 
@@ -28,23 +28,32 @@ If source material is too thin, produce an outline or ask for the minimum missin
 
 ## Article Types
 
-Choose one primary type before drafting.
+Choose one primary type before drafting. First decide whether the article is a **技术实验** or a **技术型个人 IP** essay.
+
+Technical experiments are practical/reproducible articles. Use them when the reader should understand how a tool, project, workflow, or experiment was run and how to reuse the path.
 
 1. Tutorial: pain point -> tool/solution -> prerequisites -> steps -> pitfalls -> summary.
 2. Concept explainer: confusion -> plain analogy -> relationship map -> real usage case -> summary.
 3. Field report: why I did it -> chosen approach -> actual process -> problems -> result -> judgment.
 4. Workflow breakdown: messy old process -> new default order -> commands or steps -> when to use it -> what changes.
+5. Technical personal-IP essay: real technical/project scene -> old misunderstanding -> new mechanism -> key case -> my projects -> next decision.
+
+For technical personal-IP essays, read `references/technical-personal-ip.md` before drafting.
 
 ## Writing Workflow
 
-1. Extract the real pain point in 1-3 concrete sentences.
-2. Decide the article type and write a one-sentence thesis.
-3. Build the spine: problem -> solution -> process -> pitfalls -> result -> judgment.
-4. Explain every important technical term with plain language or one everyday analogy.
-5. Include reproducible details: commands, paths, options, configs, screenshots placeholders, or exact decision criteria when available.
-6. Add a pitfalls section with 2-5 specific problems. If the material has no real pitfalls, say so and do not fabricate them.
-7. End sections with short judgment sentences that clarify why the detail matters.
-8. Run the self-check before final output.
+1. Extract the real pain point, scene, or triggering moment in 1-3 concrete sentences.
+2. Decide the mode:
+   - Use technical experiment when the article teaches or reviews a reproducible tool, project, workflow, or operating process.
+   - Use technical personal-IP when the article is grounded in real technical/project practice but the point is a business, product, content, or identity judgment.
+3. Decide the article type and write a one-sentence thesis.
+4. For technical experiments, build the spine: problem -> solution -> process -> pitfalls -> result -> judgment.
+5. For technical personal-IP essays, load `references/technical-personal-ip.md` and use its spine.
+6. Explain every important technical term with plain language or one everyday analogy.
+7. Include reproducible details when the article promises a practical path: commands, paths, options, configs, screenshots placeholders, or exact decision criteria when available.
+8. Add a pitfalls section with 2-5 specific problems for tutorials and field reports. If the material has no real pitfalls, say so and do not fabricate them.
+9. End sections with short judgment sentences that clarify why the detail matters.
+10. Run the self-check before final output.
 
 ## Voice Rules
 
@@ -72,7 +81,9 @@ Choose one primary type before drafting.
 
 ## Output Shape
 
-For full articles, output:
+For full articles, output a complete draft by default. Only output an outline, excerpt, or revision advice when the user explicitly asks for that shape.
+
+For technical experiments, output:
 
 1. Title: 15-30 Chinese characters when possible, with a concrete promise, number, pain point, or first-person hook.
 2. Opening: 2-5 short paragraphs from a real pain point or operating scene.
@@ -80,6 +91,8 @@ For full articles, output:
 4. Pitfalls: concrete problems and fixes for tutorials and field reports.
 5. Summary: 3-5 bullets stating what readers can take away.
 6. Closing judgment: 1-3 restrained sentences.
+
+For technical personal-IP essays, output the shape defined in `references/technical-personal-ip.md`.
 
 For outlines, output:
 
@@ -95,6 +108,7 @@ Before finalizing, verify:
 
 - The opening starts from a real pain point or scene.
 - The article has a clear spine, not a pile of notes.
+- The selected mode is correct: technical experiment for practical/reproducible work, technical personal-IP for project-grounded judgment.
 - Every factual claim is supported by provided material or marked as unknown.
 - Every important technical concept has a plain explanation or analogy.
 - Steps are reproducible where the article promises a tutorial.
@@ -107,3 +121,4 @@ Before finalizing, verify:
 ## References
 
 - Read `references/style-profile.md` for extracted Nemo voice rules, evidence from existing local articles, reusable mechanisms from `nemo-writer`, and anti-patterns.
+- Read `references/technical-personal-ip.md` when the article should turn real technical practice, AI workflow, project work, content work, or entrepreneurial observation into a Nemo-style personal judgment article.

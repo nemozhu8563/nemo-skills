@@ -1,0 +1,166 @@
+# Nemo 技术型个人 IP 写作
+
+This reference is for articles that are grounded in real technical practice, AI workflows, project work, content work, or entrepreneurial observation, but whose real purpose is a personal judgment about product, business, content, or positioning.
+
+Use this only after `SKILL.md` has routed the article to technical personal-IP mode. Do not load it for ordinary practical tutorials unless the user explicitly wants a business or personal-IP reflection.
+
+## When To Use
+
+Use this mode when the source material looks like one of these:
+
+- A technical project or AI workflow changed how Nemo thinks about business, product, content, or personal positioning.
+- A conference, group discussion, client case, or project review triggered a concrete judgment about how Nemo should build.
+- The article is not mainly teaching readers to reproduce a workflow, but explaining what Nemo realized after doing or observing real work.
+- The article needs to connect tools, projects, content, and business links without becoming a meeting recap or business sermon.
+
+Do not use this mode when the article's main promise is reproducible operation. That belongs to technical experiment mode.
+
+## Article Spine
+
+Build the article around one clear transformation:
+
+```text
+现场触发
+-> 我以前怎么理解
+-> 现在发现哪里不对
+-> 一个具体案例说明机制
+-> 回到我自己的项目
+-> 接下来我会怎么调整
+```
+
+The article should still feel like Nemo: real scene first, concrete action second, judgment third. The business or personal-IP insight must grow out of actual projects, tools, workflows, pitfalls, or content practice.
+
+## Core Moves
+
+### 1. Start From A Real Trigger
+
+Open with a scene, sentence, project moment, or operational friction.
+
+Good directions:
+
+- "我听到这里的时候，被狠狠地震了一下。"
+- "我最近发现一个挺尴尬的问题。"
+- "我折腾了这么多项目以后，才发现自己真正没跑通的是另一件事。"
+
+Avoid abstract openings like:
+
+- "从更深层次来看..."
+- "这背后反映出..."
+- "在当前 AI 时代..."
+
+### 2. Name The Old Misunderstanding
+
+The old misunderstanding should be specific, not a slogan.
+
+Useful shapes:
+
+- "我以前会觉得，只要 AI 够强，我就能靠工具效率跑出优势。"
+- "我以前很容易焦虑内容没有流量，以为内容的目标就是带来更多曝光。"
+- "我以前会把一个项目做出来，当成事情已经完成了。"
+
+Do not repeat the old misunderstanding in five different ways. State it once, then move to mechanism.
+
+### 3. Explain The New Mechanism
+
+Technical personal-IP articles need mechanism, not only attitude.
+
+Mechanism examples:
+
+- AI is a lever; it only compounds a business that already has a support point.
+- Content is not only a traffic machine; it is also a trust surface that lets others inspect your ability.
+- A project is a product even before it earns money, because it can accumulate workflow, judgment, assets, audience trust, and reusable experience.
+
+Explain why the mechanism changes decisions. If it does not change what Nemo will do next, it is probably decoration.
+
+### 4. Use Cases As Proof, Not Ornament
+
+Cases should prove the mechanism. They should not be inserted as anecdotes after the conclusion is already finished.
+
+When using a case, answer at least two of these:
+
+- What was the assumed product?
+- Who was supposed to pay?
+- What was not verified yet?
+- What cost was taken on too early?
+- What did the case reveal about product chain, profit model, trust, or conversion path?
+
+For example, a奶茶甜品店 case is not about judging that specific store. It can show what happens when a project has many categories, people, and upfront cost before the core product has been verified.
+
+## Nemo Positive Voice Habits
+
+Use Nemo's natural direction as a positive style target:
+
+- Real operation/context openings: "我最近遇到...", "我听到这里的时候...", "我后来发现..."
+- Light spoken judgment: "说实话", "这事挺烦的", "才踏实", "还真行"
+- Concrete actions: "我把...接入...", "我试了一下", "我选择...", "我拆开看..."
+- Field problems: "格式全乱了", "内容说没就没", "一套下来..."
+- Contrast at turning points: "不是 A，而是 B" sparingly, usually 1-3 times per full article.
+- Restrained endings: return to what changes in the workflow, project, content strategy, or next decision.
+
+Do not turn these into a口癖 checklist. They are directions for rhythm and judgment.
+
+## Privacy And Source Retelling
+
+Do not expose source-processing traces in the article.
+
+Avoid phrases like:
+
+- "截图里看到"
+- "公开来讲"
+- "不能公开讲"
+- "不方便公开"
+- "我现在发给你的图片"
+
+Use natural public narration instead:
+
+- "后来我在创业群里看到有人聊起..."
+- "分享里有一个案例让我印象很深。"
+- "有人提到一个项目，一开始看起来很热闹..."
+
+When material includes sensitive revenue links, private cashflow, client information, internal URLs, account data, or details the user says cannot be public:
+
+- Do not name the sensitive link.
+- Do not hint at it with awkward defensive wording.
+- Convert it into a public-safe judgment, such as "我还没有把手上的项目串成一条清晰变现链路" or "这件事提醒我，项目不能只停留在经验堆叠，还要有可验证的业务闭环。"
+
+The reader should see the insight, not the redaction.
+
+## Density Gate
+
+Every paragraph should add at least one new function:
+
+- Claim: a new judgment or position.
+- Example: a concrete case or scene.
+- Mechanism: why the thing works that way.
+- Boundary: when the point applies or does not apply.
+- Consequence: what happens if the point is ignored.
+- Decision: what Nemo will do differently.
+
+If several paragraphs all say "AI 不是业务" or "内容不是流量" without adding mechanism, case, boundary, consequence, or decision, cut or deepen them.
+
+## Output Shape
+
+For full articles, default to this structure:
+
+1. Title: first-person hook, concrete tension, or practical judgment.
+2. Opening: the triggering scene or sentence.
+3. Old misunderstanding: what Nemo used to believe and why it made sense at the time.
+4. New mechanism: what changed after the source event or project observation.
+5. Case: one or two concrete cases that prove the mechanism.
+6. My projects: how this maps back to Nemo's current tools, sites, content, workflow, or business chain.
+7. Next decision: what Nemo will adjust next.
+
+Use headings when they help scanability, but the article should still read as one coherent personal field note, not as a report.
+
+## Self-Check
+
+Before accepting the draft:
+
+- Does the article start from a real trigger rather than a broad concept?
+- Is the old misunderstanding specific and not repeated endlessly?
+- Does the new mechanism explain why decisions change?
+- Do cases prove the mechanism instead of decorating it?
+- Does the article return to Nemo's actual projects, tools, content, or business chain?
+- Are privacy-sensitive details converted into public-safe judgment?
+- Does every paragraph add a new function?
+- Does the ending state what changes next, without forcing a life lesson?
