@@ -11,6 +11,8 @@ Good prompts must include:
 5. **Style Characteristics**: Line treatment, texture, mood
 6. **Aspect Ratio**: End with ratio and complexity level
 
+Prompts must target a raster image-generation route. SVG, HTML, canvas, Mermaid, and markup screenshots are not valid substitutes. If generated text quality becomes the risk, lower or remove visible text in the prompt and regenerate; do not plan a post-generation text overlay repair.
+
 ## Type-Specific Templates
 
 ### Infographic

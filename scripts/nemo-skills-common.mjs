@@ -7,6 +7,7 @@ export const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_REPO_ROOT = path.resolve(SCRIPT_DIR, "..");
 export const WARNING =
   "Managed by nemo-skills. Do not edit here; edit the nemo-skills repo and republish.";
+const EXCLUDED_DIRECTORY_NAMES = new Set(["node_modules"]);
 
 export function parseArgs(argv, spec = {}) {
   const out = { entryIds: [] };
@@ -246,6 +247,7 @@ export function copyRecursive(source, destination) {
   if (stat.isDirectory()) {
     fs.mkdirSync(destination, { recursive: true });
     for (const item of fs.readdirSync(source)) {
+      if (EXCLUDED_DIRECTORY_NAMES.has(item)) continue;
       copyRecursive(path.join(source, item), path.join(destination, item));
     }
     return;
@@ -290,6 +292,8 @@ export function fail(message) {
 function walkFiles(root) {
   const results = [];
   for (const item of fs.readdirSync(root, { withFileTypes: true })) {
+    if (item.isDirectory() && EXCLUDED_DIRECTORY_NAMES.has(item.name)) continue;
+
     const fullPath = path.join(root, item.name);
     if (item.isDirectory()) {
       results.push(...walkFiles(fullPath));

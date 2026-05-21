@@ -138,6 +138,13 @@ Multiple sources supported: text, images, files from conversation.
 
 ## Workflow
 
+## Visual Safety Rules
+
+- The final outputs must be real raster image files such as PNG, JPEG, or WebP.
+- Do not use SVG, HTML, canvas, Mermaid, screenshots of markup, or other structured/vector formats as substitutes for requested article illustrations.
+- Do not repair bad generated image text by overlaying text with ImageMagick, Pillow, Canvas, SVG, HTML, or similar tooling.
+- If generated labels or captions are wrong, regenerate with shorter/lower text, remove visible text from the prompt, or ask the user which recovery path they prefer.
+
 ### Step 1: Analyze Content & Select Style
 
 1. Read article content
@@ -297,8 +304,8 @@ Style notes: [specific style characteristics]
 
 **Image Generation Skill Selection**:
 1. Use `baoyu-image-gen` as the routing layer.
-2. Prefer Codex official image generation when available.
-3. Use `kie-image-gen`, `tryvalo-imagegen`, Google, or OpenAI API backends only when the user explicitly requests them, when official generation is unavailable, or when a local output path/API-specific behavior is required.
+2. Use Codex native image generation as the required first attempt when available.
+3. Use `kie-image-gen`, `tryvalo-imagegen`, Google, or OpenAI API backends only when the user explicitly requests them, when native generation is unavailable, or when a local output path/API-specific behavior is required.
 4. Do not ask the user to choose a provider unless the provider decision changes the requested result and cannot be inferred.
 
 **Generation Flow**:

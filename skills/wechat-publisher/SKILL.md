@@ -7,6 +7,8 @@ description: "Use when publishing Obsidian Markdown to WeChat Official Account d
 
 Convert Obsidian Markdown files to WeChat Official Account HTML and upload to WeChat draft box.
 
+This is the only WeChat publishing skill in `nemo-skills`. Do not migrate or invoke upstream Baoyu browser/CDP WeChat publishing as the primary path.
+
 ## Configuration
 
 Before processing any files, ensure WeChat credentials are configured in your user-level `.agents` directory:
@@ -64,8 +66,11 @@ Execute the following steps in order:
 
 ## Runtime
 
-- Default runtime: `bun run index.js <markdown-file> [template]`
-- Default install path: `bun install`
+- Default publish command: `bun run publish -- <markdown-file> [template]`
+- Do not run `node index.js ...` directly inside this skill directory. Use the package script entrypoint so runtime choices stay centralized.
+- Do not use `bun run index.js` for real WeChat uploads. On this machine, Bun's fetch-backed HTTP stack can close multipart image uploads unexpectedly.
+- Default install path: run `bun install` from this skill directory when `node_modules/` is missing
+- Remove generated `node_modules/` after ad-hoc local publishing or validation; managed skill copies must not carry generated dependencies.
 - Default test command: `bun test`
 
 ## Templates

@@ -1,13 +1,14 @@
 import { access } from 'fs/promises';
 import { constants } from 'fs';
-import { dirname, join, resolve } from 'path';
+import { dirname, join } from 'path';
+import { resolveLocalImagePath } from './path.js';
 
-export async function resolveThumbnailSource({ filePath, localImages = [], remoteImages = [] }) {
+export async function resolveThumbnailSource({ filePath, localImages = [], remoteImages = [], config = {} }) {
   const baseDir = dirname(filePath);
   const coverSearchDirs = [baseDir];
 
   if (localImages.length > 0) {
-    coverSearchDirs.unshift(dirname(resolve(baseDir, localImages[0].path)));
+    coverSearchDirs.unshift(dirname(resolveLocalImagePath(baseDir, localImages[0].path, config)));
   }
 
   for (const searchDir of coverSearchDirs) {
@@ -29,7 +30,7 @@ export async function resolveThumbnailSource({ filePath, localImages = [], remot
   }
 
   if (localImages.length > 0) {
-    return resolve(baseDir, localImages[0].path);
+    return resolveLocalImagePath(baseDir, localImages[0].path, config);
   }
 
   if (remoteImages.length > 0) {

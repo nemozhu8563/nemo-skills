@@ -13,6 +13,18 @@ This skill is managed from the sibling `nemo-skills` repository. Edit the source
 
 ## Workflow
 
+## Non-Negotiable Output Contract
+
+When this skill is triggered by a user asking to download, clip, save, or import a URL into the Obsidian vault, follow this contract unless the user explicitly names a different destination:
+
+- Markdown output must be created under `02_Sources/_clippings`.
+- Image output must be created under `assets/YYYYMMDDHHmm 标题/`.
+- Do not route clippings to project-specific working folders such as `04_Projects/AI_Media/素材池/_clippings` based on prior workflow habits or inferred content-production context.
+- Do not hand-create a simplified note as a substitute for this workflow. Use `web-access-adapter.js` and `convert.js` as the leaf path.
+- Do not silently degrade to a text-only clipping when the source has images. If remote image localization fails, fix the capture by downloading the images locally and passing them through `assets`, then rerun the adapter and converter.
+- A clipping is not complete while any remote Markdown image reference remains in the note.
+- A clipping is not complete until all Obsidian embeds point to existing local files.
+
 ### 1. Acquire Article Through web-access
 
 All network access must load and follow the `web-access` skill first.
@@ -80,6 +92,8 @@ node .skills/article-clip-obsidian/convert.js \
   assets
 ```
 
+The `02_Sources/_clippings` argument is the default destination. Change it only when the user explicitly asks for a different destination in the current request.
+
 The converter:
 - Generates filename: `YYYYMMDDHHmm 标题.md` using `fetched_at`
 - Uses `published_at` for frontmatter `created`
@@ -107,6 +121,13 @@ After conversion, report:
 - Number of images processed
 - Acquisition route used: web-access route or legacy article-clip fallback
 - Any issues encountered
+
+Before reporting completion, verify:
+- The note path starts with `02_Sources/_clippings/`, unless the user explicitly requested another destination.
+- No Markdown image reference points to `http://` or `https://`.
+- No platform image CDN such as `pbs.twimg.com` remains in the note body.
+- Every `![[assets/...]]` embed points to an existing local file.
+- The note frontmatter includes the clipping standard fields: `type`, `status`, `tags`, `created`, `source`, `refs`, `ddc`, and `author`.
 
 Example: `Article saved to 02_Sources/_clippings/202603061234 文章标题.md with 5 images. Acquisition: web-access CDP.`
 
@@ -139,6 +160,7 @@ File structure:
 - **Login required**: Ask the user to log in through their normal Chrome only when the target content cannot be obtained without login.
 - **Empty capture**: Do not convert. Re-check the web-access route, scroll/lazy-load state, DOM extraction target, or fallback path.
 - **Adapter fails**: Fix the capture JSON so it includes a valid `url` and non-empty `markdown`. If the failure is remote image localization, retry the capture or download the listed image manually and include it in `assets`.
+- **Remote image localization fails**: Treat this as a recoverable workflow error, not permission to skip images. Use a reliable downloader such as `curl` to localize the images first, include them in capture `assets`, and rerun `web-access-adapter.js` followed by `convert.js`.
 - **article-clip fallback fails**: Report the failure and return to `web-access` route selection instead of retrying blindly.
 - **Output file may already exist**: Check before overwriting; ask the user or choose a new capture when duplicate output would destroy useful content.
 - **Zhihu placeholder images**: If Zhihu exports only failed `data:image/svg+xml` lazy-load placeholders and no actual image references, the converter removes the noisy `图片下载提示` section.

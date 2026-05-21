@@ -47,7 +47,6 @@ Primary entrypoints:
 - `baoyu-image-gen`
 - `baoyu-infographic`
 - `baoyu-post-to-x`
-- `baoyu-url-to-markdown`
 - `baoyu-translate`
 - `interdisciplinary-research`
 - `json-canvas`
@@ -70,4 +69,4 @@ Provider/sub-skill surfaces:
 - `llm-wiki-query-writeback`
 - `llm-wiki-weekly-lint`
 
-Retired or non-publish entries are documented in `docs/skill-retention.md`.
+Retired or non-publish entries are documented in `docs/skill-retention.md`. URL clipping into Obsidian is handled by `article-clip-obsidian`; the former `baoyu-url-to-markdown` entrypoint is retired.

@@ -22,6 +22,10 @@ import {
 const X_ARTICLES_URL = 'https://x.com/compose/articles';
 
 const I18N_SELECTORS = {
+  createArticleButton: [
+    '[data-testid="empty_state_button_text"]',
+    '[aria-label="create"]',
+  ],
   titleInput: [
     'textarea[placeholder="Add a title"]',
     'textarea[placeholder="添加标题"]',
@@ -51,6 +55,19 @@ const I18N_SELECTORS = {
     'button[aria-label*="게시" i]',
   ],
 };
+
+const EDITOR_CONTENT_SELECTOR = [
+  '.DraftEditor-editorContainer [data-contents="true"]',
+  '[data-testid="composer"]',
+].join(', ');
+
+const EDITOR_INPUT_SELECTOR = [
+  '.DraftEditor-editorContainer [contenteditable="true"]',
+  '[data-testid="composer"][contenteditable="true"]',
+  '[role="textbox"][contenteditable="true"]',
+].join(', ');
+
+const APPLY_BUTTON_TEXT = ['Apply', '应用', '適用', '적용'];
 
 interface ArticleOptions {
   markdownPath: string;
@@ -120,7 +137,6 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
     console.log('[x-article] Waiting for articles page...');
     await sleep(3000);
 
-    // Wait for and click "create" button
     const waitForElement = async (selector: string, timeoutMs = 60_000): Promise<boolean> => {
       const start = Date.now();
       while (Date.now() - start < timeoutMs) {
@@ -134,59 +150,86 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       return false;
     };
 
-    const clickElement = async (selector: string): Promise<boolean> => {
+    const waitForAnySelector = async (selectors: string[], timeoutMs = 60_000): Promise<boolean> => {
+      return waitForElement(selectors.join(', '), timeoutMs);
+    };
+
+    const clickBySelectorsOrText = async (selectors: string[], texts: string[] = []): Promise<boolean> => {
       const result = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
-        expression: `(() => { const el = document.querySelector('${selector}'); if (el) { el.click(); return true; } return false; })()`,
+        expression: `(() => {
+          const selectors = ${JSON.stringify(selectors)};
+          for (const selector of selectors) {
+            const el = document.querySelector(selector);
+            if (el) { el.click(); return true; }
+          }
+
+          const texts = ${JSON.stringify(texts)};
+          const candidates = Array.from(document.querySelectorAll('button, a, div[role="button"]'));
+          const el = candidates.find((candidate) => texts.includes((candidate.innerText || '').trim()));
+          if (el) { el.click(); return true; }
+          return false;
+        })()`,
         returnByValue: true,
       }, { sessionId });
       return result.result.value;
     };
 
-    const typeText = async (selector: string, text: string): Promise<void> => {
-      await cdp!.send('Runtime.evaluate', {
+    const removePlaceholderText = async (placeholder: string): Promise<boolean> => {
+      const result = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
         expression: `(() => {
-          const el = document.querySelector('${selector}');
-          if (el) {
-            el.focus();
-            document.execCommand('insertText', false, ${JSON.stringify(text)});
+          const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+          const input = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
+          if (!editor || !input) return false;
+
+          const placeholder = ${JSON.stringify(placeholder)};
+          const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null, false);
+          let node;
+
+          while ((node = walker.nextNode())) {
+            const text = node.textContent || '';
+            const idx = text.indexOf(placeholder);
+            if (idx === -1) continue;
+
+            const range = document.createRange();
+            range.setStart(node, idx);
+            range.setEnd(node, idx + placeholder.length);
+
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+
+            input.focus();
+            const deleted = document.execCommand('delete');
+            input.dispatchEvent(new InputEvent('input', {
+              bubbles: true,
+              inputType: 'deleteContentBackward',
+              data: null,
+            }));
+
+            return deleted && !(editor.innerText || '').includes(placeholder);
           }
+
+          return false;
         })()`,
+        returnByValue: true,
       }, { sessionId });
+
+      return result.result.value;
     };
 
-    const pressKey = async (key: string, modifiers = 0): Promise<void> => {
-      await cdp!.send('Input.dispatchKeyEvent', {
-        type: 'keyDown',
-        key,
-        code: `Key${key.toUpperCase()}`,
-        modifiers,
-        windowsVirtualKeyCode: key.toUpperCase().charCodeAt(0),
-      }, { sessionId });
-      await cdp!.send('Input.dispatchKeyEvent', {
-        type: 'keyUp',
-        key,
-        code: `Key${key.toUpperCase()}`,
-        modifiers,
-        windowsVirtualKeyCode: key.toUpperCase().charCodeAt(0),
-      }, { sessionId });
-    };
+    console.log('[x-article] Looking for article create button...');
+    const createButtonFound = await waitForAnySelector(I18N_SELECTORS.createArticleButton, 10_000);
 
-    // Check if we're on the articles list page (has Write button)
-    console.log('[x-article] Looking for Write button...');
-    const writeButtonFound = await waitForElement('[data-testid="empty_state_button_text"]', 10_000);
-
-    if (writeButtonFound) {
-      console.log('[x-article] Clicking Write button...');
-      await cdp.send('Runtime.evaluate', {
-        expression: `document.querySelector('[data-testid="empty_state_button_text"]')?.click()`,
-      }, { sessionId });
-      await sleep(2000);
+    if (createButtonFound) {
+      console.log('[x-article] Clicking article create button...');
+      await clickBySelectorsOrText(I18N_SELECTORS.createArticleButton, ['Write', '撰写', '作成', '작성']);
+      await sleep(5000);
     }
 
     // Wait for editor (title textarea)
     const titleSelectors = I18N_SELECTORS.titleInput.join(', ');
     console.log('[x-article] Waiting for editor...');
-    const editorFound = await waitForElement(titleSelectors, 30_000);
+    const editorFound = await waitForElement(titleSelectors, 90_000);
     if (!editorFound) {
       console.log('[x-article] Editor not found. Please ensure you have X Premium and are logged in.');
       await sleep(60_000);
@@ -227,13 +270,15 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
 
         // Wait for Apply button to appear and click it
         console.log('[x-article] Waiting for Apply button...');
-        const applyFound = await waitForElement('[data-testid="applyButton"]', 15_000);
+        const applyFound = await waitForElement('[data-testid="applyButton"], button, div[role="button"]', 15_000);
         if (applyFound) {
-          await cdp.send('Runtime.evaluate', {
-            expression: `document.querySelector('[data-testid="applyButton"]')?.click()`,
-          }, { sessionId });
-          console.log('[x-article] Cover image applied');
-          await sleep(1000);
+          const clicked = await clickBySelectorsOrText(['[data-testid="applyButton"]'], APPLY_BUTTON_TEXT);
+          if (!clicked) {
+            console.log('[x-article] Apply button text not found, continuing...');
+          } else {
+            console.log('[x-article] Cover image applied');
+            await sleep(1000);
+          }
         } else {
           console.log('[x-article] Apply button not found, continuing...');
         }
@@ -274,10 +319,10 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
     // Read HTML content
     const htmlContent = fs.readFileSync(htmlPath, 'utf-8');
 
-    // Focus on DraftEditor body
+    // Focus on editor body
     await cdp.send('Runtime.evaluate', {
       expression: `(() => {
-        const editor = document.querySelector('.DraftEditor-editorContainer [contenteditable="true"]');
+        const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
         if (editor) {
           editor.focus();
           editor.click();
@@ -292,7 +337,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
     console.log('[x-article] Attempting to insert HTML via paste event...');
     const pasteResult = await cdp.send<{ result: { value: boolean } }>('Runtime.evaluate', {
       expression: `(() => {
-        const editor = document.querySelector('.DraftEditor-editorContainer [contenteditable="true"]');
+        const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
         if (!editor) return false;
 
         const html = ${JSON.stringify(htmlContent)};
@@ -318,7 +363,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
 
     // Check if content was inserted
     const contentCheck = await cdp.send<{ result: { value: number } }>('Runtime.evaluate', {
-      expression: `document.querySelector('.DraftEditor-editorContainer [data-contents="true"]')?.innerText?.length || 0`,
+      expression: `document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)})?.innerText?.length || 0`,
       returnByValue: true,
     }, { sessionId });
 
@@ -330,7 +375,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       // Method 2: Use execCommand insertHTML
       await cdp.send('Runtime.evaluate', {
         expression: `(() => {
-          const editor = document.querySelector('.DraftEditor-editorContainer [contenteditable="true"]');
+          const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
           if (!editor) return false;
           editor.focus();
           document.execCommand('insertHTML', false, ${JSON.stringify(htmlContent)});
@@ -342,7 +387,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
 
       // Check again
       const check2 = await cdp.send<{ result: { value: number } }>('Runtime.evaluate', {
-        expression: `document.querySelector('.DraftEditor-editorContainer [data-contents="true"]')?.innerText?.length || 0`,
+        expression: `document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)})?.innerText?.length || 0`,
         returnByValue: true,
       }, { sessionId });
 
@@ -363,7 +408,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
 
       // First, check what placeholders exist in the editor
       const editorContent = await cdp.send<{ result: { value: string } }>('Runtime.evaluate', {
-        expression: `document.querySelector('.DraftEditor-editorContainer [data-contents="true"]')?.innerText || ''`,
+        expression: `document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)})?.innerText || ''`,
         returnByValue: true,
       }, { sessionId });
 
@@ -386,10 +431,10 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
         // Helper to select placeholder with retry
         const selectPlaceholder = async (maxRetries = 3): Promise<boolean> => {
           for (let attempt = 1; attempt <= maxRetries; attempt++) {
-            // Find, scroll to, and select the placeholder text in DraftEditor
+            // Find, scroll to, and select the placeholder text in the editor.
             await cdp!.send('Runtime.evaluate', {
               expression: `(() => {
-                const editor = document.querySelector('.DraftEditor-editorContainer [data-contents="true"]');
+                const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
                 if (!editor) return false;
 
                 const placeholder = ${JSON.stringify(img.placeholder)};
@@ -450,8 +495,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
         // Try to select the placeholder
         const selected = await selectPlaceholder(3);
         if (!selected) {
-          console.warn(`[x-article] Skipping image - could not select placeholder: ${img.placeholder}`);
-          continue;
+          throw new Error(`Could not select ${img.placeholder}. Not continuing because preview would retain an image placeholder.`);
         }
 
         console.log(`[x-article] Copying image: ${path.basename(img.localPath)}`);
@@ -480,38 +524,26 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
           // Wait for clipboard to be fully ready (longer on Windows for large images)
           await sleep(3500);
 
-          // Delete placeholder by pressing Backspace (more reliable than Enter for replacing selection)
-          console.log(`[x-article] Deleting placeholder...`);
-          await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8 }, { sessionId });
-          await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8 }, { sessionId });
-
-          // Wait and verify placeholder is deleted
-          await sleep(500);
-
-          // Check that placeholder is no longer in editor
-          const afterDelete = await cdp.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+          const beforePaste = await cdp.send<{ result: { value: { imageCount: number; hasPlaceholder: boolean } } }>('Runtime.evaluate', {
             expression: `(() => {
-              const editor = document.querySelector('.DraftEditor-editorContainer [data-contents="true"]');
-              if (!editor) return true;
-              return !editor.innerText.includes(${JSON.stringify(img.placeholder)});
+              const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+              return {
+                imageCount: editor?.querySelectorAll('img').length || 0,
+                hasPlaceholder: !!editor?.innerText.includes(${JSON.stringify(img.placeholder)}),
+              };
             })()`,
             returnByValue: true,
           }, { sessionId });
 
-          if (!afterDelete.result.value) {
-            console.warn(`[x-article] Placeholder may not have been deleted, trying again...`);
-            // Try selecting and deleting again
-            await selectPlaceholder(1);
-            await sleep(300);
-            await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8 }, { sessionId });
-            await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8 }, { sessionId });
-            await sleep(500);
+          if (!beforePaste.result.value.hasPlaceholder) {
+            console.warn(`[x-article] Placeholder disappeared before paste; retrying selection to avoid corrupting image positions.`);
+            continue;
           }
 
-          // Focus editor to ensure cursor is in position
+          // Focus editor to keep the selected placeholder as the paste target.
           await cdp.send('Runtime.evaluate', {
             expression: `(() => {
-              const editor = document.querySelector('.DraftEditor-editorContainer [contenteditable="true"]');
+              const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
               if (editor) editor.focus();
             })()`,
           }, { sessionId });
@@ -535,20 +567,71 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
             await sleep(500);
 
             // Check if an image element appeared in the editor
-            const imageCheck = await cdp.send<{ result: { value: number } }>('Runtime.evaluate', {
+            const imageCheck = await cdp.send<{ result: { value: { imageCount: number; hasPlaceholder: boolean } } }>('Runtime.evaluate', {
               expression: `(() => {
-                const editor = document.querySelector('.DraftEditor-editorContainer [data-contents="true"]');
-                if (!editor) return 0;
-                // Count img tags in editor
-                return editor.querySelectorAll('img').length;
+                const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+                return {
+                  imageCount: editor?.querySelectorAll('img').length || 0,
+                  hasPlaceholder: !!editor?.innerText.includes(${JSON.stringify(img.placeholder)}),
+                };
               })()`,
               returnByValue: true,
             }, { sessionId });
 
-            if (imageCheck.result.value > 0) {
+            if (imageCheck.result.value.imageCount > beforePaste.result.value.imageCount && !imageCheck.result.value.hasPlaceholder) {
               imageAppeared = true;
               console.log(`[x-article] Image appeared in editor after ${Date.now() - appearStartTime}ms`);
               break;
+            }
+
+            if (imageCheck.result.value.imageCount > beforePaste.result.value.imageCount && imageCheck.result.value.hasPlaceholder) {
+              console.warn(`[x-article] Image appeared but ${img.placeholder} remained. Removing placeholder text now...`);
+              const removed = await removePlaceholderText(img.placeholder);
+              if (!removed) {
+                console.warn(`[x-article] Could not remove ${img.placeholder} after image appeared; retrying...`);
+                continue;
+              }
+
+              const cleanupCheck = await cdp.send<{ result: { value: { imageCount: number; hasPlaceholder: boolean } } }>('Runtime.evaluate', {
+                expression: `(() => {
+                  const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+                  return {
+                    imageCount: editor?.querySelectorAll('img').length || 0,
+                    hasPlaceholder: !!editor?.innerText.includes(${JSON.stringify(img.placeholder)}),
+                  };
+                })()`,
+                returnByValue: true,
+              }, { sessionId });
+
+              if (cleanupCheck.result.value.imageCount > beforePaste.result.value.imageCount && !cleanupCheck.result.value.hasPlaceholder) {
+                imageAppeared = true;
+                console.log(`[x-article] Placeholder removed after image insert: ${img.placeholder}`);
+                break;
+              }
+            }
+          }
+
+          if (!imageAppeared) {
+            const restoreCheck = await cdp.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+              expression: `(() => {
+                const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+                return !!editor?.innerText.includes(${JSON.stringify(img.placeholder)});
+              })()`,
+              returnByValue: true,
+            }, { sessionId });
+
+            if (!restoreCheck.result.value) {
+              console.warn(`[x-article] Paste removed placeholder without inserting an image; restoring placeholder for manual recovery.`);
+              await cdp.send('Runtime.evaluate', {
+                expression: `(() => {
+                  const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
+                  if (!editor) return false;
+                  editor.focus();
+                  document.execCommand('insertText', false, ${JSON.stringify(img.placeholder)});
+                  return true;
+                })()`,
+              }, { sessionId });
+              await sleep(500);
             }
           }
 
@@ -602,14 +685,17 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
     }
 
     console.log('[x-article] Verifying editor before preview...');
-    const editorVerification = await cdp.send<{ result: { value: { imageCount: number; placeholderCount: number; textLength: number } } }>('Runtime.evaluate', {
+    const editorVerification = await cdp.send<{ result: { value: { imageCount: number; placeholderCount: number; placeholders: string[]; textLength: number; href: string } } }>('Runtime.evaluate', {
       expression: `(() => {
-        const editor = document.querySelector('.DraftEditor-editorContainer [data-contents="true"]');
+        const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
         const text = editor?.innerText || '';
+        const placeholders = Array.from(new Set(text.match(/\\[\\[IMAGE_PLACEHOLDER_\\d+\\]\\]|NEMO_X_IMAGE_\\d+/g) || []));
         return {
           imageCount: editor?.querySelectorAll('img').length || 0,
-          placeholderCount: (text.match(/IMAGE_PLACEHOLDER|NEMO_X_IMAGE/g) || []).length,
+          placeholderCount: placeholders.length,
+          placeholders,
           textLength: text.length,
+          href: location.href,
         };
       })()`,
       returnByValue: true,
@@ -619,7 +705,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
     console.log(`[x-article] Editor verification: ${editorState.imageCount}/${parsed.contentImages.length} images, ${editorState.placeholderCount} placeholders, ${editorState.textLength} chars`);
 
     if (editorState.placeholderCount > 0) {
-      throw new Error(`Editor still contains ${editorState.placeholderCount} image placeholder(s). Not opening publish flow.`);
+      throw new Error(`Editor still contains ${editorState.placeholderCount} image placeholder(s): ${editorState.placeholders.join(', ')}. Not opening preview. Draft URL: ${editorState.href}`);
     }
 
     if (editorState.imageCount < parsed.contentImages.length) {
@@ -631,7 +717,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
     await cdp.send('Runtime.evaluate', {
       expression: `(() => {
         // Blur editor to trigger any pending saves
-        const editor = document.querySelector('.DraftEditor-editorContainer [contenteditable="true"]');
+        const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
         if (editor) {
           editor.blur();
         }

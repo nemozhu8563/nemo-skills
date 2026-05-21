@@ -18,7 +18,7 @@ This inventory is the execution gate for publishing nemo-managed skills into the
 | `baoyu-post-to-x` | `skill_dir` | `migrate_now` | `keep` | X / X Articles 发布链路 |
 | `baoyu-slide-deck` | `skill_dir` | `delete` | `delete` | 用户已确认删除，不再发布 |
 | `baoyu-translate` | `skill_dir` | `migrate_now` | `keep` | 文档翻译/本地化入口 |
-| `baoyu-url-to-markdown` | `skill_dir` | `migrate_now` | `keep` | 普通网页转 Markdown，不承担 Obsidian 入库 |
+| `baoyu-url-to-markdown` | `skill_dir` | `delete` | `delete` | 退役重复入口；URL 剪藏统一走 `article-clip-obsidian` |
 | `baoyu-xhs-images` | `skill_dir` | `archive` | `archive` | 不进入本轮 .agents 发布目标，保留历史删除状态 |
 | `bullet-viral-post` | `skill_dir` | `pending_user_decision` | `pending_user_decision` | 暂不发布，等待后续确认 |
 | `content-reviewer` | `skill_dir` | `delete` | `delete` | 由 dbs-ai-check 替代，不再发布 |

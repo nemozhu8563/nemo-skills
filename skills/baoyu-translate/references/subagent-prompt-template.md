@@ -50,6 +50,7 @@ The following terms or references may confuse target readers. Add translator's n
 - **Natural flow**: Use idiomatic {target_lang} word order and sentence patterns; break or restructure sentences freely when the source structure doesn't work naturally
 - **Terminology**: Use glossary translations consistently; annotate with original term in parentheses on first occurrence
 - **Preserve format**: Keep all markdown formatting (headings, bold, italic, images, links, code blocks)
+- **Image references**: Preserve image references exactly during translation. Do not localize image text automatically; flag likely image-language mismatches for the main agent's final reminder.
 - **Respect original**: Maintain original meaning and intent; do not add, remove, or editorialize — but sentence structure and imagery may be adapted freely to serve the meaning
 - **Translator's notes**: For terms or cultural references listed in Comprehension Challenges above, add a concise explanatory note in parentheses. Only annotate where genuinely needed for the target audience.
 ```
@@ -67,6 +68,7 @@ Translate this chunk:
 1. Read `{output_dir}/chunks/chunk-{NN}.md`
 2. Translate following the instructions in 02-prompt.md
 3. Save translation to `{output_dir}/chunks/chunk-{NN}-draft.md`
+4. Do not change headings, image paths, link targets, code blocks, or frontmatter structure except where the shared prompt explicitly instructs metadata transformation.
 ```
 
 ### Non-chunked mode
@@ -77,4 +79,5 @@ Read the translation instructions from: {output_dir}/02-prompt.md
 Translate the source file and save the result:
 1. Read `{source_file_path}`
 2. Save translation to `{output_path}`
+3. Preserve image paths, link targets, code blocks, and frontmatter structure except where the shared prompt explicitly instructs metadata transformation.
 ```

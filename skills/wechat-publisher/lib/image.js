@@ -1,6 +1,6 @@
 // lib/image.js
-import { resolve } from 'path';
 import { uploadArticleImageToWeChat } from './wechat.js';
+import { resolveLocalImagePath } from './path.js';
 
 export async function uploadImages(images, basePath, config = {}, uploader = uploadArticleImageToWeChat) {
   const results = [];
@@ -13,7 +13,7 @@ export async function uploadImages(images, basePath, config = {}, uploader = upl
   // Upload local images directly to WeChat article image API.
   for (const img of images.local) {
     try {
-      const fullPath = resolve(basePath, img.path);
+      const fullPath = resolveLocalImagePath(basePath, img.path, config);
       const uploadedUrl = await uploader(config, fullPath);
 
       results.push({ alt: img.alt, url: uploadedUrl });
@@ -38,3 +38,5 @@ export function replaceImageLinks(content, images) {
     return match;
   });
 }
+
+export { resolveLocalImagePath };

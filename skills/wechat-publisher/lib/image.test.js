@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'bun:test';
-import { uploadImages, replaceImageLinks } from './image.js';
+import { mkdtemp, mkdir, writeFile, rm } from 'fs/promises';
+import { join } from 'path';
+import { tmpdir } from 'os';
+import { uploadImages, replaceImageLinks, resolveLocalImagePath } from './image.js';
 
 describe('Image Handler', () => {
   it('keeps remote images as-is', async () => {
@@ -45,5 +48,26 @@ describe('Image Handler', () => {
 
     expect(result).toHaveLength(1);
     expect(result[0].url).toBe('https://wechat.example/local.png');
+  });
+
+  it('resolves vault-root asset paths from deep article folders', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'wechat-publisher-vault-'));
+
+    try {
+      const articleDir = join(dir, '04_Projects', 'AI_Media', '01_Ideas', 'drafts');
+      const assetDir = join(dir, 'assets', 'article');
+      const imagePath = join(assetDir, 'illustration.png');
+
+      await mkdir(join(dir, '.obsidian'), { recursive: true });
+      await mkdir(articleDir, { recursive: true });
+      await mkdir(assetDir, { recursive: true });
+      await writeFile(imagePath, 'fake-image', 'utf-8');
+
+      const resolved = resolveLocalImagePath(articleDir, 'assets/article/illustration.png');
+
+      expect(resolved).toBe(imagePath);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
   });
 });

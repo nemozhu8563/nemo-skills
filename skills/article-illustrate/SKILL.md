@@ -1,6 +1,6 @@
 ---
 name: article-illustrate
-description: Unified article visual skill. Use when the user asks to illustrate an article, generate article visuals, make a cover for an article, add body illustrations, or 给文章配图. It routes article-visual intents to cover and body-illustration references, keeps one visual style across the article, and renders through baoyu-image-gen with Codex official image generation preferred.
+description: Unified article visual skill. Use when the user asks to illustrate an article, generate article visuals, make a cover for an article, add body illustrations, or 给文章配图. It routes article-visual intents to cover and body-illustration references, keeps one visual style across the article, and renders through baoyu-image-gen with Codex native image generation as the required first attempt.
 ---
 
 # Article Visuals
@@ -38,15 +38,23 @@ Load only the references needed for the chosen route:
    - If the user provides `--style`, use it.
    - Otherwise recommend 3 styles and ask once.
 5. Generate prompt files for the selected route.
+   - **Mandatory Baoyu prompt contract**: article visuals must use the prompt structure from the Baoyu visual sub-skills, not freeform scene prompts.
+   - For covers, construct the prompt from `../baoyu-cover-image/references/base-prompt.md` plus the selected `../baoyu-cover-image/references/styles/<style>.md` when that style exists.
+   - For body illustrations, construct each prompt with `../baoyu-article-illustrator/references/prompt-construction.md` templates such as `Comparison`, `Process Flow`, `Framework`, `Timeline`, or `Scene`, plus the matching style reference under `../baoyu-article-illustrator/references/styles/`.
+   - If a selected article-level style has no exact body-illustration style file, choose the closest Baoyu body style and record that mapping in the prompt file.
+   - Do not write ordinary descriptive prompts such as "create an illustration of..." unless they are inside the Baoyu template structure.
 6. Render through `baoyu-image-gen`.
-   - Prefer Codex official image generation when available.
-   - Use provider backends only when explicitly requested, official generation is unavailable, or deterministic local file output is required.
+   - Use Codex native image generation as the required first attempt whenever the current Codex session exposes it.
+   - If Codex native image generation succeeds but writes outside the article asset directory, copy the generated raster image into the output-contract path and leave the original generated file in place.
+   - If Codex native image generation is unavailable or fails, try a non-SVG raster fallback backend through `baoyu-image-gen` only when a local provider route is available.
+   - Never generate or insert SVG images for article visuals.
+   - If neither Codex native image generation nor a non-SVG raster fallback is available, stop and report that no usable image-generation route was found.
 7. Save images and prompt files using the output contract.
 8. Insert body illustration links into the article when body illustrations are generated.
 
 ## Sub-Skills
 
-`baoyu-cover-image` and `baoyu-article-illustrator` are compatibility sub-skills. This skill owns the article-level decision, shared style, and route. Call sub-skills only for their bounded slice after this skill has selected the route and style, or when the user explicitly asks for that slice directly.
+`baoyu-cover-image` and `baoyu-article-illustrator` are compatibility sub-skills, but their prompt systems are authoritative. This skill owns the article-level decision, shared style, output directory, and insertion flow; Baoyu sub-skills own the cover/body prompt shape. Call or mirror their bounded prompt construction after this skill has selected the route and style. Do not bypass their references when generating article images.
 
 ## Options
 

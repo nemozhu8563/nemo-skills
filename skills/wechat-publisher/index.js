@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import notifier from 'node-notifier';
-import { dirname, basename } from 'path';
+import { dirname, basename, resolve } from 'path';
+import { fileURLToPath } from 'url';
 import { readConfig, getConfigPath } from './lib/config.js';
 import { parseMarkdown } from './lib/markdown.js';
 import { generateHTML } from './lib/template.js';
@@ -62,7 +63,8 @@ export async function wechatPublisher(params) {
     const thumbSource = await resolveThumbnailSource({
       filePath,
       localImages: parsed.images.local,
-      remoteImages: parsed.images.remote
+      remoteImages: parsed.images.remote,
+      config
     });
 
     if (thumbSource) {
@@ -99,10 +101,10 @@ export async function wechatPublisher(params) {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.error('Usage: bun run index.js <markdown-file> [template]');
+    console.error('Usage: bun run publish -- <markdown-file> [template]');
     process.exit(1);
   }
 

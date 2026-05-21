@@ -1,6 +1,6 @@
 ---
 name: baoyu-image-gen
-description: Main image-generation router for ordinary image requests. Prefer Codex official image generation when available; use local provider scripts such as OpenAI, Google, kie-image-gen, or tryvalo-imagegen only when explicitly requested, needed for file/API automation, or as fallback.
+description: Main image-generation router for ordinary image requests. Use Codex native image generation as the required first attempt when available; use local provider scripts such as OpenAI, Google, kie-image-gen, or tryvalo-imagegen only when explicitly requested, needed for file/API automation, or as non-SVG raster fallback.
 ---
 
 # Image Generation Router
@@ -9,18 +9,23 @@ Main image-generation router for ordinary image requests.
 
 Default split:
 - **Prompt layer**: Nemo skills decide the visual concept and write the prompt.
-- **Render layer**: Codex official image generation is the default renderer when available.
-- **Provider fallback**: Local scripts and provider skills are fallback or explicitly selected backends.
+- **Render layer**: Codex native image generation is the default and required first attempt when available.
+- **Provider fallback**: Local scripts and provider skills are fallback or explicitly selected non-SVG raster backends. This means Nemo's current providers only; do not import or document upstream provider families as user-facing options unless they are implemented here.
 
 ## Routing Policy
 
-1. If the current Codex session exposes official image generation, use it first.
+1. If the current Codex session exposes Codex native image generation, use it first.
 2. If the user explicitly names a backend (`tryvalo-imagegen`, `kie-image-gen`, Google, OpenAI API/new-api), use that backend.
-3. If the workflow requires deterministic filesystem output and the official renderer cannot provide a local artifact in this surface, keep the prompt file and use the local provider script as fallback.
-4. If reference-image editing, batch generation, custom API base URLs, or exact CLI automation is required, use the local provider script/backend that supports it.
-5. Do not ask the user to choose among providers unless provider choice materially affects the result and cannot be inferred.
+3. If Codex native image generation writes to a generated-images directory instead of the requested output path, copy the generated raster file to the requested output path and leave the original file in place.
+4. If the workflow requires deterministic filesystem output and the native renderer cannot provide or expose a local raster artifact in this surface, keep the prompt file and use the local provider script as fallback.
+5. Provider fallbacks must generate raster images such as PNG, JPEG, or WebP. Never generate SVG as a fallback image.
+6. If neither Codex native image generation nor a non-SVG raster provider route is available, report that no usable image-generation route was found instead of fabricating an SVG or placeholder.
+7. If reference-image editing, batch generation, custom API base URLs, or exact CLI automation is required, use the local provider script/backend that supports it.
+8. Do not ask the user to choose among providers unless provider choice materially affects the result and cannot be inferred.
 
-When using Codex official image generation, pass the final prompt directly to the official image-generation capability. Preserve the generated prompt file whenever the calling workflow created one, so the prompt remains part of the article/project asset trail.
+Batch generation is represented by repeated local provider runs or the existing `--n` option where the chosen local provider supports it. Reference-image generation is an image-to-image/reference-editing route and should use the local backend that accepts `--ref`.
+
+When using Codex native image generation, pass the final prompt directly to the official image-generation capability. Preserve the generated prompt file whenever the calling workflow created one, so the prompt remains part of the article/project asset trail.
 
 ## Local Provider CLI
 
@@ -214,10 +219,11 @@ npx -y bun ${SKILL_DIR}/scripts/main.ts \
 ### Batch Generation from Prompt File
 
 ```bash
-# Create prompt file with detailed instructions
+# Create prompt file with detailed instructions, then either use --n when
+# the selected provider supports it or run the same prompt for named outputs.
 npx -y bun ${SKILL_DIR}/scripts/main.ts \
   --promptfiles style-guide.md scene-description.md \
-  --image scene.png
+  --image scene.png --n 3
 ```
 
 ## Error Handling

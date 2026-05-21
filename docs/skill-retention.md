@@ -10,7 +10,6 @@ This file is the human-readable retention source for the current migration. It m
 - `baoyu-infographic`
 - `baoyu-post-to-x`
 - `baoyu-translate`
-- `baoyu-url-to-markdown`
 - `interdisciplinary-research`
 - `json-canvas`
 - `llm-wiki`
@@ -37,6 +36,7 @@ This file is the human-readable retention source for the current migration. It m
 - `baoyu-danger-gemini-web`
 - `baoyu-danger-x-to-markdown`
 - `baoyu-slide-deck`
+- `baoyu-url-to-markdown`
 - `content-reviewer`
 - `decompose-article`
 - `humanizer-zh`
@@ -59,5 +59,6 @@ This file is the human-readable retention source for the current migration. It m
 - `writing-clone` and `wechat-article-writer` are retired and must not be merged into `nemo-writer`.
 - `dbs-ai-check` is the only AI-style detection entrypoint and stays outside this repo mapping.
 - `article-illustrate` is the user-facing article visual entrypoint; `baoyu-cover-image` and `baoyu-article-illustrator` are provider/sub-skill surfaces.
-- `baoyu-image-gen` is the ordinary image-generation router; `kie-image-gen` and `tryvalo-imagegen` are providers.
-- `article-clip-obsidian` handles Obsidian clipping; `baoyu-url-to-markdown` handles generic Markdown conversion.
+- `baoyu-image-gen` is the ordinary image-generation router; `kie-image-gen` and `tryvalo-imagegen` remain provider/compatibility channels, not equal public image choices.
+- `article-clip-obsidian` handles URL clipping into Obsidian through web acquisition and local conversion scripts. `baoyu-url-to-markdown` is retired and must not be restored as a second public clipping path.
+- `wechat-publisher` is the only WeChat publishing skill in this repository. Upstream `baoyu-post-to-wechat` is intentionally not migrated because this repo keeps the API-first publisher and local templates.

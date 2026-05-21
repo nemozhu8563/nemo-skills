@@ -144,6 +144,13 @@ Multiple sources supported: text, images, files from conversation.
 
 ## Workflow
 
+## Visual Safety Rules
+
+- The final output must be a real raster image file such as PNG, JPEG, or WebP.
+- Do not use SVG, HTML, canvas, Mermaid, screenshots of markup, or other structured/vector formats as substitutes for requested cover generation.
+- Do not repair bad generated text by overlaying text with ImageMagick, Pillow, Canvas, SVG, HTML, or similar tooling.
+- If generated title text is wrong, regenerate with shorter/lower text, remove title text with `--no-title`, or ask the user which recovery path they prefer.
+
 ### Step 1: Analyze Content
 
 1. **Save source content** (if not already a file):
@@ -303,8 +310,8 @@ Note: No title text, pure visual illustration only.
 
 **Image Generation Skill Selection**:
 1. Use `baoyu-image-gen` as the routing layer.
-2. Prefer Codex official image generation when available.
-3. Use `kie-image-gen`, `tryvalo-imagegen`, Google, or OpenAI API backends only when the user explicitly requests them, when official generation is unavailable, or when a local output path/API-specific behavior is required.
+2. Use Codex native image generation as the required first attempt when available.
+3. Use `kie-image-gen`, `tryvalo-imagegen`, Google, or OpenAI API backends only when the user explicitly requests them, when native generation is unavailable, or when a local output path/API-specific behavior is required.
 4. Do not ask the user to choose a provider unless the provider decision changes the requested result and cannot be inferred.
 
 **Output Path Calculation**:
@@ -316,7 +323,7 @@ Note: No title text, pure visual illustration only.
 - Other ratios pass through unchanged: `16:9`, `1:1`, etc.
 
 **Generation**:
-Call `baoyu-image-gen` with prompt file, output path, and mapped aspect ratio. If using Codex official image generation, pass the final prompt directly to the official renderer and keep `cover-prompts.md` as the durable prompt record.
+Call `baoyu-image-gen` with prompt file, output path, and mapped aspect ratio. If using Codex native image generation, pass the final prompt directly to the native renderer and keep `cover-prompts.md` as the durable prompt record.
 
 ### Step 7: Output Summary
 

@@ -140,6 +140,7 @@ JSON output:
    - Select the placeholder
    - Copy image to clipboard
    - Paste to replace selection
+   - If X inserts the image but leaves the placeholder text behind, delete only that placeholder immediately
 9. **Verify**: Confirm no image placeholders remain and the expected images are in the editor
 10. **Preview**: Open preview and leave Chrome there
 11. **Publish**: Manual only; the account owner clicks the final X Publish button
@@ -166,6 +167,7 @@ Claude:
 - **No create button**: Ensure X Premium subscription is active
 - **Cover upload fails**: Check file path and format (PNG, JPEG)
 - **Images not inserting**: Verify placeholders exist in pasted content
+- **Images inserted but placeholders remain**: The script now treats this as an insertion cleanup failure, removes the specific placeholder after the image appears, and refuses to open preview if any `IMAGE_PLACEHOLDER` text remains.
 - **Content not pasting**: Check HTML clipboard: `npx -y bun ${SKILL_DIR}/scripts/copy-to-clipboard.ts html --file /tmp/test.html`
 - **Clipboard script not found in Chinese/OneDrive paths**: Ensure `x-utils.ts` uses `fileURLToPath(import.meta.url)` for script directory resolution on macOS and Windows.
 - **Nested Bun command fails on Windows**: Ensure helper script calls use `npx.cmd`; macOS/Linux should continue to use `npx`.

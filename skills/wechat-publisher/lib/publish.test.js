@@ -41,6 +41,7 @@ describe('Publish Helpers', () => {
     const filePath = join(dir, 'article.md');
     const assetsDir = join(dir, 'assets', 'article');
     const coverPath = join(assetsDir, 'cover.png');
+    const inlinePath = join(assetsDir, 'inline.png');
 
     await writeFile(filePath, '# Article', 'utf-8');
     await mkdir(assetsDir, { recursive: true });
@@ -49,6 +50,30 @@ describe('Publish Helpers', () => {
     const thumbSource = await resolveThumbnailSource({
       filePath,
       localImages: [{ path: './assets/article/file-1.png' }],
+      remoteImages: []
+    });
+
+    expect(thumbSource).toBe(coverPath);
+  });
+
+  it('finds cover.png next to vault-root embedded images from deep article folders', async () => {
+    const dir = await makeTempDir();
+    const fileDir = join(dir, '04_Projects', 'AI_Media', '01_Ideas', 'drafts');
+    const filePath = join(fileDir, 'article.md');
+    const assetsDir = join(dir, 'assets', 'article');
+    const coverPath = join(assetsDir, 'cover.png');
+    const inlinePath = join(assetsDir, 'inline.png');
+
+    await mkdir(join(dir, '.obsidian'), { recursive: true });
+    await mkdir(fileDir, { recursive: true });
+    await mkdir(assetsDir, { recursive: true });
+    await writeFile(filePath, '# Article', 'utf-8');
+    await writeFile(coverPath, 'fake-image', 'utf-8');
+    await writeFile(inlinePath, 'fake-image', 'utf-8');
+
+    const thumbSource = await resolveThumbnailSource({
+      filePath,
+      localImages: [{ path: 'assets/article/inline.png' }],
       remoteImages: []
     });
 

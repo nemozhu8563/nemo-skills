@@ -178,6 +178,7 @@ X Articles supports both standard Markdown and Obsidian wikilink syntax:
 
 - First run requires manual login (session is saved)
 - X Articles stop at preview by design; the account owner clicks final Publish manually
+- X Articles treat image placeholders as a hard safety gate: after each image insert, the matching placeholder must disappear; before preview, global `IMAGE_PLACEHOLDER` count must be zero
 - Browser remains open after operation for review
 - Supports macOS, Linux, and Windows
 
@@ -208,6 +209,8 @@ If found, load before workflow. Extension content overrides defaults.
 - 默认优先使用 `assets/<文章文件名>/cover.png` 作为封面，不能把第一张正文截图吞掉当封面。
 - 在 macOS / Windows 的中文、空格或 OneDrive 路径下运行时，脚本目录必须通过 `fileURLToPath(import.meta.url)` 解析，避免 URL 编码路径导致剪贴板脚本找不到。
 - Windows 下从脚本再调用 Bun 时要走 `npx.cmd`，macOS/Linux 继续用 `npx`。
+- X Articles 中文界面的新建入口可能显示为「撰写」或只有 `aria-label="create"`，不要只依赖旧的 `empty_state_button_text` 选择器。
+- 正文图片插入必须验证“占位符消失且正文图片数量增加”；如果图片没插入，不要把占位符静默清掉后继续到发布/预览。
 
 ### Custom Instruction Injection
 

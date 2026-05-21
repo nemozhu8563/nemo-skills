@@ -11,6 +11,7 @@ Create a professional infographic following these specifications:
 ## Core Principles
 
 - Follow the layout structure precisely for information architecture
+- Generate a real raster infographic image. Do not substitute SVG, HTML, canvas, Mermaid, or markup screenshots.
 - Apply style aesthetics consistently throughout
 - If content involves sensitive or copyrighted figures, create stylistically similar alternatives
 - Keep information concise, highlight keywords and core concepts
@@ -24,6 +25,7 @@ Create a professional infographic following these specifications:
 - Key concepts should be visually emphasized
 - Labels should be clear and appropriately sized
 - Use the specified language for all text content
+- If text cannot be rendered cleanly, reduce label density and regenerate. Do not rely on programmatic text overlay after generation.
 
 ## Layout Guidelines
 

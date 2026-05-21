@@ -113,7 +113,7 @@
       "type": "skill_dir",
       "source": "skills/baoyu-url-to-markdown",
       "destination": ".agents/skills/baoyu-url-to-markdown",
-      "status": "migrate_now"
+      "status": "delete"
     },
     {
       "id": "baoyu-xhs-images",

@@ -48,6 +48,12 @@
 
 Configure in EXTEND.md: `default_output_dir: illustrations-subdir`
 
+## Visual Safety
+
+- Outputs must be raster images such as PNG, JPEG, or WebP.
+- Do not substitute SVG, HTML, canvas, Mermaid, or markup screenshots for requested illustration generation.
+- Do not fix bad generated labels by overlaying text with bitmap/vector tooling. Regenerate with shorter labels, remove visible text, or ask the user.
+
 ## Examples
 
 **Technical article with data**:

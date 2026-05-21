@@ -159,6 +159,13 @@ This skill applies a **world-class instructional designer** mindset to infograph
 
 ## Workflow
 
+## Visual Safety Rules
+
+- The final output must be a real raster image file such as PNG, JPEG, or WebP.
+- Do not use SVG, HTML, canvas, Mermaid, screenshots of markup, or other structured/vector formats as substitutes for requested infographic generation.
+- Do not repair bad generated infographic text by overlaying text with ImageMagick, Pillow, Canvas, SVG, HTML, or similar tooling.
+- If generated text is wrong, regenerate with fewer/shorter labels, reduce text density in `structured-content.md`, or ask the user which recovery path they prefer.
+
 ### Step 1: Analyze Content → `analysis.md`
 
 Read source content and perform deep instructional analysis.
@@ -410,8 +417,8 @@ Language: [confirmed language]
 
 **Image Generation Skill Selection**:
 1. Use `baoyu-image-gen` as the routing layer.
-2. Prefer Codex official image generation when available.
-3. Use `kie-image-gen`, `tryvalo-imagegen`, Google, or OpenAI API backends only when the user explicitly requests them, when official generation is unavailable, or when a local output path/API-specific behavior is required.
+2. Use Codex native image generation as the required first attempt when available.
+3. Use `kie-image-gen`, `tryvalo-imagegen`, Google, or OpenAI API backends only when the user explicitly requests them, when native generation is unavailable, or when a local output path/API-specific behavior is required.
 4. Do not ask the user to choose a provider unless the provider decision changes the requested result and cannot be inferred.
 
 **Generation**:

@@ -2,6 +2,8 @@
 
 Convert Obsidian Markdown files to WeChat Official Account HTML and upload to draft box.
 
+This is the only WeChat publishing skill maintained in this repository. Do not route normal WeChat publishing through upstream Baoyu browser/CDP workflows.
+
 ## Features
 
 - Parse Obsidian Markdown (frontmatter, wikilinks, tags)
@@ -62,7 +64,7 @@ Use wechat-publisher to publish ./article.md
 
 Or directly:
 ```bash
-bun run index.js ./article.md template-tech
+bun run publish -- ./article.md template-tech
 ```
 
 ## Publish Behavior
@@ -71,6 +73,7 @@ bun run index.js ./article.md template-tech
 - Existing remote image URLs are kept as-is
 - Cover selection prefers `cover.png`, `cover.jpg`, `cover.jpeg`, or `cover.webp`
 - If no dedicated cover exists, the first article image is used as fallback
+- Cover thumbnail upload and article body image upload are separate API paths and should be diagnosed separately
 - The generated preview HTML is saved to a temp file before upload
 
 ## Testing
@@ -94,10 +97,12 @@ If WeChat returns `invalid media_id`:
 
 - Check the cover upload separately from article image upload
 - Make sure the chosen cover file is a valid local image that WeChat accepts
+- If the cover is WebP and WeChat rejects it, convert the cover to PNG/JPEG and retry the thumbnail upload path only
 
 If images show in preview but not in the final draft:
 
 - Recheck that local article images were uploaded to WeChat, not to an external image host
+- Confirm the failure came from the article image endpoint, not the cover thumbnail endpoint
 
 ## Templates
 

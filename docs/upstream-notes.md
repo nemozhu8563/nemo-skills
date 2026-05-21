@@ -21,7 +21,7 @@ Track origin and maintenance posture here before migrating later batches.
 - `baoyu-infographic`
 - `baoyu-post-to-x`
 - `baoyu-slide-deck`
-- `baoyu-url-to-markdown`
+- `baoyu-url-to-markdown` was retired in the 2026-05-21 Baoyu update because URL clipping now routes through `article-clip-obsidian`.
 - `baoyu-xhs-images`
 
 Maintenance posture for Batch 3: treat as nemo-maintained snapshots (can diverge from upstream and keep local adaptations).
@@ -52,7 +52,18 @@ Maintenance posture for Batch 5: treat the nested helper/reference files as firs
 
 Maintenance posture for Batch 6: treat bundled content, helper scripts, and agent configs as first-class managed assets.
 
-## Batch 7 (wechat-publisher Bun-first repackaging)\n- `wechat-publisher`: now maintained as a Bun-first source tree with `bun.lock`, no vendored `node_modules/`, and user-level `.agents/wechat-publisher.json` runtime config.\n\nMaintenance posture for Batch 7: edit the authoritative files in `nemo-skills`, keep rebuildable dependencies out of source control, and treat the user-level `.agents` config as the only canonical operator config location.
+## Batch 7 (wechat-publisher Bun-first repackaging)
+- `wechat-publisher`: now maintained as a Bun-first source tree with `bun.lock`, no vendored `node_modules/`, and user-level `.agents/wechat-publisher.json` runtime config.
+
+Maintenance posture for Batch 7: edit the authoritative files in `nemo-skills`, keep rebuildable dependencies out of source control, and treat the user-level `.agents` config as the only canonical operator config location.
+
+## Batch 8 (2026-05-21 Baoyu selective update)
+- `baoyu-image-gen`: remains the single public image-generation router; `kie-image-gen` and `tryvalo-imagegen` stay provider/compatibility channels.
+- `article-clip-obsidian`: remains the URL clipping route for Obsidian output.
+- `baoyu-url-to-markdown`: source directory deleted and mapping set to `delete`; do not publish or recreate it as an active entrypoint.
+- `baoyu-post-to-wechat`: not migrated. `wechat-publisher` remains the local API-first WeChat publishing path.
+
+Maintenance posture for Batch 8: selectively absorb workflow safety rules while keeping Nemo's local provider and publisher boundaries.
 
 ## Needs later review
 - `content-reviewer.md` / `inbox-processor.md`: standalone prompts, defer until prompt-file publish path is exercised.
