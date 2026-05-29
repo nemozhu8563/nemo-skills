@@ -48,6 +48,7 @@ Primary entrypoints:
 - `baoyu-infographic`
 - `baoyu-post-to-x`
 - `baoyu-translate`
+- `ebook-to-markdown`
 - `interdisciplinary-research`
 - `json-canvas`
 - `llm-wiki`

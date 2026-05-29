@@ -144,6 +144,13 @@
       "status": "delete"
     },
     {
+      "id": "ebook-to-markdown",
+      "type": "skill_dir",
+      "source": "skills/ebook-to-markdown",
+      "destination": ".agents/skills/ebook-to-markdown",
+      "status": "migrate_now"
+    },
+    {
       "id": "humanizer-zh",
       "type": "skill_dir",
       "source": "skills/humanizer-zh",
