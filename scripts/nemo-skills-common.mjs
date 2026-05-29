@@ -7,7 +7,7 @@ export const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_REPO_ROOT = path.resolve(SCRIPT_DIR, "..");
 export const WARNING =
   "Managed by nemo-skills. Do not edit here; edit the nemo-skills repo and republish.";
-const EXCLUDED_DIRECTORY_NAMES = new Set(["node_modules"]);
+const EXCLUDED_DIRECTORY_NAMES = new Set(["node_modules", "__pycache__"]);
 
 export function parseArgs(argv, spec = {}) {
   const out = { entryIds: [] };
