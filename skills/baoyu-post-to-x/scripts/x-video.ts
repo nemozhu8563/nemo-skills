@@ -9,6 +9,7 @@ import {
   findChromeExecutable,
   getDefaultProfileDir,
   getFreePort,
+  insertTextIntoComposer,
   sleep,
   waitForChromeDebugPort,
 } from './x-utils.js';
@@ -120,16 +121,7 @@ export async function postVideoToX(options: XVideoOptions): Promise<void> {
     // Type text while video uploads in background
     if (text) {
       console.log('[x-video] Typing text...');
-      await cdp.send('Runtime.evaluate', {
-        expression: `
-          const editor = document.querySelector('[data-testid="tweetTextarea_0"]');
-          if (editor) {
-            editor.focus();
-            document.execCommand('insertText', false, ${JSON.stringify(text)});
-          }
-        `,
-      }, { sessionId });
-      await sleep(500);
+      await insertTextIntoComposer(cdp, sessionId, text);
     }
 
     // Wait for video to finish processing by checking if tweet button is enabled

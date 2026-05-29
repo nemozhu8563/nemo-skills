@@ -216,6 +216,82 @@ export class CdpConnection {
   }
 }
 
+export async function insertTextIntoComposer(
+  cdp: CdpConnection,
+  sessionId: string,
+  text: string,
+  selector = '[data-testid="tweetTextarea_0"]',
+): Promise<void> {
+  const focusComposer = async (): Promise<void> => {
+    await cdp.send('Runtime.evaluate', {
+      expression: `
+        (() => {
+          const editor = document.querySelector(${JSON.stringify(selector)});
+          if (!editor) return false;
+          editor.focus();
+          return true;
+        })()
+      `,
+    }, { sessionId });
+  };
+
+  const readComposerText = async (): Promise<string> => {
+    const result = await cdp.send<{ result: { value: string } }>('Runtime.evaluate', {
+      expression: `
+        (() => {
+          const editor = document.querySelector(${JSON.stringify(selector)});
+          if (!editor) return '';
+          return (editor.innerText || editor.textContent || '').trim();
+        })()
+      `,
+      returnByValue: true,
+    }, { sessionId });
+    return result.result.value || '';
+  };
+
+  const tryInsert = async (expression: string): Promise<string> => {
+    await focusComposer();
+    await cdp.send('Runtime.evaluate', { expression }, { sessionId });
+    await sleep(500);
+    return readComposerText();
+  };
+
+  const normalizedExpected = text.replace(/\r\n/g, '\n').trim();
+
+  const insertedViaFocusOnly = await tryInsert(`
+    (() => {
+      const editor = document.querySelector(${JSON.stringify(selector)});
+      if (!editor) return false;
+      editor.focus();
+      return true;
+    })()
+  `);
+
+  if (insertedViaFocusOnly === normalizedExpected) return;
+
+  await focusComposer();
+  await cdp.send('Input.insertText', { text }, { sessionId });
+  await sleep(500);
+  const insertedAfterInput = await readComposerText();
+  if (insertedAfterInput === normalizedExpected) return;
+
+  const insertedViaExecCommand = await tryInsert(`
+    (() => {
+      const editor = document.querySelector(${JSON.stringify(selector)});
+      if (!editor) return false;
+      editor.focus();
+      document.execCommand('insertText', false, ${JSON.stringify(text)});
+      return true;
+    })()
+  `);
+
+  if (insertedViaExecCommand === normalizedExpected) return;
+
+  throw new Error(
+    `Failed to insert composer text. Expected ${JSON.stringify(normalizedExpected)}, got ${JSON.stringify(insertedViaExecCommand || insertedAfterInput || insertedViaFocusOnly)}.`,
+  );
+}
+
 export function getScriptDir(): string {
   return path.dirname(fileURLToPath(import.meta.url));
 }
