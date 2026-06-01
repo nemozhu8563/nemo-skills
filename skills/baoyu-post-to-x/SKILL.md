@@ -23,6 +23,7 @@ Post content, images, videos, and long-form articles to X using real Chrome brow
 | `scripts/x-video.ts` | Video posts (text + video) |
 | `scripts/x-quote.ts` | Quote tweet with comment |
 | `scripts/x-article.ts` | Long-form article publishing (Markdown) |
+| `scripts/x-article-package.ts` | Deterministic X Article package for Chrome-assisted publishing |
 | `scripts/md-to-html.ts` | Markdown → HTML conversion |
 | `scripts/copy-to-clipboard.ts` | Copy content to clipboard |
 | `scripts/paste-from-clipboard.ts` | Send real paste keystroke |
@@ -129,6 +130,14 @@ npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
 npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md
 ```
 
+For Obsidian articles with many inline screenshots where exact image placement matters, create a package first:
+
+```bash
+npx -y bun ${SKILL_DIR}/scripts/x-article-package.ts article.md
+```
+
+The package writes `manifest.json`, `article.html`, `article.txt`, and `operator-checklist.md`. Use it when browser image insertion is unstable or when the article needs manual/Chrome-assisted verification before publishing.
+
 **Parameters**:
 | Parameter | Description |
 |-----------|-------------|
@@ -178,6 +187,7 @@ X Articles supports both standard Markdown and Obsidian wikilink syntax:
 
 - First run requires manual login (session is saved)
 - X Articles stop at preview by design; the account owner clicks final Publish manually
+- `x-article-package.ts` replaces the retired `nemo-post-to-x` flow; use this skill as the single X publishing entrypoint
 - X Articles treat image placeholders as a hard safety gate: after each image insert, the matching placeholder must disappear; before preview, global `IMAGE_PLACEHOLDER` count must be zero
 - Browser remains open after operation for review
 - Supports macOS, Linux, and Windows

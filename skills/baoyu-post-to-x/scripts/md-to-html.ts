@@ -12,6 +12,7 @@ interface ImageInfo {
   placeholder: string;
   localPath: string;
   originalPath: string;
+  alt: string;
   blockIndex: number;
 }
 
@@ -435,6 +436,7 @@ export async function parseMarkdown(
       placeholder: `[[IMAGE_PLACEHOLDER_${i + 1}]]`,
       localPath,
       originalPath: img.src,
+      alt: img.alt,
       blockIndex: img.blockIndex,
     });
   }

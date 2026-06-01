@@ -19,6 +19,9 @@ npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
 
 # Compose and open preview. Final publish is manual.
 npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md
+
+# Prepare a deterministic package for Chrome-assisted/manual verification
+npx -y bun ${SKILL_DIR}/scripts/x-article-package.ts article.md
 ```
 
 ## Markdown Format
@@ -109,6 +112,23 @@ JSON output:
   "totalBlocks": 20
 }
 ```
+
+## X Article Package Script
+
+Use `x-article-package.ts` when the article has many inline screenshots or when the X editor rejects automated image paste events. It reuses the same Markdown parser as `x-article.ts`, then writes a deterministic package:
+
+- `manifest.json`: title, cover path, ordered image list, placeholders, and verification safety notes
+- `article.html`: rich HTML body with image placeholders
+- `article.txt`: plain-text body with image placeholders
+- `operator-checklist.md`: Chrome-assisted publishing checklist
+
+```bash
+npx -y bun ${SKILL_DIR}/scripts/x-article-package.ts article.md
+npx -y bun ${SKILL_DIR}/scripts/x-article-package.ts article.md --output-dir /tmp/x-package
+npx -y bun ${SKILL_DIR}/scripts/x-article-package.ts article.md --title "Custom title" --cover ./cover.png
+```
+
+This replaces the old separate `nemo-post-to-x` package-only flow. Keep `baoyu-post-to-x` as the single entrypoint for X publishing.
 
 ## Supported Formatting
 

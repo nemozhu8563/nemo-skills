@@ -123,6 +123,13 @@
       "status": "archive"
     },
     {
+      "id": "book-learning-loop",
+      "type": "skill_dir",
+      "source": "skills/book-learning-loop",
+      "destination": ".agents/skills/book-learning-loop",
+      "status": "migrate_now"
+    },
+    {
       "id": "bullet-viral-post",
       "type": "skill_dir",
       "source": "skills/bullet-viral-post",

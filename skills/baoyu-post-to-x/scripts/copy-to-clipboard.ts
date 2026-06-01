@@ -8,15 +8,22 @@ import process from 'node:process';
 const SUPPORTED_IMAGE_EXTS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp']);
 
 function printUsage(exitCode = 0): never {
-  console.log(`Copy image or HTML to system clipboard
+  console.log(`Copy image, text, or HTML to system clipboard
 
 Supports:
   - Image files (jpg, png, gif, webp) - copies as image data
+  - Text content - copies as plain text
   - HTML content - copies as rich text for paste
 
 Usage:
   # Copy image to clipboard
   npx -y bun copy-to-clipboard.ts image /path/to/image.jpg
+
+  # Copy text directly
+  npx -y bun copy-to-clipboard.ts text "Hello"
+
+  # Copy text from file
+  npx -y bun copy-to-clipboard.ts text --file /path/to/content.txt
 
   # Copy HTML to clipboard
   npx -y bun copy-to-clipboard.ts html "<p>Hello</p>"
@@ -135,7 +142,7 @@ func die(_ message: String, _ code: Int32 = 1) -> Never {
 }
 
 if CommandLine.arguments.count < 3 {
-  die("Usage: clipboard.swift <image|html> <path>\\n")
+  die("Usage: clipboard.swift <image|text|html> <path>\\n")
 }
 
 let mode = CommandLine.arguments[1]
@@ -151,6 +158,17 @@ case "image":
   if !pasteboard.writeObjects([image]) {
     die("Failed to write image to clipboard\\n")
   }
+
+case "text":
+  let url = URL(fileURLWithPath: inputPath)
+  let text: String
+  do {
+    text = try String(contentsOf: url, encoding: .utf8)
+  } catch {
+    die("Failed to read text file: \\(inputPath)\\n")
+  }
+
+  pasteboard.setString(text, forType: .string)
 
 case "html":
   let url = URL(fileURLWithPath: inputPath)
@@ -202,6 +220,14 @@ async function copyHtmlMac(htmlFilePath: string): Promise<void> {
   });
 }
 
+async function copyTextMac(textFilePath: string): Promise<void> {
+  await withTempDir('copy-to-clipboard-', async (tempDir) => {
+    const swiftPath = path.join(tempDir, 'clipboard.swift');
+    await writeFile(swiftPath, getMacSwiftClipboardSource(), 'utf8');
+    await runCommand('swift', [swiftPath, 'text', textFilePath]);
+  });
+}
+
 async function copyImageLinux(imagePath: string): Promise<void> {
   const mime = inferImageMimeType(imagePath);
   if (await commandExists('wl-copy')) {
@@ -227,6 +253,18 @@ async function copyHtmlLinux(htmlFilePath: string): Promise<void> {
   throw new Error('No clipboard tool found. Install `wl-clipboard` (wl-copy) or `xclip`.');
 }
 
+async function copyTextLinux(textFilePath: string): Promise<void> {
+  if (await commandExists('wl-copy')) {
+    await runCommandWithFileStdin('wl-copy', ['--type', 'text/plain;charset=utf-8'], textFilePath);
+    return;
+  }
+  if (await commandExists('xclip')) {
+    await runCommand('xclip', ['-selection', 'clipboard', '-t', 'text/plain;charset=utf-8', '-i', textFilePath]);
+    return;
+  }
+  throw new Error('No clipboard tool found. Install `wl-clipboard` (wl-copy) or `xclip`.');
+}
+
 async function copyImageWindows(imagePath: string): Promise<void> {
   const ps = [
     `Add-Type -AssemblyName System.Windows.Forms`,
@@ -243,6 +281,15 @@ async function copyHtmlWindows(htmlFilePath: string): Promise<void> {
     `Add-Type -AssemblyName System.Windows.Forms`,
     `$html = Get-Content -Raw -LiteralPath '${htmlFilePath.replace(/'/g, "''")}'`,
     `[System.Windows.Forms.Clipboard]::SetText($html, [System.Windows.Forms.TextDataFormat]::Html)`,
+  ].join('; ');
+  await runCommand('powershell.exe', ['-NoProfile', '-Sta', '-Command', ps]);
+}
+
+async function copyTextWindows(textFilePath: string): Promise<void> {
+  const ps = [
+    `Add-Type -AssemblyName System.Windows.Forms`,
+    `$text = Get-Content -Raw -LiteralPath '${textFilePath.replace(/'/g, "''")}'`,
+    `[System.Windows.Forms.Clipboard]::SetText($text)`,
   ].join('; ');
   await runCommand('powershell.exe', ['-NoProfile', '-Sta', '-Command', ps]);
 }
@@ -285,6 +332,25 @@ async function copyHtmlFileToClipboard(htmlFilePathInput: string): Promise<void>
       return;
     case 'win32':
       await copyHtmlWindows(htmlFilePath);
+      return;
+    default:
+      throw new Error(`Unsupported platform: ${process.platform}`);
+  }
+}
+
+async function copyTextFileToClipboard(textFilePathInput: string): Promise<void> {
+  const textFilePath = resolvePath(textFilePathInput);
+  if (!fs.existsSync(textFilePath)) throw new Error(`File not found: ${textFilePath}`);
+
+  switch (process.platform) {
+    case 'darwin':
+      await copyTextMac(textFilePath);
+      return;
+    case 'linux':
+      await copyTextLinux(textFilePath);
+      return;
+    case 'win32':
+      await copyTextWindows(textFilePath);
       return;
     default:
       throw new Error(`Unsupported platform: ${process.platform}`);
@@ -348,6 +414,53 @@ async function copyHtmlToClipboard(args: string[]): Promise<void> {
   });
 }
 
+async function copyTextToClipboard(args: string[]): Promise<void> {
+  let textFile: string | undefined;
+  const positional: string[] = [];
+
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i] ?? '';
+    if (arg === '--help' || arg === '-h') printUsage(0);
+    if (arg === '--file') {
+      textFile = args[i + 1];
+      i += 1;
+      continue;
+    }
+    if (arg.startsWith('--file=')) {
+      textFile = arg.slice('--file='.length);
+      continue;
+    }
+    if (arg === '--') {
+      positional.push(...args.slice(i + 1));
+      break;
+    }
+    if (arg.startsWith('-')) {
+      throw new Error(`Unknown option: ${arg}`);
+    }
+    positional.push(arg);
+  }
+
+  if (textFile && positional.length > 0) {
+    throw new Error('Do not pass text content when using --file.');
+  }
+
+  if (textFile) {
+    await copyTextFileToClipboard(textFile);
+    return;
+  }
+
+  const textFromArgs = positional.join(' ');
+  const textFromStdin = await readStdinText();
+  const text = textFromArgs || textFromStdin;
+  if (!text) throw new Error('Missing text input. Provide a string or use --file.');
+
+  await withTempDir('copy-to-clipboard-', async (tempDir) => {
+    const textPath = path.join(tempDir, 'input.txt');
+    await writeFile(textPath, text, 'utf8');
+    await copyTextFileToClipboard(textPath);
+  });
+}
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   if (argv.length === 0) printUsage(1);
@@ -364,6 +477,11 @@ async function main(): Promise<void> {
 
   if (command === 'html') {
     await copyHtmlToClipboard(argv.slice(1));
+    return;
+  }
+
+  if (command === 'text') {
+    await copyTextToClipboard(argv.slice(1));
     return;
   }
 
