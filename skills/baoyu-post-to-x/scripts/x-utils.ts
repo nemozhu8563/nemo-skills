@@ -74,6 +74,8 @@ export function getDefaultProfileDir(): string {
   return path.join(base, 'x-browser-profile');
 }
 
+const DEBUG_PORT_STATE_FILE = '.x-browser-debug-port.json';
+
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -127,6 +129,58 @@ export async function waitForChromeDebugPort(
     throw new Error(`Chrome debug port not ready: ${lastError instanceof Error ? lastError.message : String(lastError)}`);
   }
   throw new Error('Chrome debug port not ready');
+}
+
+export function getChromeDebugPortStatePath(profileDir: string): string {
+  return path.join(profileDir, DEBUG_PORT_STATE_FILE);
+}
+
+export function rememberChromeDebugPort(profileDir: string, port: number): void {
+  try {
+    fs.mkdirSync(profileDir, { recursive: true });
+    fs.writeFileSync(
+      getChromeDebugPortStatePath(profileDir),
+      JSON.stringify({ port, updatedAt: new Date().toISOString() }, null, 2),
+      'utf8',
+    );
+  } catch {}
+}
+
+export function clearChromeDebugPort(profileDir: string, expectedPort?: number): void {
+  const statePath = getChromeDebugPortStatePath(profileDir);
+  try {
+    if (expectedPort != null) {
+      const raw = fs.readFileSync(statePath, 'utf8');
+      const parsed = JSON.parse(raw) as { port?: number };
+      if (parsed.port !== expectedPort) return;
+    }
+    fs.unlinkSync(statePath);
+  } catch {}
+}
+
+export async function getReusableChromeDebugSession(
+  profileDir: string,
+  timeoutMs = 1_500,
+): Promise<{ port: number; wsUrl: string } | null> {
+  const statePath = getChromeDebugPortStatePath(profileDir);
+  try {
+    const raw = fs.readFileSync(statePath, 'utf8');
+    const parsed = JSON.parse(raw) as { port?: number };
+    const port = parsed.port;
+    if (!Number.isInteger(port) || port == null || port <= 0) {
+      clearChromeDebugPort(profileDir);
+      return null;
+    }
+    try {
+      const wsUrl = await waitForChromeDebugPort(port, timeoutMs, { includeLastError: true });
+      return { port, wsUrl };
+    } catch {
+      clearChromeDebugPort(profileDir, port);
+      return null;
+    }
+  } catch {
+    return null;
+  }
 }
 
 type PendingRequest = {
@@ -258,6 +312,16 @@ export async function insertTextIntoComposer(
 
   const normalizedExpected = text.replace(/\r\n/g, '\n').trim();
 
+  if (copyTextToClipboard(text)) {
+    await focusComposer();
+    await sleep(200);
+    if (pasteFromClipboard('Google Chrome', 5, 500)) {
+      await sleep(500);
+      const pastedText = await readComposerText();
+      if (pastedText === normalizedExpected) return;
+    }
+  }
+
   const insertedViaFocusOnly = await tryInsert(`
     (() => {
       const editor = document.querySelector(${JSON.stringify(selector)});
@@ -305,6 +369,19 @@ function runBunScript(scriptPath: string, args: string[]): boolean {
 export function copyImageToClipboard(imagePath: string): boolean {
   const copyScript = path.join(getScriptDir(), 'copy-to-clipboard.ts');
   return runBunScript(copyScript, ['image', imagePath]);
+}
+
+export function copyTextToClipboard(text: string): boolean {
+  const copyScript = path.join(getScriptDir(), 'copy-to-clipboard.ts');
+  const tempPath = path.join(os.tmpdir(), `x-browser-text-${Date.now()}.txt`);
+  try {
+    fs.writeFileSync(tempPath, text, 'utf8');
+    return runBunScript(copyScript, ['text', '--file', tempPath]);
+  } finally {
+    try {
+      fs.unlinkSync(tempPath);
+    } catch {}
+  }
 }
 
 export function copyHtmlToClipboard(htmlPath: string): boolean {

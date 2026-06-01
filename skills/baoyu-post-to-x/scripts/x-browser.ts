@@ -9,7 +9,9 @@ import {
   findChromeExecutable,
   getDefaultProfileDir,
   getFreePort,
+  getReusableChromeDebugSession,
   insertTextIntoComposer,
+  rememberChromeDebugPort,
   pasteFromClipboard,
   sleep,
   waitForChromeDebugPort,
@@ -183,27 +185,43 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
 
   await mkdir(profileDir, { recursive: true });
 
-  const port = await getFreePort();
-  console.log(`[x-browser] Launching Chrome (profile: ${profileDir})`);
+  const reusable = await getReusableChromeDebugSession(profileDir);
+  let port = reusable?.port;
+  let wsUrl = reusable?.wsUrl;
+  let launchedChrome = false;
+  let chrome: ReturnType<typeof spawn> | null = null;
 
-  const chrome = spawn(chromePath, [
-    `--remote-debugging-port=${port}`,
-    `--user-data-dir=${profileDir}`,
-    '--no-first-run',
-    '--no-default-browser-check',
-    '--disable-blink-features=AutomationControlled',
-    '--start-maximized',
-    X_COMPOSE_URL,
-  ], { stdio: 'ignore' });
+  if (reusable) {
+    console.log(`[x-browser] Reusing Chrome debug session on port ${reusable.port} (profile: ${profileDir})`);
+  } else {
+    port = await getFreePort();
+    console.log(`[x-browser] Launching Chrome (profile: ${profileDir})`);
+
+    chrome = spawn(chromePath, [
+      `--remote-debugging-port=${port}`,
+      `--user-data-dir=${profileDir}`,
+      '--no-first-run',
+      '--no-default-browser-check',
+      '--disable-blink-features=AutomationControlled',
+      '--start-maximized',
+      X_COMPOSE_URL,
+    ], { stdio: 'ignore' });
+    launchedChrome = true;
+  }
 
   let cdp: CdpConnection | null = null;
 
   try {
-    const wsUrl = await waitForChromeDebugPort(port, 30_000, { includeLastError: true });
+    if (!wsUrl) {
+      wsUrl = await waitForChromeDebugPort(port!, 30_000, { includeLastError: true });
+      rememberChromeDebugPort(profileDir, port!);
+    }
     cdp = await CdpConnection.connect(wsUrl, 30_000, { defaultTimeoutMs: 15_000 });
 
     const targets = await cdp.send<{ targetInfos: Array<{ targetId: string; url: string; type: string }> }>('Target.getTargets');
-    let pageTarget = targets.targetInfos.find((t) => t.type === 'page' && t.url.includes('x.com'));
+    let pageTarget = launchedChrome
+      ? targets.targetInfos.find((t) => t.type === 'page' && t.url.includes('x.com'))
+      : undefined;
 
     if (!pageTarget) {
       const { targetId } = await cdp.send<{ targetId: string }>('Target.createTarget', { url: X_COMPOSE_URL });
@@ -297,14 +315,20 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
     }
   } finally {
     if (cdp) {
-      try { await cdp.send('Browser.close', {}, { timeoutMs: 5_000 }); } catch {}
+      if (launchedChrome) {
+        try { await cdp.send('Browser.close', {}, { timeoutMs: 5_000 }); } catch {}
+      }
       cdp.close();
     }
 
-    setTimeout(() => {
-      if (!chrome.killed) try { chrome.kill('SIGKILL'); } catch {}
-    }, 2_000).unref?.();
-    try { chrome.kill('SIGTERM'); } catch {}
+    if (launchedChrome) {
+      if (chrome) {
+        setTimeout(() => {
+          if (!chrome?.killed) try { chrome.kill('SIGKILL'); } catch {}
+        }, 2_000).unref?.();
+        try { chrome.kill('SIGTERM'); } catch {}
+      }
+    }
   }
 }
 

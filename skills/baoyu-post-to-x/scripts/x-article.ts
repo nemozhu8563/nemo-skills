@@ -14,7 +14,9 @@ import {
   findChromeExecutable,
   getDefaultProfileDir,
   getFreePort,
+  getReusableChromeDebugSession,
   pasteFromClipboard,
+  rememberChromeDebugPort,
   sleep,
   waitForChromeDebugPort,
 } from './x-utils.js';
@@ -100,28 +102,43 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
   if (!chromePath) throw new Error('Chrome not found');
 
   await mkdir(profileDir, { recursive: true });
-  const port = await getFreePort();
+  const reusable = await getReusableChromeDebugSession(profileDir);
+  let port = reusable?.port;
+  let wsUrl = reusable?.wsUrl;
+  let launchedChrome = false;
+  let chrome: ReturnType<typeof spawn> | null = null;
 
-  console.log(`[x-article] Launching Chrome...`);
-  const chrome = spawn(chromePath, [
-    `--remote-debugging-port=${port}`,
-    `--user-data-dir=${profileDir}`,
-    '--no-first-run',
-    '--no-default-browser-check',
-    '--disable-blink-features=AutomationControlled',
-    '--start-maximized',
-    X_ARTICLES_URL,
-  ], { stdio: 'ignore' });
+  if (reusable) {
+    console.log(`[x-article] Reusing Chrome debug session on port ${reusable.port} (profile: ${profileDir})`);
+  } else {
+    port = await getFreePort();
+    console.log(`[x-article] Launching Chrome...`);
+    chrome = spawn(chromePath, [
+      `--remote-debugging-port=${port}`,
+      `--user-data-dir=${profileDir}`,
+      '--no-first-run',
+      '--no-default-browser-check',
+      '--disable-blink-features=AutomationControlled',
+      '--start-maximized',
+      X_ARTICLES_URL,
+    ], { stdio: 'ignore' });
+    launchedChrome = true;
+  }
 
   let cdp: CdpConnection | null = null;
 
   try {
-    const wsUrl = await waitForChromeDebugPort(port, 30_000, { includeLastError: true });
+    if (!wsUrl) {
+      wsUrl = await waitForChromeDebugPort(port!, 30_000, { includeLastError: true });
+      rememberChromeDebugPort(profileDir, port!);
+    }
     cdp = await CdpConnection.connect(wsUrl, 30_000, { defaultTimeoutMs: 30_000 });
 
     // Get page target
     const targets = await cdp.send<{ targetInfos: Array<{ targetId: string; url: string; type: string }> }>('Target.getTargets');
-    let pageTarget = targets.targetInfos.find((t) => t.type === 'page' && t.url.includes('x.com'));
+    let pageTarget = launchedChrome
+      ? targets.targetInfos.find((t) => t.type === 'page' && t.url.includes('x.com'))
+      : undefined;
 
     if (!pageTarget) {
       const { targetId } = await cdp.send<{ targetId: string }>('Target.createTarget', { url: X_ARTICLES_URL });
