@@ -1,0 +1,35 @@
+name: book-learning-loop
+version: 1
+mode: production
+job: >
+  Turn one book into an Obsidian-based learning loop and run live lessons that
+  preserve source material, teach concepts, test understanding, promote only
+  absorbed judgments, and keep project artifacts out of the classroom until
+  explicitly requested.
+inputs:
+  - book title or active learning project
+  - source book package or existing course map
+  - learner profile, role contract, teaching decisions, progress, review queue
+  - live learner answers and feedback
+outputs:
+  - course map and dynamic lesson files
+  - session notes
+  - progress, review queue, and application log updates
+  - durable 03_Notes cards only after absorption gates pass
+exclusions:
+  - generic article writing or content strategy without an active book lesson
+  - product design, UI planning, or implementation unless the user switches modes
+  - chapter summaries promoted directly into 03_Notes
+  - roleplay that overrides learning quality
+quality_gates:
+  - verify project structure before active lessons
+  - keep setup mode and classroom mode separate
+  - run the classroom facilitation guard during live lessons
+  - require Feynman summary before durable note promotion
+  - run absorption and link checks after closeout when practical
+common_failure_modes:
+  - following the learner case into unrelated planning
+  - asking procedural forms before teaching the concept
+  - over-discussing a simple chapter concept
+  - diagnosing without actively leading the next classroom move
+  - confusing account/project goals with single-lesson learning goals
