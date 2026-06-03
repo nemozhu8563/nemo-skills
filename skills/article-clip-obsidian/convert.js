@@ -84,8 +84,40 @@ function sanitizeFilename(str) {
     .substring(0, 40);              // Limit to 40 chars for OneDrive
 }
 
-function formatTimestamp(dateStr) {
+function sanitizeSourceTitle(str) {
+  return str
+    .replace(/\d+,\d+万/g, '')
+    .replace(/\d+\.\d+万/g, '')
+    .replace(/\d{6,}/g, '')
+    .replace(/\s+/g, ' ')
+    .replace(/^\.+/g, '')
+    .replace(/\.+$/g, '')
+    .trim();
+}
+
+function escapeYamlString(value) {
+  return String(value ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\r?\n/g, ' ')
+    .trim();
+}
+
+function parseRequiredDate(dateStr, fieldName) {
+  if (!dateStr) {
+    throw new Error(`Missing required date field: ${fieldName}`);
+  }
+
   const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) {
+    throw new Error(`Invalid required date field ${fieldName}: ${dateStr}`);
+  }
+
+  return date;
+}
+
+function formatTimestamp(dateStr) {
+  const date = parseRequiredDate(dateStr, 'fetched_at');
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
@@ -95,7 +127,7 @@ function formatTimestamp(dateStr) {
 }
 
 function formatDate(dateStr) {
-  const date = new Date(dateStr);
+  const date = parseRequiredDate(dateStr, 'published_at');
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
@@ -158,6 +190,7 @@ function convertToObsidianFormat(sourcePath, outputDir, assetsDir) {
   // Extract real title from body content
   const realTitle = extractRealTitle(frontmatter, body);
   const cleanTitle = sanitizeFilename(realTitle);
+  const sourceTitle = sanitizeSourceTitle(realTitle);
   const author = frontmatter.author || 'unknown';
   const sourceUrl = frontmatter.source_url || frontmatter.canonical_url || '';
   const fetchedAt = frontmatter.fetched_at; // Use download time for filename
@@ -175,11 +208,11 @@ type: source
 status: 待读
 tags: [待处理]
 created: ${createdDate}
-source: "${cleanTitle}"
+source: "${escapeYamlString(sourceTitle)}"
 refs:
-  - "${sourceUrl}"
+  - "${escapeYamlString(sourceUrl)}"
 ddc: "000"
-author: "${author}"
+author: "${escapeYamlString(author)}"
 ---`;
 
   // Update image references
@@ -199,6 +232,10 @@ author: "${author}"
 
   // Write output file
   const outputPath = path.join(outputDir, filename);
+  if (fs.existsSync(outputPath)) {
+    throw new Error(`Output file already exists: ${outputPath}`);
+  }
+  fs.mkdirSync(outputDir, { recursive: true });
   fs.writeFileSync(outputPath, newContent, 'utf-8');
 
   // Move assets

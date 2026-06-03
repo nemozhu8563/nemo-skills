@@ -9,7 +9,7 @@ Acquire articles with `web-access`, normalize the capture into `content.md + ass
 
 ## Source of Truth
 
-This skill is managed from the sibling `nemo-skills` repository. Edit the source skill there, then publish into the vault. Do not hand-edit the generated vault copy under `.skills/article-clip-obsidian/`.
+This skill is managed from the sibling `nemo-skills` repository. Edit the source skill there, then publish into the vault. Do not hand-edit the generated vault copy under `.agents/skills/article-clip-obsidian/`.
 
 ## Workflow
 
@@ -25,9 +25,25 @@ When this skill is triggered by a user asking to download, clip, save, or import
 - A clipping is not complete while any remote Markdown image reference remains in the note.
 - A clipping is not complete until all Obsidian embeds point to existing local files.
 
-### 1. Acquire Article Through web-access
+### 1. Resolve web-access
 
-All network access must load and follow the `web-access` skill first.
+Before any network acquisition, resolve the `web-access` skill in this exact order:
+
+1. Project skill under the target vault: `.agents/skills/web-access/`, then legacy `.skills/web-access/`
+2. Global Codex skill: `~/.codex/skills/web-access/`
+3. Legacy fallback path below, only when neither project nor global `web-access` exists
+
+From the vault root, use the resolver:
+
+```bash
+node .agents/skills/article-clip-obsidian/resolve-web-access-skill.js "$PWD"
+```
+
+Load and follow the returned `skillFile` when `status` is `found`. Do not use `~/.agents/skills/web-access/` as a normal candidate; this workflow has one global source at `~/.codex/skills/web-access/`.
+
+### 2. Acquire Article Through web-access
+
+All network access must load and follow the resolved `web-access` skill first.
 
 Use `web-access` to choose the lightest reliable acquisition route:
 - Public article or documentation page: Jina/WebFetch/curl can be enough.
@@ -65,12 +81,12 @@ Recommended fields:
 
 If `published_at`, `title`, `author`, or `platform` is missing, the adapter will use safe fallbacks. If `url` or `markdown` is missing, the adapter fails.
 
-### 2. Create Article Package
+### 3. Create Article Package
 
 Run the adapter against the capture JSON:
 
 ```bash
-node .skills/article-clip-obsidian/web-access-adapter.js \
+node .agents/skills/article-clip-obsidian/web-access-adapter.js \
   /tmp/article-capture.json \
   /tmp/article-clip-temp
 ```
@@ -81,40 +97,44 @@ The adapter creates:
 
 The adapter also scans Markdown image references such as `![alt](https://...)`. Any remaining remote image is downloaded into the package `assets/` directory and rewritten to `./assets/NNN.ext`. If a remote image cannot be downloaded after retries, the adapter fails instead of silently leaving a remote image in the note.
 
-### 3. Convert to Obsidian Format
+### 4. Convert to Obsidian Format
 
 Run the conversion script from the vault root:
 
 ```bash
-node .skills/article-clip-obsidian/convert.js \
+node .agents/skills/article-clip-obsidian/convert.js \
   /tmp/article-clip-temp/content.md \
   02_Sources/_clippings \
   assets
 ```
+
+In the current vault, prefer the managed skill path `.agents/skills/article-clip-obsidian/...`. Use `.skills/...` only if that is the active published path in the target vault.
 
 The `02_Sources/_clippings` argument is the default destination. Change it only when the user explicitly asks for a different destination in the current request.
 
 The converter:
 - Generates filename: `YYYYMMDDHHmm 标题.md` using `fetched_at`
 - Uses `published_at` for frontmatter `created`
+- Keeps full cleaned article title in frontmatter `source`; only filenames and asset directories are shortened for filesystem safety.
 - Transforms frontmatter to the vault clipping standard
 - Moves local images to `assets/YYYYMMDDHHmm 标题/`
 - Updates local image references to wiki-link format: `![[assets/YYYYMMDDHHmm 标题/001.jpg]]`
 - Converts linked Markdown images like `[![alt](./assets/001.jpg)](https://...)` into plain Obsidian embeds like `![[assets/YYYYMMDDHHmm 标题/001.jpg]]`
+- Fails instead of overwriting when the target note already exists.
 
-### 4. Legacy Fallback: article-clip
+### 5. Legacy Fallback: article-clip
 
-If `web-access` acquisition fails and the target is known to work better with `article-clip`, use it as a fallback:
+If the resolver returns `status: "fallback"`, or if resolved `web-access` acquisition fails and the target is known to work better with `article-clip`, use it as a fallback:
 
 ```bash
 article-clip "URL" --out /tmp/article-clip-temp --verbose
 ```
 
-Then run `convert.js` as in step 3.
+Then run `convert.js` as in step 4.
 
 This fallback is for compatibility only. The default acquisition path is `web-access`.
 
-### 5. Report Results
+### 6. Report Results
 
 After conversion, report:
 - Note location
@@ -162,7 +182,7 @@ File structure:
 - **Adapter fails**: Fix the capture JSON so it includes a valid `url` and non-empty `markdown`. If the failure is remote image localization, retry the capture or download the listed image manually and include it in `assets`.
 - **Remote image localization fails**: Treat this as a recoverable workflow error, not permission to skip images. Use a reliable downloader such as `curl` to localize the images first, include them in capture `assets`, and rerun `web-access-adapter.js` followed by `convert.js`.
 - **article-clip fallback fails**: Report the failure and return to `web-access` route selection instead of retrying blindly.
-- **Output file may already exist**: Check before overwriting; ask the user or choose a new capture when duplicate output would destroy useful content.
+- **Output file already exists**: The converter fails before overwriting. Inspect the existing clipping, then choose a new capture timestamp/title or report the duplicate.
 - **Zhihu placeholder images**: If Zhihu exports only failed `data:image/svg+xml` lazy-load placeholders and no actual image references, the converter removes the noisy `图片下载提示` section.
 
 ## Notes

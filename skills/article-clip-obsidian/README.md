@@ -10,11 +10,13 @@
 
 `article-clip` 仍可作为兼容 fallback，但不再是默认获取层。
 
+`web-access` 解析顺序固定为：目标 vault 的项目级 `.agents/skills/web-access/`，然后 legacy `.skills/web-access/`，然后全局 `~/.codex/skills/web-access/`。只有项目和全局都不存在时才进入 legacy fallback；不要把 `~/.agents/skills/web-access/` 当成常规候选。
+
 如果 Markdown 里还残留 `![alt](https://...)` 远程图片，adapter 会默认下载到本地 `assets/` 并改写引用。下载失败会报错中断，不会静默生成半本地、半远程的 note。
 
 ## Source of Truth
 
-本目录是源头目录。vault 里的 `.skills/article-clip-obsidian/` 是发布出来的 managed copy，不要直接手改。
+本目录是源头目录。vault 里的 `.agents/skills/article-clip-obsidian/` 是发布出来的 managed copy，不要直接手改。
 
 发布到 vault：
 
@@ -36,6 +38,8 @@ skills/article-clip-obsidian/
 ├── README.md
 ├── convert.js
 ├── convert.test.js
+├── resolve-web-access-skill.js
+├── resolve-web-access-skill.test.js
 ├── web-access-adapter.js
 └── web-access-adapter.test.js
 ```
@@ -85,22 +89,26 @@ Optional fields use fallbacks:
 From the vault root, after acquiring content with `web-access` and writing a capture JSON:
 
 ```bash
-node .skills/article-clip-obsidian/web-access-adapter.js \
+node .agents/skills/article-clip-obsidian/resolve-web-access-skill.js "$PWD"
+
+node .agents/skills/article-clip-obsidian/web-access-adapter.js \
   /tmp/article-capture.json \
   /tmp/article-clip-temp
 
-node .skills/article-clip-obsidian/convert.js \
+node .agents/skills/article-clip-obsidian/convert.js \
   /tmp/article-clip-temp/content.md \
   02_Sources/_clippings \
   assets
 ```
+
+In the current vault, the managed path is usually `.agents/skills/article-clip-obsidian/...`; use `.skills/...` only if that is the active published path in the target vault.
 
 Legacy fallback:
 
 ```bash
 article-clip "URL" --out /tmp/article-clip-temp --verbose
 
-node .skills/article-clip-obsidian/convert.js \
+node .agents/skills/article-clip-obsidian/convert.js \
   /tmp/article-clip-temp/content.md \
   02_Sources/_clippings \
   assets
@@ -112,6 +120,7 @@ node .skills/article-clip-obsidian/convert.js \
 
 - Format: `YYYYMMDDHHmm 标题.md`
 - Timestamp source: `fetched_at` / `captured_at`
+- Duplicate target: fail before overwrite
 
 ### Frontmatter
 
@@ -160,7 +169,10 @@ becomes:
 Run from the `nemo-skills` repo root:
 
 ```bash
-node --test skills/article-clip-obsidian/convert.test.js skills/article-clip-obsidian/web-access-adapter.test.js
+node --test \
+  skills/article-clip-obsidian/convert.test.js \
+  skills/article-clip-obsidian/web-access-adapter.test.js \
+  skills/article-clip-obsidian/resolve-web-access-skill.test.js
 ```
 
 The tests cover:
@@ -173,9 +185,20 @@ The tests cover:
 - Remote Markdown image localization
 - Remote image download failure reporting
 - Linked image unwrap to normal Obsidian embeds
+- Missing date metadata failure instead of `NaNNaN...` filenames
+- Duplicate output protection
+- web-access resolver order: project before global before fallback
 - Adapter-to-converter integration
 
 ## Changelog
+
+### v1.1.3 (2026-06-03)
+
+- Preserved full cleaned article title in frontmatter `source` while keeping filenames short.
+- Failed clearly on missing date metadata instead of generating `NaNNaN...` filenames.
+- Blocked accidental overwrite of existing clipping notes.
+- Added explicit `web-access` resolution order: project, global, then fallback.
+- Updated current vault command examples to use `.agents/skills/article-clip-obsidian/...`.
 
 ### v1.1.2 (2026-05-05)
 

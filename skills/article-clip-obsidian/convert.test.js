@@ -125,7 +125,67 @@ Tiny.
   assert.equal(result.filename, '202605031100 A Very Long Invalid Article Title With E.md');
 
   const converted = fs.readFileSync(result.outputPath, 'utf-8');
-  assert.match(converted, /source: "A Very Long Invalid Article Title With E"/);
+  assert.match(converted, /source: "A <Very> Long \/ Invalid: Article\? Title\* With Extra Words That Should Be Truncated"/);
+});
+
+test('keeps full source title while truncating only the filename', () => {
+  const root = makeTempDir();
+  const packageDir = path.join(root, 'package');
+  const outputDir = path.join(root, 'clippings');
+  const assetsDir = path.join(root, 'vault-assets');
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const longTitle = '似乎佛教有一个观点叫“不着相”，“不着相”指的是什么？ - 浮梦子的回答 - 知乎';
+  const sourcePath = writeArticlePackage(
+    packageDir,
+    `---
+title: "${longTitle}"
+source_url: "https://www.zhihu.com/question/1/answer/2"
+fetched_at: "2026-06-03T15:47:00+08:00"
+published_at: "2025-11-25T12:49:20+08:00"
+author: "浮梦子"
+platform: "zhihu"
+---
+# ${longTitle}
+
+正文。
+`
+  );
+
+  const result = convertToObsidianFormat(sourcePath, outputDir, assetsDir);
+  const converted = fs.readFileSync(result.outputPath, 'utf-8');
+
+  assert.equal(result.filename, '202606031547 似乎佛教有一个观点叫“不着相”，“不着相”指的是什么？ - 浮梦子的回答 - 知.md');
+  assert.match(converted, new RegExp(`source: "${longTitle}"`));
+});
+
+test('escapes quoted source urls and authors in YAML frontmatter', () => {
+  const root = makeTempDir();
+  const packageDir = path.join(root, 'package');
+  const outputDir = path.join(root, 'clippings');
+  const assetsDir = path.join(root, 'vault-assets');
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const sourcePath = writeArticlePackage(
+    packageDir,
+    `---
+title: "Quoted Article"
+source_url: https://example.com/articles?query="agents"
+fetched_at: "2026-05-03T11:00:00+08:00"
+published_at: "2026-05-03T11:00:00+08:00"
+author: A "Quoted" Author
+---
+# Quoted Article
+
+Body.
+`
+  );
+
+  const result = convertToObsidianFormat(sourcePath, outputDir, assetsDir);
+  const converted = fs.readFileSync(result.outputPath, 'utf-8');
+
+  assert.match(converted, /- "https:\/\/example\.com\/articles\?query=\\"agents\\""/);
+  assert.match(converted, /author: "A \\"Quoted\\" Author"/);
 });
 
 test('removes Zhihu placeholder-only image notices', () => {
@@ -165,7 +225,7 @@ test('keeps Zhihu image notice when real image references exist', () => {
   assert.equal(cleaned, body);
 });
 
-test('documents current missing-frontmatter fallback behavior', () => {
+test('fails clearly when frontmatter dates are missing', () => {
   const root = makeTempDir();
   const packageDir = path.join(root, 'package');
   const outputDir = path.join(root, 'clippings');
@@ -177,7 +237,39 @@ test('documents current missing-frontmatter fallback behavior', () => {
     'This package has no frontmatter but still has enough body text for a title.'
   );
 
-  const result = convertToObsidianFormat(sourcePath, outputDir, assetsDir);
+  assert.throws(
+    () => convertToObsidianFormat(sourcePath, outputDir, assetsDir),
+    /Missing required date field: fetched_at/
+  );
+});
 
-  assert.match(result.filename, /^NaNNaNNaNNaNNaN This package has no frontmatter but stil\.md$/);
+test('does not overwrite an existing clipping file', () => {
+  const root = makeTempDir();
+  const packageDir = path.join(root, 'package');
+  const outputDir = path.join(root, 'clippings');
+  const assetsDir = path.join(root, 'vault-assets');
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const sourcePath = writeArticlePackage(
+    packageDir,
+    `---
+title: "Duplicate Article"
+source_url: "https://example.com/duplicate"
+fetched_at: "2026-05-03T11:00:00+08:00"
+published_at: "2026-05-03T11:00:00+08:00"
+---
+# Duplicate Article
+
+Body.
+`
+  );
+
+  const existingPath = path.join(outputDir, '202605031100 Duplicate Article.md');
+  fs.writeFileSync(existingPath, 'existing clipping', 'utf-8');
+
+  assert.throws(
+    () => convertToObsidianFormat(sourcePath, outputDir, assetsDir),
+    /Output file already exists/
+  );
+  assert.equal(fs.readFileSync(existingPath, 'utf-8'), 'existing clipping');
 });
