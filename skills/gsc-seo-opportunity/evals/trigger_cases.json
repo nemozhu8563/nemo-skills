@@ -1,0 +1,26 @@
+{
+  "positive": [
+    "Use Search Console data to find SEO opportunities for my site",
+    "帮我分析 GSC 里哪些 query 适合扩成新页面",
+    "Analyze my GSC data and compare this month with last month",
+    "从我自己网站的 Search Console 数据里找标题和 CTR 优化点"
+  ],
+  "negative": [
+    "帮我写一篇通用 SEO 教程",
+    "查一下竞品 Semrush 的 Top Pages",
+    "帮我把 URL 提交到 Google Indexing API",
+    "帮我配置 launchd 每天定时运行一个脚本",
+    "下载这篇 X 文章",
+    "做一个网页设计原型"
+  ],
+  "near_neighbors": [
+    {
+      "prompt": "用 Ahrefs 数据帮我分析竞品关键词",
+      "expected": "Do not route. This skill is for owned-site GSC data, not third-party SEO tools."
+    },
+    {
+      "prompt": "我有 Google Analytics 转化数据，帮我找低转化页面",
+      "expected": "Route only if GSC query/page evidence is also part of the job; otherwise this is analytics work."
+    }
+  ]
+}

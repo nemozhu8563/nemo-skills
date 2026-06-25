@@ -1,0 +1,16 @@
+{
+  "lookbackDays": 28,
+  "compareDays": 28,
+  "endOffsetDays": 2,
+  "rowLimit": 2500,
+  "minImpressions": 20,
+  "maxOpportunitiesPerSection": 12,
+  "sites": [
+    {
+      "name": "Example",
+      "siteUrl": "sc-domain:example.com",
+      "brandTerms": ["example"],
+      "notes": "Use the exact siteUrl returned by the sites command."
+    }
+  ]
+}

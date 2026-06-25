@@ -34,6 +34,7 @@ const required = [
   `04_Projects/学习/${bookTitle}/progress.md`,
   `04_Projects/学习/${bookTitle}/review_queue.md`,
   `04_Projects/学习/${bookTitle}/application_log.md`,
+  `04_Projects/学习/${bookTitle}/classroom_memory.md`,
   `04_Projects/学习/${bookTitle}/sessions`,
   `04_Projects/学习/${bookTitle}/roles`,
 ];

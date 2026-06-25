@@ -63,7 +63,7 @@ Claude:
 2. Chrome opens with X compose page
 3. Text is typed into editor
 4. Image is copied to clipboard and pasted
-5. Browser stays open 30s for preview
+5. Browser stays open 30s for preview, then closes
 6. Reports: "Post composed. Use --submit to post."
 ```
 
@@ -81,10 +81,12 @@ Claude:
 ## How It Works
 
 The `x-browser.ts` script uses Chrome DevTools Protocol (CDP) to:
-1. Launch real Chrome (not Playwright) with `--disable-blink-features=AutomationControlled`
-2. Use persistent profile directory for saved login sessions
+1. Launch a fresh isolated real Chrome (not Playwright) with `--disable-blink-features=AutomationControlled`
+2. Use a dedicated persistent profile directory for saved login sessions
 3. Interact with X via CDP commands (Runtime.evaluate, Input.dispatchKeyEvent)
 4. **Paste images using osascript** (macOS): Sends real Cmd+V keystroke to Chrome, bypassing CDP's synthetic events that X can detect
+
+By default it does not attach to the user's current Chrome. It first checks whether the dedicated profile already has a healthy reusable CDP session, and only falls back to a fresh isolated launch when that session is unavailable.
 
 This approach bypasses X's anti-automation detection that blocks Playwright/Puppeteer.
 

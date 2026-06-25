@@ -1,0 +1,4 @@
+interface:
+  display_name: "Nemo X Post"
+  short_description: "把素材、观点或初稿诊断并改成 Nemo 风格中文 X 短推"
+  default_prompt: "Use $nemo-x-post to diagnose and rewrite this idea or draft into a Nemo-style Chinese X/Twitter short post."

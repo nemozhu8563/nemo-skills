@@ -1,0 +1,24 @@
+interface:
+  display_name: "GSC SEO Opportunity"
+  short_description: "Find SEO opportunities from your own Google Search Console data"
+  default_prompt: "Use $gsc-seo-opportunity to analyze my configured Google Search Console data and produce a short action-first SEO opportunity report."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    openai: "metadata-adapter"
+    claude: "neutral-source-plus-adapter"
+    generic: "neutral-source"

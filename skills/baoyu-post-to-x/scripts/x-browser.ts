@@ -5,6 +5,7 @@ import process from 'node:process';
 import {
   CHROME_CANDIDATES_FULL,
   CdpConnection,
+  clearChromeDebugPort,
   copyImageToClipboard,
   findChromeExecutable,
   getDefaultProfileDir,
@@ -18,6 +19,7 @@ import {
 } from './x-utils.js';
 
 const X_COMPOSE_URL = 'https://x.com/compose/post';
+const CHROME_START_URL = 'about:blank';
 const EDITOR_SELECTOR = '[data-testid="tweetTextarea_0"]';
 const FILE_INPUT_SELECTOR = '[data-testid="fileInput"], input[type="file"][accept*="image"], input[type="file"]';
 const ATTACHMENT_SELECTOR = [
@@ -40,6 +42,52 @@ interface XBrowserOptions {
   timeoutMs?: number;
   profileDir?: string;
   chromePath?: string;
+  reuseDebugSession?: boolean;
+}
+
+function getEnvTimeoutMs(name: string, fallbackMs: number): number {
+  const raw = process.env[name]?.trim();
+  if (!raw) return fallbackMs;
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallbackMs;
+}
+
+async function diagnoseChromeStartup(profileDir = getDefaultProfileDir(), chromePath?: string): Promise<void> {
+  const resolvedChromePath = chromePath ?? findChromeExecutable(CHROME_CANDIDATES_FULL);
+  if (!resolvedChromePath) throw new Error('Chrome not found. Set X_BROWSER_CHROME_PATH env var.');
+
+  await mkdir(profileDir, { recursive: true });
+  clearChromeDebugPort(profileDir);
+
+  const port = await getFreePort();
+  const chromeStartupTimeoutMs = getEnvTimeoutMs('X_BROWSER_CHROME_STARTUP_TIMEOUT_MS', 120_000);
+  console.log(`[x-browser] Diagnosing Chrome CDP startup (profile: ${profileDir}, port: ${port})`);
+
+  const chrome = spawn(resolvedChromePath, [
+    `--remote-debugging-port=${port}`,
+    '--remote-debugging-address=127.0.0.1',
+    `--user-data-dir=${profileDir}`,
+    '--no-first-run',
+    '--no-default-browser-check',
+    CHROME_START_URL,
+  ], { stdio: 'ignore' });
+
+  let cdp: CdpConnection | null = null;
+  try {
+    const wsUrl = await waitForChromeDebugPort(port, chromeStartupTimeoutMs, { includeLastError: true });
+    cdp = await CdpConnection.connect(wsUrl, 30_000, { defaultTimeoutMs: 15_000 });
+    const version = await cdp.send<{ product?: string; protocolVersion?: string }>('Browser.getVersion');
+    console.log(`[x-browser] Chrome CDP ready: ${version.product ?? 'unknown'} (protocol ${version.protocolVersion ?? 'unknown'})`);
+  } finally {
+    if (cdp) {
+      try { await cdp.send('Browser.close', {}, { timeoutMs: 5_000 }); } catch {}
+      cdp.close();
+    }
+    setTimeout(() => {
+      if (!chrome.killed) try { chrome.kill('SIGKILL'); } catch {}
+    }, 2_000).unref?.();
+    try { chrome.kill('SIGTERM'); } catch {}
+  }
 }
 
 async function getAttachmentState(
@@ -178,14 +226,21 @@ async function pasteImageFromClipboard(
 }
 
 export async function postToX(options: XBrowserOptions): Promise<void> {
-  const { text, images = [], submit = false, timeoutMs = 120_000, profileDir = getDefaultProfileDir() } = options;
+  const {
+    text,
+    images = [],
+    submit = false,
+    timeoutMs = 120_000,
+    profileDir = getDefaultProfileDir(),
+    reuseDebugSession = true,
+  } = options;
 
   const chromePath = options.chromePath ?? findChromeExecutable(CHROME_CANDIDATES_FULL);
   if (!chromePath) throw new Error('Chrome not found. Set X_BROWSER_CHROME_PATH env var.');
 
   await mkdir(profileDir, { recursive: true });
 
-  const reusable = await getReusableChromeDebugSession(profileDir);
+  const reusable = reuseDebugSession ? await getReusableChromeDebugSession(profileDir) : null;
   let port = reusable?.port;
   let wsUrl = reusable?.wsUrl;
   let launchedChrome = false;
@@ -195,16 +250,17 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
     console.log(`[x-browser] Reusing Chrome debug session on port ${reusable.port} (profile: ${profileDir})`);
   } else {
     port = await getFreePort();
-    console.log(`[x-browser] Launching Chrome (profile: ${profileDir})`);
+    console.log(`[x-browser] Launching isolated Chrome (profile: ${profileDir})`);
 
     chrome = spawn(chromePath, [
       `--remote-debugging-port=${port}`,
+      '--remote-debugging-address=127.0.0.1',
       `--user-data-dir=${profileDir}`,
       '--no-first-run',
       '--no-default-browser-check',
       '--disable-blink-features=AutomationControlled',
       '--start-maximized',
-      X_COMPOSE_URL,
+      CHROME_START_URL,
     ], { stdio: 'ignore' });
     launchedChrome = true;
   }
@@ -213,7 +269,9 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
 
   try {
     if (!wsUrl) {
-      wsUrl = await waitForChromeDebugPort(port!, 30_000, { includeLastError: true });
+      const chromeStartupTimeoutMs = getEnvTimeoutMs('X_BROWSER_CHROME_STARTUP_TIMEOUT_MS', 120_000);
+      console.log(`[x-browser] Waiting for Chrome debug port (timeout: ${chromeStartupTimeoutMs}ms)...`);
+      wsUrl = await waitForChromeDebugPort(port!, chromeStartupTimeoutMs, { includeLastError: true });
       rememberChromeDebugPort(profileDir, port!);
     }
     cdp = await CdpConnection.connect(wsUrl, 30_000, { defaultTimeoutMs: 15_000 });
@@ -339,10 +397,17 @@ Usage:
   npx -y bun x-browser.ts [options] [text]
 
 Options:
-  --image <path>   Add image (can be repeated, max 4)
-  --submit         Actually post (default: preview only)
-  --profile <dir>  Chrome profile directory
-  --help           Show this help
+  --image <path>          Add image (can be repeated, max 4)
+  --submit                Actually post (default: preview only)
+  --profile <dir>         Dedicated Chrome profile directory
+  --reuse-debug-session   Explicitly prefer reusing a previous dedicated-profile CDP session
+  --diagnose-chrome       Verify isolated Chrome CDP startup, then close
+  --help                  Show this help
+
+Default behavior:
+  Prefer reusing a healthy dedicated-profile CDP session when available;
+  otherwise launch a fresh isolated Chrome. Never attach to the user's current
+  Chrome. The launched browser is closed after submit or preview.
 
 Examples:
   npx -y bun x-browser.ts "Hello from CLI!"
@@ -359,6 +424,8 @@ async function main(): Promise<void> {
   const images: string[] = [];
   let submit = false;
   let profileDir: string | undefined;
+  let reuseDebugSession = true;
+  let diagnoseChrome = false;
   const textParts: string[] = [];
 
   for (let i = 0; i < args.length; i++) {
@@ -369,9 +436,18 @@ async function main(): Promise<void> {
       submit = true;
     } else if (arg === '--profile' && args[i + 1]) {
       profileDir = args[++i];
+    } else if (arg === '--reuse-debug-session') {
+      reuseDebugSession = true;
+    } else if (arg === '--diagnose-chrome') {
+      diagnoseChrome = true;
     } else if (!arg.startsWith('-')) {
       textParts.push(arg);
     }
+  }
+
+  if (diagnoseChrome) {
+    await diagnoseChromeStartup(profileDir);
+    return;
   }
 
   const text = textParts.join(' ').trim() || undefined;
@@ -381,7 +457,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  await postToX({ text, images, submit, profileDir });
+  await postToX({ text, images, submit, profileDir, reuseDebugSession });
 }
 
 await main().catch((err) => {

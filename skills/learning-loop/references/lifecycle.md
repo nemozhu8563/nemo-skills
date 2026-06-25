@@ -31,6 +31,8 @@ At this stage, do not create the official course map or lesson materials yet. If
 
 The agent must ask questions before finalizing the learner profile, role contract, course map, or teaching decisions.
 
+When the user wants a stronger teacher, study companion, persona, or motivational learning experience, read `references/learning-experience-roles.md` before writing the role contract. Extract functional roles and experience mechanics; do not copy a specific character setup unless the user explicitly asks for it.
+
 Create:
 
 ```text
@@ -43,7 +45,7 @@ Collect information for these roles:
 - `learner`: the user's learning goal, preference, constraints, weak spots, and desired pressure level
 - `school_runner`: the program owner's view: success, assessment, cadence, archive, and continuation rules
 - `teacher`: teaching persona, strictness, speaking style, examples, and boundaries
-- `classmate` or peer role when useful: a practice partner, counterparty, skeptical reader, customer, or error mirror that creates productive friction without taking over the teacher role
+- `study_companion` or peer role when useful: a practice partner, naive questioner, progress witness, skeptical reader, customer, or error mirror that creates productive friction and persistence without taking over the teacher role
 
 Do not infer these silently if the user is actively designing the system. Ask in small batches and write answers back into `role_interview.md`.
 
@@ -85,7 +87,7 @@ The contract should define:
 - learner role
 - school runner / program director role
 - teacher roles
-- optional classmate / peer-practice roles when requested or useful
+- optional study companion / peer-practice roles when requested or useful
 - each role's job
 - personality and speaking style
 - strictness
@@ -100,7 +102,7 @@ Default teacher role split:
 - `socratic_coach.md`: asks one question at a time, exposes understanding gaps, avoids long lectures first
 - `concept_teacher.md`: explains book concepts with concise examples after the user has attempted an answer
 - `application_coach.md`: turns each lesson into a real application in writing, business, work, or communication
-- `classmate.md` when requested: creates peer pressure through naive questions, counterparty objections, or intentionally flawed answers that the user must diagnose
+- `study_companion.md` or `classmate.md` when requested: creates continuity and productive friction through naive questions, progress witnessing, counterparty objections, or intentionally flawed answers that the user must diagnose
 
 ## 6. Create Teaching Decisions
 

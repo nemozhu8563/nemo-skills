@@ -123,10 +123,10 @@
       "status": "archive"
     },
     {
-      "id": "book-learning-loop",
+      "id": "learning-loop",
       "type": "skill_dir",
-      "source": "skills/book-learning-loop",
-      "destination": ".agents/skills/book-learning-loop",
+      "source": "skills/learning-loop",
+      "destination": ".agents/skills/learning-loop",
       "status": "migrate_now"
     },
     {
@@ -249,6 +249,13 @@
       "status": "migrate_now"
     },
     {
+      "id": "nemo-x-post",
+      "type": "skill_dir",
+      "source": "skills/nemo-x-post",
+      "destination": ".agents/skills/nemo-x-post",
+      "status": "migrate_now"
+    },
+    {
       "id": "obsidian-archive",
       "type": "skill_dir",
       "source": "skills/obsidian-archive",
@@ -274,6 +281,13 @@
       "type": "skill_dir",
       "source": "skills/publish-article",
       "destination": ".agents/skills/publish-article",
+      "status": "migrate_now"
+    },
+    {
+      "id": "gsc-seo-opportunity",
+      "type": "skill_dir",
+      "source": "skills/gsc-seo-opportunity",
+      "destination": ".agents/skills/gsc-seo-opportunity",
       "status": "migrate_now"
     },
     {

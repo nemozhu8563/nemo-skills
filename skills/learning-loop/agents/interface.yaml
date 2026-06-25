@@ -1,30 +1,45 @@
-name: book-learning-loop
+name: learning-loop
 version: 1
 mode: production
 job: >
   Turn one book into an Obsidian-based learning loop and run live lessons that
   preserve source material, teach concepts, test understanding, promote only
   absorbed judgments, and keep project artifacts out of the classroom until
-  explicitly requested.
+  explicitly requested. When no book source or book project exists, run a
+  lightweight topic-learning fallback that adapts each next article to real
+  learner feedback.
 inputs:
   - book title or active learning project
+  - topic title when no source book exists
   - source book package or existing course map
   - learner profile, role contract, teaching decisions, progress, review queue
+  - classroom memory when teacher or study companion continuity matters
   - live learner answers and feedback
+  - prior topic articles and explicit learning feedback
+  - optional teacher and study companion role preferences
 outputs:
   - course map and dynamic lesson files
   - session notes
   - progress, review queue, and application log updates
+  - classroom memory updates for teacher, study companion, and shared callbacks
+  - lightweight topic plans and numbered learning articles
+  - teacher, study companion, and classroom-experience role guidance when requested
   - durable 03_Notes cards only after absorption gates pass
 exclusions:
   - generic article writing or content strategy without an active book lesson
   - product design, UI planning, or implementation unless the user switches modes
   - chapter summaries promoted directly into 03_Notes
+  - topic fallback when a book project already exists
   - roleplay that overrides learning quality
+  - persona design that becomes romance, fandom simulation, or idle chat
 quality_gates:
   - verify project structure before active lessons
   - keep setup mode and classroom mode separate
+  - keep topic fallback separate from source-backed book mode
+  - extract only real learner feedback before choosing the next learning move
   - run the classroom facilitation guard during live lessons
+  - keep classroom memory current when role continuity affects the next lesson
+  - keep teacher standards and study companion momentum separate
   - require Feynman summary before durable note promotion
   - run absorption and link checks after closeout when practical
 common_failure_modes:
@@ -32,4 +47,7 @@ common_failure_modes:
   - asking procedural forms before teaching the concept
   - over-discussing a simple chapter concept
   - diagnosing without actively leading the next classroom move
+  - treating role memory as decorative lore instead of learning feedback
   - confusing account/project goals with single-lesson learning goals
+  - treating template feedback prompts as learner feedback
+  - routing an existing book project into the lightweight topic article flow

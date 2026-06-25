@@ -12,6 +12,7 @@ This file is the human-readable retention source for the current migration. It m
 - `baoyu-translate`
 - `interdisciplinary-research`
 - `json-canvas`
+- `learning-loop`
 - `llm-wiki`
 - `llm-wiki-bootstrap`
 - `llm-wiki-ingest`

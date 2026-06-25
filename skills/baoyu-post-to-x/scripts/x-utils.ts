@@ -276,6 +276,21 @@ export async function insertTextIntoComposer(
   text: string,
   selector = '[data-testid="tweetTextarea_0"]',
 ): Promise<void> {
+  const normalizeComposerText = (value: string): string => (
+    value
+      .replace(/\r\n/g, '\n')
+      .replace(/\u00a0/g, ' ')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim()
+  );
+
+  const isEquivalentComposerText = (actual: string, expected: string): boolean => {
+    const normalizedActual = normalizeComposerText(actual);
+    const normalizedExpected = normalizeComposerText(expected);
+    return normalizedActual === normalizedExpected || normalizedActual.includes(normalizedExpected);
+  };
+
   const focusComposer = async (): Promise<void> => {
     await cdp.send('Runtime.evaluate', {
       expression: `
@@ -310,7 +325,7 @@ export async function insertTextIntoComposer(
     return readComposerText();
   };
 
-  const normalizedExpected = text.replace(/\r\n/g, '\n').trim();
+  const normalizedExpected = normalizeComposerText(text);
 
   if (copyTextToClipboard(text)) {
     await focusComposer();
@@ -318,7 +333,7 @@ export async function insertTextIntoComposer(
     if (pasteFromClipboard('Google Chrome', 5, 500)) {
       await sleep(500);
       const pastedText = await readComposerText();
-      if (pastedText === normalizedExpected) return;
+      if (isEquivalentComposerText(pastedText, normalizedExpected)) return;
     }
   }
 
@@ -331,13 +346,13 @@ export async function insertTextIntoComposer(
     })()
   `);
 
-  if (insertedViaFocusOnly === normalizedExpected) return;
+  if (isEquivalentComposerText(insertedViaFocusOnly, normalizedExpected)) return;
 
   await focusComposer();
   await cdp.send('Input.insertText', { text }, { sessionId });
   await sleep(500);
   const insertedAfterInput = await readComposerText();
-  if (insertedAfterInput === normalizedExpected) return;
+  if (isEquivalentComposerText(insertedAfterInput, normalizedExpected)) return;
 
   const insertedViaExecCommand = await tryInsert(`
     (() => {
@@ -349,7 +364,7 @@ export async function insertTextIntoComposer(
     })()
   `);
 
-  if (insertedViaExecCommand === normalizedExpected) return;
+  if (isEquivalentComposerText(insertedViaExecCommand, normalizedExpected)) return;
 
   throw new Error(
     `Failed to insert composer text. Expected ${JSON.stringify(normalizedExpected)}, got ${JSON.stringify(insertedViaExecCommand || insertedAfterInput || insertedViaFocusOnly)}.`,

@@ -23,8 +23,10 @@ const projectDir = path.dirname(path.dirname(sessionPath));
 const progressPath = path.join(projectDir, "progress.md");
 const reviewPath = path.join(projectDir, "review_queue.md");
 const applicationPath = path.join(projectDir, "application_log.md");
+const classroomMemoryPath = path.join(projectDir, "classroom_memory.md");
 const promotedLinks = [...text.matchAll(/\[\[(03_Notes\/[^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]/g)].map((m) => m[1]);
 const lessonNumber = extractLessonNumber(text);
+const sessionBasename = path.basename(sessionPath, path.extname(sessionPath));
 
 function fileContainsAny(file, needles) {
   if (!fs.existsSync(file)) return false;
@@ -56,6 +58,21 @@ function nextSessionStartsWithReview(sessionFile) {
   return firstClassroomContent === -1 || reviewIndex < firstClassroomContent;
 }
 
+function classroomMemoryReferencesSession(file, sessionName, currentLessonNumber) {
+  if (!fs.existsSync(file)) return false;
+  const content = fs.readFileSync(file, "utf8");
+  const requiredSections = [
+    /##\s*Teacher Memory/i,
+    /##\s*Classmate Memory/i,
+    /##\s*Shared Classroom Memory/i,
+    /##\s*Last Updated/i,
+  ];
+  if (!requiredSections.every((pattern) => pattern.test(content))) return false;
+  if (content.includes(sessionName)) return true;
+  if (!currentLessonNumber) return false;
+  return new RegExp(`Lesson\\s*0*${currentLessonNumber}\\b`, "i").test(content);
+}
+
 const checks = [
   ["Session status is completed", /^status:\s*completed\b/m.test(text)],
   ["Final checkpoint exists", /## Final Checkpoint/.test(text)],
@@ -65,6 +82,7 @@ const checks = [
   ["progress.md references the absorbed result", fileContainsAny(progressPath, promotedLinks)],
   ["review_queue.md references promoted notes or lesson-specific remaining practice", reviewQueueHasCloseout(reviewPath, promotedLinks, lessonNumber)],
   ["application_log.md references the absorbed result", fileContainsAny(applicationPath, promotedLinks)],
+  ["classroom_memory.md records the completed lesson", classroomMemoryReferencesSession(classroomMemoryPath, sessionBasename, lessonNumber)],
 ];
 
 console.log(`# Close Lesson Checklist\n`);

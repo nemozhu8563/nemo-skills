@@ -61,7 +61,11 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --subm
 | `<text>` | Post content (positional argument) |
 | `--image <path>` | Image file path (can be repeated, max 4) |
 | `--submit` | Actually post (default: preview only) |
-| `--profile <dir>` | Custom Chrome profile directory |
+| `--profile <dir>` | Custom dedicated Chrome profile directory |
+| `--reuse-debug-session` | Explicitly prefer reusing a previous dedicated-profile CDP session |
+| `--diagnose-chrome` | Verify isolated Chrome CDP startup, then close without opening X |
+
+**Default browser behavior**: regular posts first try to reuse a healthy dedicated-profile CDP session; if none is available, they launch a fresh isolated Chrome. They never attach to the user's current Chrome, and the launched browser is closed after submit or preview.
 
 ---
 
@@ -189,7 +193,7 @@ X Articles supports both standard Markdown and Obsidian wikilink syntax:
 - X Articles stop at preview by design; the account owner clicks final Publish manually
 - `x-article-package.ts` replaces the retired `nemo-post-to-x` flow; use this skill as the single X publishing entrypoint
 - X Articles treat image placeholders as a hard safety gate: after each image insert, the matching placeholder must disappear; before preview, global `IMAGE_PLACEHOLDER` count must be zero
-- Browser remains open after operation for review
+- Regular-post browser windows are closed after operation; preview mode keeps the launched browser open for 30 seconds first
 - Supports macOS, Linux, and Windows
 
 ## Extension Support

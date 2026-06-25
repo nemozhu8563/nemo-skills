@@ -1,0 +1,15 @@
+{
+  "name": "gsc-seo-opportunity",
+  "version": "0.1.0",
+  "category": "SEO / Google Search Console",
+  "description": "Google Search Console SEO analysis skill. Fetches owned-site query/page performance data, compares recent windows, and turns GSC evidence into CTR, content refresh, keyword expansion, cannibalization, and new-page opportunities.",
+  "homepage": "https://github.com/ConardLi/garden-skills/tree/main/skills/gsc-seo-opportunity",
+  "compat": [
+    "claude-code",
+    "claude-ai",
+    "cursor",
+    "codex-cli",
+    "gemini-cli",
+    "opencode"
+  ]
+}

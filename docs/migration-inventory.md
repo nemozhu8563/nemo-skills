@@ -29,6 +29,7 @@ This inventory is the execution gate for publishing nemo-managed skills into the
 | `interdisciplinary-research` | `skill_dir` | `migrate_now` | `keep` | 跨学科研究方法和信源约束 |
 | `json-canvas` | `skill_dir` | `migrate_now` | `keep` | Obsidian Canvas 创建和编辑 |
 | `kie-image-gen` | `skill_dir` | `migrate_now` | `provider` | kie.ai / Nano Banana 图像 provider |
+| `learning-loop` | `skill_dir` | `migrate_now` | `keep` | 书籍学习闭环和轻量课题学习 fallback |
 | `llm-wiki` | `skill_dir` | `migrate_now` | `keep` | 知识库吸收和治理总入口 |
 | `llm-wiki-bootstrap` | `skill_dir` | `migrate_now` | `keep` | domain 初始化批量吸收 |
 | `llm-wiki-ingest` | `skill_dir` | `migrate_now` | `keep` | 单篇 source/clipping/conversation 吸收 |
