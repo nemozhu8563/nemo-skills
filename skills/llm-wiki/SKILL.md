@@ -1,6 +1,6 @@
 ---
 name: llm-wiki
-description: Use when the user names llm-wiki/LLM Wiki or asks to bootstrap, ingest, absorb, process, 提炼, 总结, or 吸收 an Obsidian source/article/clipping/conversation as wiki knowledge; check source processing status; ask wiki-grounded questions with write-back; or run weekly lint.
+description: Use when the user names llm-wiki/LLM Wiki or asks to bootstrap, ingest, absorb, process, 提炼, 总结, or 吸收 an Obsidian source/article/clipping/conversation as wiki knowledge; optionally extract reusable AI_Media expression assets; check source processing status; ask wiki-grounded questions with write-back; or run weekly lint.
 ---
 
 # LLM Wiki
@@ -25,10 +25,13 @@ Default behavior:
 1. extract durable judgments / distinctions / questions
 2. update existing `03_Notes` pages first
 3. create a new concept / question / synthesis page only when necessary
-4. leave only a short processing record in the source note
-5. update `llm_domain`, `llm_status`, and `llm_note`
+4. when useful or requested, separately extract reusable AI_Media expression assets into `04_Projects/AI_Media/80_Assets/*.md`
+5. leave only a short processing record in the source note
+6. update `llm_domain`, `llm_status`, and `llm_note`
 
 Do not satisfy this request by pasting a long summary or conversation recap back into the original `02_Sources` note.
+
+If the same source can support different viewpoints for different MOCs, absorb the relevant viewpoint into each matching page. Do not force a single "correct" angle when the material is reusable from multiple knowledge angles.
 
 ## Grounding order
 
@@ -120,6 +123,8 @@ Use `../llm-wiki-ingest/SKILL.md` when the user provides one new article, clippi
 
 Also use this lane when the user asks whether one concrete source in `02_Sources` has already been processed, because the first job is intake-state confirmation before deciding whether a new ingest is needed.
 
+This lane also owns the optional AI_Media expression-asset pass when the user asks about 素材采集、表达素材、开头、钩子、金句、标题、案例、类比、论证片段, or when a source clearly contains reusable writing material.
+
 ### 3. Query -> write-back
 
 Use `../llm-wiki-query-writeback/SKILL.md` when the user asks a knowledge question and wants the answer grounded in the wiki, with possible write-back if a durable new judgment emerges.
@@ -136,10 +141,14 @@ These rules apply in every lane:
 - Prefer updating existing domain pages in `03_Notes` before creating new pages.
 - Treat `02_Sources/_clippings` and `02_Sources/_legacy` as primary source territory.
 - Treat `04_Projects` material as derived source territory and only extract judgment-layer content from it.
+- Keep AI_Media expression assets separate from wiki knowledge: `03_Notes` stores stable judgments; `80_Assets` stores reusable expression moves; topic-only evidence stays in `materials.md`.
 - Do not copy article rhetoric, narrative scaffolding, or packaging into wiki pages.
 - If a page receives a substantive change, update its `updated_at` and `source_refs`.
 - If the kernel map changes materially, update `Index`; if the system state changed materially, update `Log`.
-- Before any write, promotion, demotion, bootstrap exit, or independent-surface mutation, use the canonical gate in `05_Templates/scripts/llm_wiki_policy_gate.py`.
+- Before write batches, promotion, demotion, bootstrap exit, or independent-surface mutation, use the canonical gate in `05_Templates/scripts/llm_wiki_policy_gate.py`.
+- Normal source absorption into existing `03_Notes` pages should pass as `ingest_write --ingest-risk normal`, regardless of `bootstrap` or `steady_state`.
+- Do not send material to review merely because its topic mentions law, medicine, mental health, education, family, investment, accident, self-harm, or public health.
+- Review is triggered by write-action risk, not topic keywords: concrete operational advice, factual/legal/medical responsibility conclusions, unstable facts that cannot be abstracted into a durable viewpoint, identifiable private information propagation, too-ambiguous source material, or new independent surfaces / lifecycle changes.
 - For `02_Sources` source-status checks, prefer Base/frontmatter inspection over repo-wide search.
 - When a new `02_Sources` note appears without `llm_status`, treat it as an intake candidate rather than assuming it was already absorbed.
 
@@ -147,7 +156,8 @@ These rules apply in every lane:
 
 Lifecycle and topology are explicit registry states, not thread-local guesses.
 
-- `bootstrap` vs `steady_state` controls ingest confirmation.
+- `bootstrap` vs `steady_state` does not decide whether normal source absorption may write. Both may update existing knowledge pages when the extracted content is a durable viewpoint / distinction / judgment.
+- `bootstrap` means repeated batch absorption is still expected; `steady_state` means operate more locally and keep changes smaller.
 - `independent_root` / `parent_managed` / `promotion_candidate` / `promoted_independent` controls whether the domain can own independent operating surfaces.
 - Same-direction query write-back is `propose_only` by default.
 - Same-direction query write-back may auto-apply only when explicit maintenance mode is ON through `05_Templates/scripts/llm_wiki_policy_gate.py`.

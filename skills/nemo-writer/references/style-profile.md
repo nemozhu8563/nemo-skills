@@ -41,6 +41,7 @@ Use these as positive directions, not a口癖 checklist.
 - Prefer concrete action sentences: "我把...接入...", "我试了一下", "我后来发现", "我选择的是...".
 - Name field problems plainly: "格式全乱了", "内容说没就没", "关键词记不清就彻底找不回来了".
 - Use contrast to sharpen positioning, but only at real turning points: "不是 A，而是 B".
+- When a sentence becomes too symmetrical, turn it into feedback, process, or a smaller scene instead of stacking neat clauses.
 - End by returning to workflow, project, or next decision. Nemo's endings are practical judgments, not forced life lessons.
 
 ## Technical Personal-IP Extension
@@ -162,6 +163,44 @@ Use:
 
 End with practical meaning, not a forced philosophical升华.
 
+### 9. Keep Rhythm Human, Not Too Neat
+
+Rule: Avoid long chains of equally weighted abstract phrases. They look clear, but several in a row create a polished AI rhythm.
+
+Weak:
+
+```text
+结构要重排，语气要改，开头要更像人话，画面节奏也要重新调。
+```
+
+Better:
+
+```text
+第一版通常不是完全不能看，但客户一用就会开始挑：这里不像人说话，开头太绕，节奏也有点拖。
+```
+
+Or:
+
+```text
+第一版往往能看，但真要交付，还得来回磨。先把结构顺一遍，再把语气改得像客户自己的表达，最后还要看画面节奏能不能跟上。
+```
+
+Or, when the point can be shorter:
+
+```text
+第一版往往能看，但不能直接用。最常见的问题是结构不顺，表达也不像客户自己的话。
+```
+
+Use:
+
+If a sentence has three or more abstract repairs in a row, choose one of these directions:
+
+- Feedback voice: what a client, reader, or user would actually complain about.
+- Process voice: what has to be done first, then next, then after that.
+- Representative detail: keep one or two concrete symptoms and cut the rest.
+
+The goal is not to remove structure. It is to keep structure from becoming a template readers can hear before the sentence ends.
+
 ## Title Patterns
 
 Use 15-30 Chinese characters when possible. Generate title options only when the user asks for options or when a full article needs a title.
@@ -214,6 +253,7 @@ Avoid:
 - Empty summary: "总的来说，这是一个非常值得尝试的工具。"
 - Hype without tradeoff.
 - Overly polished AI transitions: "值得注意的是", "不难发现", "综上所述".
+- Over-neat enumeration fatigue: several clauses with the same rhythm, such as "结构要..., 语气要..., 开头要..., 节奏要...".
 - Pretending to have screenshots, logs, or tests that were not provided.
 
 ## Quality Gate
@@ -226,4 +266,5 @@ Before accepting a draft as Nemo style, check:
 - Are claims supported by source material?
 - Are pitfalls concrete?
 - Does the draft sound like a technical friend, not a vendor page?
+- Does the rhythm avoid repeated "表面/其实/真正" reframes and over-neat enumeration chains?
 - Does the ending return to the solved problem?

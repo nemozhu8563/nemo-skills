@@ -5,9 +5,9 @@ description: Continue or initialize one Obsidian LLM Wiki domain by repeatedly a
 
 # LLM Wiki Bootstrap
 
-Use this skill while the target domain is still in `bootstrap`.
+Use this skill while the target domain is still in `bootstrap`, or when the user explicitly wants batch absorption behavior.
 
-This is not a different knowledge logic from steady-state ingest. It is the same single-source absorption loop, repeated in batches, with a different confirmation policy.
+This is not a different knowledge logic from steady-state ingest. It is the same single-source absorption loop, repeated in batches. The difference is batching and progress reporting, not a stricter or looser truth standard.
 
 ## Read these files first
 
@@ -19,12 +19,14 @@ This is not a different knowledge logic from steady-state ingest. It is the same
 
 ## Bootstrap policy
 
-- For a domain whose lifecycle is `bootstrap`, per-source or per-package ingest confirmation is not required.
+- For normal absorption into existing `03_Notes` pages, per-source or per-package ingest confirmation is not required.
 - Keep processing until you hit a real blocker or the user explicitly says initialization is complete.
-- Ask only if the work would leave the target domain scope, introduce a clearly new page family, or conflict with the domain's current operating surfaces.
-- Before each write batch, check the gate with `05_Templates/scripts/llm_wiki_policy_gate.py`.
+- Ask only if the work would leave the target domain scope, introduce a clearly new page family, conflict with the domain's current operating surfaces, or hit a review-worthy write risk.
+- Before each write batch, check the gate with `05_Templates/scripts/llm_wiki_policy_gate.py` using `ingest_write --ingest-risk normal` for ordinary page updates.
 - Bootstrap exit itself is not automatic: `bootstrap -> steady_state` requires confirmation via the canonical gate.
 - If the target domain is `parent_managed`, do not create or mutate independent Index / Log / lint surfaces.
+
+Do not send material to review merely because the topic mentions law, medicine, mental health, public health, accident, education, family, parenting, investment, or self-harm. Send it to review only when the write would become concrete advice, make responsibility/fact conclusions, rely on unstable facts, propagate private information, lack enough context, or require new independent operating surfaces.
 
 For `02_Sources` queue checks, use this minimal frontmatter contract on candidate notes:
 

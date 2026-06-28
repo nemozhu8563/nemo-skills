@@ -1,4 +1,4 @@
 interface:
   display_name: "Nemo Writer"
   short_description: "把真实笔记和项目实践写成 Nemo 风格的技术文章或技术型个人 IP 长文"
-  default_prompt: "Use $nemo-writer to turn my real notes, operating records, and project practice into a Nemo-style Chinese technical article or technical personal-IP essay."
+  default_prompt: "Use $nemo-writer to turn my real notes, operating records, and project practice into a Nemo-style Chinese technical article or technical personal-IP essay. For AI_Media or WeChat longform, check topic-fit local expression assets before drafting openings and endings."

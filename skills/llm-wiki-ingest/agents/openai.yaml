@@ -1,7 +1,7 @@
 interface:
   display_name: "LLM Wiki Ingest"
-  short_description: "Extract one source into durable LLM Wiki knowledge"
-  default_prompt: "Use $llm-wiki-ingest to extract this source into the right wiki pages and update its processing status."
+  short_description: "Extract one source into durable LLM Wiki knowledge and optional AI_Media expression assets"
+  default_prompt: "Use $llm-wiki-ingest to extract this source into the right wiki pages, update its processing status, and run the AI_Media expression-asset pass when it is useful or requested."
 
 policy:
   allow_implicit_invocation: true

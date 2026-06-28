@@ -1,6 +1,6 @@
 ---
 name: article-clip-obsidian
-description: Acquire articles through web-access, normalize them into an article package, and convert them to Obsidian format. Use when user asks to "download article", "clip article", "save article", provides an article URL, or wants to save web content to their Obsidian vault.
+description: Acquire articles through web-access, normalize them into an article package, and convert them to Obsidian format. Use when user asks to "download article", "clip article", "save article", provides an article URL, or wants to save web content to their Obsidian vault. If the user explicitly asks to save and absorb/extract into LLM Wiki, clip first and then hand the saved source note to llm-wiki; do not run LLM Wiki for ordinary clipping requests.
 ---
 
 # Article Clip Obsidian
@@ -12,6 +12,23 @@ Acquire articles with `web-access`, normalize the capture into `content.md + ass
 This skill is managed from the sibling `nemo-skills` repository. Edit the source skill there, then publish into the vault. Do not hand-edit the generated vault copy under `.agents/skills/article-clip-obsidian/`.
 
 ## Workflow
+
+## LLM Wiki Boundary
+
+This skill owns source capture only. It saves the original article as a clipping; it does not extract durable knowledge, update `03_Notes`, or decide whether old wiki pages should change unless the user explicitly asks for LLM Wiki absorption in the same request.
+
+Default behavior:
+
+- `保存` / `剪藏` / `下载` / `导入 URL` means clip only.
+- Do not call `llm-wiki` automatically after ordinary clipping.
+- Do not add LLM Wiki operational fields such as `llm_status`, `llm_domain`, `llm_note`, or `derived_refs` just to make a clipping intake-ready; `llm-wiki` treats missing `llm_status` as a new intake candidate and can add those fields when it actually routes or absorbs the source.
+
+Explicit handoff behavior:
+
+- If the user says `保存并吸收`, `剪藏后用 llm-wiki`, `入库后提取`, `save and ingest`, or an equivalent explicit request, finish and verify the clipping first.
+- After clipping verification succeeds, pass the generated source note path to `../llm-wiki/SKILL.md` / `llm-wiki-ingest`.
+- Treat the saved clipping as a primary source. Let `llm-wiki` resolve the domain, check the intake board, apply the update-first rule, and obey its policy gate before writing `03_Notes`.
+- Report the clipping result and the LLM Wiki result as separate outcomes. If LLM Wiki is blocked by domain ambiguity or a confirmation gate, the clipping still counts as complete.
 
 ## Non-Negotiable Output Contract
 
@@ -141,6 +158,7 @@ After conversion, report:
 - Number of images processed
 - Acquisition route used: web-access route or legacy article-clip fallback
 - Any issues encountered
+- Whether LLM Wiki absorption was requested and, if so, the separate handoff result
 
 Before reporting completion, verify:
 - The note path starts with `02_Sources/_clippings/`, unless the user explicitly requested another destination.

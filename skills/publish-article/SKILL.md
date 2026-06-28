@@ -1,97 +1,102 @@
 ---
 name: publish-article
-description: 文章发布助手。帮助用户将文章从素材目录（03_Assets）移动到已发布目录（04_Published），并更新 frontmatter 字段。需要用户提供发布链接和文章分类。使用场景：用户说"发布这篇文章"、"把文章移到已发布目录"、"这篇文章已经发布了"等。
+description: 文章发布闭环助手。用于文章已经发布、创建公众号草稿后需要回写本地状态、补齐 AI_Media operations.md、记录发布 URL、发布时间、渠道、资产、复盘和后续数据快照待办。触发场景包括“这篇文章已经发布了”“补一下发布状态”“把公众号链接写回本地”“闭合 operations.md”“发布后归档”等。
 ---
 
-# 文章发布助手
+# Publish Article
 
-这个技能帮助你将已发布的文章从素材目录移动到已发布目录，并更新相关字段。
+这个技能负责发布后的本地状态闭环，不负责实际发布到平台。真正上传到微信公众号时使用 `wechat-publisher`；发布完成或拿到平台链接以后，再用本技能补齐 vault 里的状态。
 
-## 工作流程
+## 判断对象
 
-1. **确认文件**：确认用户要发布的文章文件
-2. **获取信息**：从用户获取发布链接和分类
-3. **更新字段**：更新 frontmatter 字段
-4. **移动文件**：将文件移动到 `04_Projects/AI_Media/04_Published/` 目录
+优先判断文章属于哪种结构：
 
-## 字段更新规则
+1. **新 AI_Media Topic**：目录形态为 `04_Projects/AI_Media/<topic>/`，包含 `topic.md`、`materials.md`、`content.md`、`operations.md`，也可能有 `content-*.md` 变体。
+2. **历史文章**：旧目录或旧单文件仍使用 `published_article`、`publish_date`、`published_url`、`channel` 等字段。
 
-### 从 asset 到 published_article 的字段变化
+新 AI_Media Topic 必须以 `operations.md` 作为发布事实主记录。不要把 `published_url`、`views`、`likes`、`channel` 这类发布字段继续扩散到 `content.md` 或 `topic.md` frontmatter。
 
-| 字段 | 更新前 | 更新后 |
-|------|--------|--------|
-| type | asset | published_article |
-| status | 待发布/草稿 | 已完成 |
-| publish_date | 无 | 当前日期（YYYY-MM-DD） |
-| category | 无 | 用户指定的分类 |
-| published_url | 无 | URL（如：https://mp.weixin.qq.com/s/xxx） |
-| tags | 进行中 | 已完成 |
-| refs | 无/空 | 发布链接 |
+## 必要输入
 
-### 分类选项
+如果用户没有提供，先询问缺失项：
 
-根据 `05_Templates/笔记字段速查表.md`，published_article 的 category 可选值：
-- 技术教程
-- 工具推荐
-- 方法论
-- 案例分析
+- 已发布或已创建草稿的文件路径。
+- 发布平台：`wechat` / `zhihu` / `x` / 其他。
+- 发布状态：`drafted` / `published` / `skipped`。
+- 最终标题。
+- 发布 URL 或草稿标识；没有公开 URL 时说明原因。
+- 发布时间，默认使用当前日期。
+- 数据来源：例如 `wechat-publisher`、`manual_public_page`、`public_link`、`wechat_mp_screenshot`。
 
-## 执行步骤
+## 新 AI_Media Topic 闭环
 
-### Step 1: 确认文件
+当目标文件位于 `04_Projects/AI_Media/<topic>/` 下时：
 
-用户会指定要发布的文件，例如：
-- "发布这篇文章"（如果正在编辑某个文件）
-- "发布 [文件名]"
-- "把 [文件名] 移到已发布目录"
+1. 找到同目录 `operations.md`；如果缺失，先报告缺失，不要凭空改写其他文件充当替代。
+2. 在 `operations.md` 的“发布记录”表中找到对应平台行：
+   - 将状态从 `planned` 改为 `published` 或 `drafted`。
+   - 补齐最终标题、URL、发布时间和数据来源。
+   - 如果表中没有该平台行，按既有表头新增一行。
+3. 更新 `operations.md` frontmatter：
+   - `status: tracking`，除非所有复盘和回写都已经完成，才可改为 `closed`。
+   - `updated: <YYYY-MM-DD>`。
+   - `platforms` 包含实际发布平台。
+   - `review_status` 缺失时设为 `pending`。
+   - `writeback_status` 缺失时设为 `pending`；如果已经完成部分 skill、系统规则或资产回写，可设为 `partial`。
+4. 将实际使用的封面和正文配图写入 `asset_refs`，保持已有条目，不重复。
+5. 将质检、改稿复盘、skill 回写记录或 workflow issue 写入 `review_refs`，保持已有条目，不重复。
+6. 在“回写项”中保留后续任务：
+   - T+24h 数据快照。
+   - T+72h 数据快照。
+   - T+7d 数据快照。
+   - 需要回写 `03_Notes`、`80_Assets` 或系统规则的事项。
+7. 如果实际发布的是 `content-*.md` 变体，可以在该变体 frontmatter 保留：
+   - `status: published`
+   - `published_at: <YYYY-MM-DD>`
+   - `<platform>_url: <URL>`
+   但这只是变体状态，发布事实仍以 `operations.md` 为主。
 
-### Step 2: 获取必要信息
+## 历史文章兼容
 
-询问用户：
-1. **发布链接**："请提供文章的发布链接"
-2. **分类**："请选择文章分类：（1）技术教程 （2）工具推荐 （3）方法论 （4）案例分析"
+只有在目标不是新 AI_Media Topic 时，才使用旧字段：
 
-### Step 3: 更新 frontmatter
+| 字段 | 更新规则 |
+| --- | --- |
+| `type` | 可保留或改为 `published_article`，以原文件结构为准 |
+| `status` | 改为 `published` / `已发布` / `已完成`，匹配原文件语言 |
+| `publish_date` | 当前日期或用户指定日期 |
+| `published_url` | 平台 URL |
+| `channel` | 发布渠道 |
 
-按照字段更新规则更新文件的 frontmatter。
+不要把历史兼容字段迁回新 Topic 模板。
 
-### Step 4: 移动文件
+## 完成标准
 
-将文件从 `04_Projects/AI_Media/03_Assets/` 移动到 `04_Projects/AI_Media/04_Published/`
+完成后检查：
 
-### Step 5: 提交更改
-
-创建 git 提交：
-```bash
-git add -A
-git commit -m "feat: 发布文章 [文章标题]
-
-- 移动到已发布目录
-- 更新 type: published_article
-- 添加 publish_date 和 published_url"
-git push origin main
-```
+- `operations.md` 发布记录能追溯到平台 URL 或草稿标识。
+- 对应平台状态不再停在 `planned`。
+- `operations.md` frontmatter 至少进入 `tracking`。
+- 已发布正文或变体的状态与 `operations.md` 不冲突。
+- 数据快照、复盘和回写待办没有丢失。
 
 ## 示例
 
-### 输入
-```
-用户：发布 网站Google搜不到？3步让搜索引擎收录你的内容.md
+用户：
+
+```text
+这篇公众号已经发布了：https://mp.weixin.qq.com/s/xxx
+文件是 04_Projects/AI_Media/某个选题/content-nemo-writer-v2.md
 ```
 
-### 输出
-```
-助手：请提供文章的发布链接。
-用户：https://mp.weixin.qq.com/s/vI3aq-ut3KFWb-I0LV5YuA
-助手：请选择文章分类：（1）技术教程 （2）工具推荐 （3）方法论 （4）案例分析
-用户：技术教程
-助手：[执行更新和移动操作，提交 git]
+助手应执行：
+
+```text
+1. 读取同目录 operations.md。
+2. 将公众号行改成 published，写入最终标题、URL、发布时间和数据来源。
+3. 将 operations.md status 改为 tracking。
+4. 补 asset_refs / review_refs / 数据快照待办。
+5. 如果 content-nemo-writer-v2.md 还没有发布状态，再补 status、published_at、wechat_url。
 ```
 
-## 注意事项
-
-1. **文件路径**：确保文件在 `04_Projects/AI_Media/03_Assets/` 目录下
-2. **备份**：移动前建议先提交当前更改
-3. **日期格式**：publish_date 使用 YYYY-MM-DD 格式
-4. **published_url 格式**：直接使用 URL，例如 `https://mp.weixin.qq.com/s/xxx`
-5. **分类验证**：确保用户选择的分类在可选值范围内
+不要只改正文 frontmatter 后就结束。
