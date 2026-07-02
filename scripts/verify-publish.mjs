@@ -59,7 +59,7 @@ function printHelp() {
 
 Options:
   --repo-root <path>       Source repo root (default: parent of scripts/)
-  --vault-root <path>      Obsidian vault root
+  --vault-root <path>      Obsidian vault root (required)
   --mapping-path <path>    Mapping JSON path (default: <repo>/docs/mapping.json)
   --entry-id <id[,id]>     Verify selected entry ids; repeatable
   --only-migrate-now       Select all migrate_now entries

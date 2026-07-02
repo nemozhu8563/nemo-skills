@@ -81,7 +81,7 @@ function printHelp() {
 Options:
   --batch-id <id>          Backup batch id to restore
   --repo-root <path>       Source repo root (default: parent of scripts/)
-  --vault-root <path>      Obsidian vault root
+  --vault-root <path>      Obsidian vault root (required)
   --mapping-path <path>    Mapping JSON path (default: <repo>/docs/mapping.json)
   --entry-id <id[,id]>     Roll back selected entry ids; repeatable
   --help                   Show this help

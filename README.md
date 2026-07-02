@@ -8,10 +8,11 @@
 - Verify generated copies with `node scripts/verify-publish.mjs` or `bun scripts/verify-publish.mjs`.
 - Roll back with `node scripts/rollback-publish.mjs` or `bun scripts/rollback-publish.mjs`.
 
-## Current vault target
-- Vault root: `C:\Users\zkl\OneDrive\Obsdian\Obsidian`
-- Managed destination root: `C:\Users\zkl\OneDrive\Obsdian\Obsidian\.agents\skills`
-- Rollback backup root: `C:\Users\zkl\OneDrive\Obsdian\Obsidian\.agents\.nemo-backups\skills`
+## Required vault target
+- Scripts do not infer a default vault. Always pass `--vault-root <path>`.
+- Current vault root: `/Users/nemo/Documents/Obsidian`
+- Managed destination root: `<vault-root>/.agents/skills`
+- Rollback backup root: `<vault-root>/.agents/.nemo-backups/skills`
 
 ## Default safety rules
 - Because both this repo and the vault live under OneDrive, live links / junctions are default-forbidden.
@@ -26,19 +27,19 @@ Common commands:
 
 ```bash
 # Publish one skill
-node scripts/publish-to-vault.mjs --entry-id article-illustrate --mode OverwriteManagedClean
+node scripts/publish-to-vault.mjs --vault-root /Users/nemo/Documents/Obsidian --entry-id article-illustrate --mode OverwriteManagedClean
 
 # Verify one skill
-node scripts/verify-publish.mjs --entry-id article-illustrate
+node scripts/verify-publish.mjs --vault-root /Users/nemo/Documents/Obsidian --entry-id article-illustrate
 
 # Publish all migrate_now entries
-node scripts/publish-to-vault.mjs --only-migrate-now --mode OverwriteManagedClean
+node scripts/publish-to-vault.mjs --vault-root /Users/nemo/Documents/Obsidian --only-migrate-now --mode OverwriteManagedClean
 
 # Roll back a publish batch
-node scripts/rollback-publish.mjs --batch-id 20260516T111507Z --entry-id article-illustrate
+node scripts/rollback-publish.mjs --vault-root /Users/nemo/Documents/Obsidian --batch-id 20260516T111507Z --entry-id article-illustrate
 ```
 
-On macOS/Linux, the scripts infer a sibling vault at `../Obsidian` when `docs/mapping.json` points at a Windows path. Pass `--vault-root <path>` to target a different vault.
+The target vault is intentionally required at call time. This keeps AI/tooling invocations explicit and prevents accidental publishes into stale OneDrive vault paths.
 
 Primary entrypoints:
 

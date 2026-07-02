@@ -81,15 +81,7 @@ export function loadContext(args = {}) {
 
 function resolveVaultRoot(cliVaultRoot, mapping, repoRoot) {
   if (cliVaultRoot) return path.resolve(cliVaultRoot);
-
-  const mapped = mapping.vault_root;
-  if (mapped && fs.existsSync(mapped)) return path.resolve(mapped);
-
-  const sibling = path.join(path.dirname(repoRoot), "Obsidian");
-  if (fs.existsSync(sibling)) return sibling;
-
-  if (mapped) return mapped;
-  throw new Error("Vault root not provided and mapping.vault_root is missing.");
+  throw new Error("Missing required --vault-root <path>.");
 }
 
 export function selectEntries(mapping, entryIds = [], onlyMigrateNow = false) {
