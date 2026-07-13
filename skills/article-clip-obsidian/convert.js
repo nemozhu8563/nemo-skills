@@ -191,29 +191,39 @@ function convertToObsidianFormat(sourcePath, outputDir, assetsDir) {
   const realTitle = extractRealTitle(frontmatter, body);
   const cleanTitle = sanitizeFilename(realTitle);
   const sourceTitle = sanitizeSourceTitle(realTitle);
-  const author = frontmatter.author || 'unknown';
-  const sourceUrl = frontmatter.source_url || frontmatter.canonical_url || '';
+  const rawAuthor = String(frontmatter.author || '').trim();
+  const author = /^(?:unknown|n\/a|none|null|未知)$/i.test(rawAuthor) ? '' : rawAuthor;
+  const sourceUrl = String(frontmatter.source_url || frontmatter.canonical_url || '').trim();
+  if (!sourceUrl) {
+    throw new Error('Missing required source URL: expected source_url or canonical_url');
+  }
   const fetchedAt = frontmatter.fetched_at; // Use download time for filename
-  const publishedAt = frontmatter.published_at || frontmatter.fetched_at; // Use for created date
+  const publishedAt = String(frontmatter.published_at || '').trim();
   const timestamp = formatTimestamp(fetchedAt);
-  const createdDate = formatDate(publishedAt);
+  const publishedDate = publishedAt ? formatDate(publishedAt) : '';
 
   // Generate filename
   const filename = `${timestamp} ${cleanTitle}.md`;
   const assetsDirName = `${timestamp} ${cleanTitle}`;
 
   // Create new frontmatter
-  const newFrontmatter = `---
-type: source
-status: 待读
-tags: [待处理]
-created: ${createdDate}
-source: "${escapeYamlString(sourceTitle)}"
-refs:
-  - "${escapeYamlString(sourceUrl)}"
-ddc: "000"
-author: "${escapeYamlString(author)}"
----`;
+  const frontmatterLines = [
+    '---',
+    'type: source',
+    'status: active',
+    'tags: [source]',
+    `title: "${escapeYamlString(sourceTitle)}"`,
+    `source: "${escapeYamlString(sourceUrl)}"`,
+    'llm_status: new'
+  ];
+  if (author) {
+    frontmatterLines.push(`author: "${escapeYamlString(author)}"`);
+  }
+  if (publishedDate) {
+    frontmatterLines.push(`published: ${publishedDate}`);
+  }
+  frontmatterLines.push('---');
+  const newFrontmatter = frontmatterLines.join('\n');
 
   // Update image references
   const cleanedBody = stripZhihuPlaceholderImageNotice(body, frontmatter);

@@ -37,7 +37,7 @@ test('normalizes web-access capture metadata into converter frontmatter fields',
   assert.equal(normalized.platform, 'example.com');
 });
 
-test('falls back to capture time and URL-derived title when metadata is sparse', () => {
+test('keeps optional author and publication metadata absent when capture metadata is sparse', () => {
   const normalized = normalizeCapture({
     url: 'https://example.com/posts/url-derived-title',
     captured_at: '2026-05-03T11:00:00+08:00',
@@ -45,8 +45,8 @@ test('falls back to capture time and URL-derived title when metadata is sparse',
   });
 
   assert.equal(normalized.title, 'url derived title');
-  assert.equal(normalized.published_at, '2026-05-03T11:00:00+08:00');
-  assert.equal(normalized.author, 'unknown');
+  assert.equal(normalized.published_at, undefined);
+  assert.equal(normalized.author, undefined);
 });
 
 function fakeFetch(body = 'remote image bytes', ok = true) {
@@ -184,8 +184,47 @@ test('adapter output converts through convert.js', async () => {
   const note = fs.readFileSync(converted.outputPath, 'utf-8');
 
   assert.equal(converted.filename, '202605031020 Adapter Integration Example.md');
-  assert.match(note, /created: 2026-05-01/);
-  assert.match(note, /- "https:\/\/example.com\/articles\/adapter-integration"/);
+  assert.match(note, /status: active/);
+  assert.match(note, /tags: \[source\]/);
+  assert.match(note, /title: "Adapter Integration Example"/);
+  assert.match(note, /source: "https:\/\/example.com\/articles\/adapter-integration"/);
+  assert.match(note, /llm_status: new/);
+  assert.match(note, /author: "Nemo"/);
+  assert.match(note, /published: 2026-05-01/);
+  assert.doesNotMatch(note, /\ncreated:/);
+  assert.doesNotMatch(note, /\nrefs:/);
+  assert.doesNotMatch(note, /\nddc:/);
+  assert.doesNotMatch(note, /\nllm_domain:/);
+  assert.doesNotMatch(note, /\nllm_note:/);
+  assert.doesNotMatch(note, /\nplatform:/);
+});
+
+test('sparse adapter output converts without fabricated author or publication fields', async () => {
+  const root = makeTempDir();
+  const packageDir = path.join(root, 'package');
+  const outputDir = path.join(root, 'clippings');
+  const assetsDir = path.join(root, 'vault-assets');
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const packageResult = await createArticlePackage({
+    url: 'https://example.com/articles/sparse-adapter',
+    title: 'Sparse Adapter Example',
+    captured_at: '2026-05-03T10:20:00+08:00',
+    markdown: '# Sparse Adapter Example\n\nBody.'
+  }, packageDir);
+
+  const packageContent = fs.readFileSync(packageResult.contentPath, 'utf-8');
+  assert.doesNotMatch(packageContent, /\nauthor:/);
+  assert.doesNotMatch(packageContent, /\npublished_at:/);
+
+  const converted = convertToObsidianFormat(packageResult.contentPath, outputDir, assetsDir);
+  const note = fs.readFileSync(converted.outputPath, 'utf-8');
+
+  assert.match(note, /title: "Sparse Adapter Example"/);
+  assert.match(note, /source: "https:\/\/example\.com\/articles\/sparse-adapter"/);
+  assert.match(note, /llm_status: new/);
+  assert.doesNotMatch(note, /\nauthor:/);
+  assert.doesNotMatch(note, /\npublished:/);
 });
 
 test('fails clearly when required capture fields are missing', () => {

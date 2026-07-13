@@ -109,8 +109,7 @@ function normalizeCapture(input) {
     input.published,
     metadata.published_at,
     metadata.publishedAt,
-    metadata.published,
-    fetchedAt
+    metadata.published
   );
   const title = firstPresent(
     input.title,
@@ -125,7 +124,7 @@ function normalizeCapture(input) {
     canonical_url: firstPresent(input.canonical_url, metadata.canonical_url, url),
     fetched_at: fetchedAt,
     published_at: publishedAt,
-    author: firstPresent(input.author, metadata.author, 'unknown'),
+    author: firstPresent(input.author, metadata.author),
     platform: firstPresent(input.platform, metadata.platform, platformFromUrl(url)),
     markdown: String(markdown).trim(),
     assets: Array.isArray(input.assets) ? input.assets : []
@@ -320,17 +319,26 @@ async function localizeRemoteImages(markdown, outputDir, copiedAssets, options =
 }
 
 function renderContentMarkdown(capture) {
-  return `---
-title: "${escapeYamlString(capture.title)}"
-source_url: "${escapeYamlString(capture.source_url)}"
-canonical_url: "${escapeYamlString(capture.canonical_url)}"
-fetched_at: "${escapeYamlString(capture.fetched_at)}"
-published_at: "${escapeYamlString(capture.published_at)}"
-author: "${escapeYamlString(capture.author)}"
-platform: "${escapeYamlString(capture.platform)}"
----
-${capture.markdown}
-`;
+  const frontmatterLines = [
+    '---',
+    `title: "${escapeYamlString(capture.title)}"`,
+    `source_url: "${escapeYamlString(capture.source_url)}"`,
+    `canonical_url: "${escapeYamlString(capture.canonical_url)}"`,
+    `fetched_at: "${escapeYamlString(capture.fetched_at)}"`
+  ];
+
+  if (firstPresent(capture.published_at)) {
+    frontmatterLines.push(`published_at: "${escapeYamlString(capture.published_at)}"`);
+  }
+  if (firstPresent(capture.author)) {
+    frontmatterLines.push(`author: "${escapeYamlString(capture.author)}"`);
+  }
+  if (firstPresent(capture.platform)) {
+    frontmatterLines.push(`platform: "${escapeYamlString(capture.platform)}"`);
+  }
+
+  frontmatterLines.push('---');
+  return `${frontmatterLines.join('\n')}\n${capture.markdown}\n`;
 }
 
 async function createArticlePackage(input, outputDir, options = {}) {

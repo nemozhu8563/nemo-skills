@@ -64,10 +64,19 @@ Intro paragraph.
 
   const converted = fs.readFileSync(result.outputPath, 'utf-8');
   assert.match(converted, /type: source/);
-  assert.match(converted, /created: 2026-05-01/);
-  assert.match(converted, /source: "A Useful Article About Agents"/);
+  assert.match(converted, /status: active/);
+  assert.match(converted, /tags: \[source\]/);
+  assert.match(converted, /title: "A Useful Article About Agents"/);
+  assert.match(converted, /source: "https:\/\/example.com\/articles\/agents"/);
+  assert.match(converted, /llm_status: new/);
   assert.match(converted, /author: "Nemo"/);
-  assert.match(converted, /- "https:\/\/example.com\/articles\/agents"/);
+  assert.match(converted, /published: 2026-05-01/);
+  assert.doesNotMatch(converted, /\ncreated:/);
+  assert.doesNotMatch(converted, /\nrefs:/);
+  assert.doesNotMatch(converted, /\nddc:/);
+  assert.doesNotMatch(converted, /\nllm_domain:/);
+  assert.doesNotMatch(converted, /\nllm_note:/);
+  assert.doesNotMatch(converted, /\nplatform:/);
   assert.match(converted, /!\[\[assets\/202605031020 A Useful Article About Agents\/001\.jpg\]\]/);
 });
 
@@ -101,7 +110,7 @@ published_at: "2026-05-03T10:20:00+08:00"
   assert.doesNotMatch(converted, /\]\(https:\/\/x\.com\/example\/status\/1\/photo\/1\)/);
 });
 
-test('sanitizes noisy titles consistently for filenames and source field', () => {
+test('sanitizes noisy titles consistently for filenames and title field', () => {
   const root = makeTempDir();
   const packageDir = path.join(root, 'package');
   const outputDir = path.join(root, 'clippings');
@@ -125,10 +134,11 @@ Tiny.
   assert.equal(result.filename, '202605031100 A Very Long Invalid Article Title With E.md');
 
   const converted = fs.readFileSync(result.outputPath, 'utf-8');
-  assert.match(converted, /source: "A <Very> Long \/ Invalid: Article\? Title\* With Extra Words That Should Be Truncated"/);
+  assert.match(converted, /title: "A <Very> Long \/ Invalid: Article\? Title\* With Extra Words That Should Be Truncated"/);
+  assert.match(converted, /source: "https:\/\/example.com\/long"/);
 });
 
-test('keeps full source title while truncating only the filename', () => {
+test('keeps full title while truncating only the filename', () => {
   const root = makeTempDir();
   const packageDir = path.join(root, 'package');
   const outputDir = path.join(root, 'clippings');
@@ -156,7 +166,8 @@ platform: "zhihu"
   const converted = fs.readFileSync(result.outputPath, 'utf-8');
 
   assert.equal(result.filename, '202606031547 似乎佛教有一个观点叫“不着相”，“不着相”指的是什么？ - 浮梦子的回答 - 知.md');
-  assert.match(converted, new RegExp(`source: "${longTitle}"`));
+  assert.match(converted, new RegExp(`title: "${longTitle}"`));
+  assert.match(converted, /source: "https:\/\/www\.zhihu\.com\/question\/1\/answer\/2"/);
 });
 
 test('escapes quoted source urls and authors in YAML frontmatter', () => {
@@ -184,8 +195,149 @@ Body.
   const result = convertToObsidianFormat(sourcePath, outputDir, assetsDir);
   const converted = fs.readFileSync(result.outputPath, 'utf-8');
 
-  assert.match(converted, /- "https:\/\/example\.com\/articles\?query=\\"agents\\""/);
+  assert.match(converted, /source: "https:\/\/example\.com\/articles\?query=\\"agents\\""/);
   assert.match(converted, /author: "A \\"Quoted\\" Author"/);
+});
+
+test('omits optional author and published fields when capture metadata is missing', () => {
+  const root = makeTempDir();
+  const packageDir = path.join(root, 'package');
+  const outputDir = path.join(root, 'clippings');
+  const assetsDir = path.join(root, 'vault-assets');
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const sourcePath = writeArticlePackage(
+    packageDir,
+    `---
+title: "Minimal Article"
+source_url: "https://example.com/minimal"
+fetched_at: "2026-05-03T11:00:00+08:00"
+platform: "web"
+---
+# Minimal Article
+
+Body.
+`
+  );
+
+  const result = convertToObsidianFormat(sourcePath, outputDir, assetsDir);
+  const converted = fs.readFileSync(result.outputPath, 'utf-8');
+
+  assert.match(converted, /title: "Minimal Article"/);
+  assert.match(converted, /source: "https:\/\/example\.com\/minimal"/);
+  assert.match(converted, /llm_status: new/);
+  assert.doesNotMatch(converted, /\nauthor:/);
+  assert.doesNotMatch(converted, /\npublished:/);
+  assert.doesNotMatch(converted, /\nplatform:/);
+});
+
+test('omits whitespace-only optional author and published fields', () => {
+  const root = makeTempDir();
+  const packageDir = path.join(root, 'package');
+  const outputDir = path.join(root, 'clippings');
+  const assetsDir = path.join(root, 'vault-assets');
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const sourcePath = writeArticlePackage(
+    packageDir,
+    `---
+title: "Whitespace Metadata"
+source_url: "  https://example.com/whitespace  "
+fetched_at: "2026-05-03T11:00:00+08:00"
+published_at: "   "
+author: "   "
+---
+# Whitespace Metadata
+
+Body.
+`
+  );
+
+  const result = convertToObsidianFormat(sourcePath, outputDir, assetsDir);
+  const converted = fs.readFileSync(result.outputPath, 'utf-8');
+
+  assert.match(converted, /source: "https:\/\/example\.com\/whitespace"/);
+  assert.doesNotMatch(converted, /\nauthor:/);
+  assert.doesNotMatch(converted, /\npublished:/);
+});
+
+test('omits placeholder author values from legacy packages', () => {
+  const root = makeTempDir();
+  const packageDir = path.join(root, 'package');
+  const outputDir = path.join(root, 'clippings');
+  const assetsDir = path.join(root, 'vault-assets');
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const sourcePath = writeArticlePackage(
+    packageDir,
+    `---
+title: "Placeholder Author"
+source_url: "https://example.com/placeholder-author"
+fetched_at: "2026-05-03T11:00:00+08:00"
+author: "unknown"
+---
+# Placeholder Author
+
+Body.
+`
+  );
+
+  const result = convertToObsidianFormat(sourcePath, outputDir, assetsDir);
+  const converted = fs.readFileSync(result.outputPath, 'utf-8');
+
+  assert.doesNotMatch(converted, /\nauthor:/);
+});
+
+test('accepts legacy canonical_url input but emits only the source field', () => {
+  const root = makeTempDir();
+  const packageDir = path.join(root, 'package');
+  const outputDir = path.join(root, 'clippings');
+  const assetsDir = path.join(root, 'vault-assets');
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const sourcePath = writeArticlePackage(
+    packageDir,
+    `---
+title: "Legacy URL Article"
+canonical_url: "https://example.com/legacy"
+fetched_at: "2026-05-03T11:00:00+08:00"
+---
+# Legacy URL Article
+
+Body.
+`
+  );
+
+  const result = convertToObsidianFormat(sourcePath, outputDir, assetsDir);
+  const converted = fs.readFileSync(result.outputPath, 'utf-8');
+
+  assert.match(converted, /source: "https:\/\/example\.com\/legacy"/);
+  assert.doesNotMatch(converted, /\ncanonical_url:/);
+});
+
+test('fails clearly when source_url and canonical_url are both missing', () => {
+  const root = makeTempDir();
+  const packageDir = path.join(root, 'package');
+  const outputDir = path.join(root, 'clippings');
+  const assetsDir = path.join(root, 'vault-assets');
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const sourcePath = writeArticlePackage(
+    packageDir,
+    `---
+title: "Missing URL Article"
+fetched_at: "2026-05-03T11:00:00+08:00"
+---
+# Missing URL Article
+
+Body.
+`
+  );
+
+  assert.throws(
+    () => convertToObsidianFormat(sourcePath, outputDir, assetsDir),
+    /Missing required source URL: expected source_url or canonical_url/
+  );
 });
 
 test('removes Zhihu placeholder-only image notices', () => {
@@ -234,7 +386,14 @@ test('fails clearly when frontmatter dates are missing', () => {
 
   const sourcePath = writeArticlePackage(
     packageDir,
-    'This package has no frontmatter but still has enough body text for a title.'
+    `---
+title: "Missing Date Article"
+source_url: "https://example.com/missing-date"
+---
+# Missing Date Article
+
+Body.
+`
   );
 
   assert.throws(

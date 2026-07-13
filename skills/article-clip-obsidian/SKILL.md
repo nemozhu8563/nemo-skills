@@ -9,7 +9,7 @@ Acquire articles with `web-access`, normalize the capture into `content.md + ass
 
 ## Source of Truth
 
-This skill is managed from the sibling `nemo-skills` repository. Edit the source skill there, then publish into the vault. Do not hand-edit the generated vault copy under `.agents/skills/article-clip-obsidian/`.
+This skill is managed from the sibling `nemo-skills` repository. In the current vault, `.agents/skills/article-clip-obsidian/` is a symbolic link to this source directory, not a generated copy. Edit the `nemo-skills` source directly (or through that symlink); no publish or managed-copy verification step is required.
 
 ## Workflow
 
@@ -21,14 +21,14 @@ Default behavior:
 
 - `保存` / `剪藏` / `下载` / `导入 URL` means clip only.
 - Do not call `llm-wiki` automatically after ordinary clipping.
-- Do not add LLM Wiki operational fields such as `llm_status`, `llm_domain`, `llm_note`, or `derived_refs` just to make a clipping intake-ready; `llm-wiki` treats missing `llm_status` as a new intake candidate and can add those fields when it actually routes or absorbs the source.
+- Every ordinary clipping starts with `llm_status: new`. Do not add `llm_domain`, `llm_note`, or `derived_refs` during capture; those fields describe an actual absorption result, not the capture itself.
 
 Explicit handoff behavior:
 
 - If the user says `保存并吸收`, `剪藏后用 llm-wiki`, `入库后提取`, `save and ingest`, or an equivalent explicit request, finish and verify the clipping first.
-- After clipping verification succeeds, pass the generated source note path to `../llm-wiki/SKILL.md` / `llm-wiki-ingest`.
+- After clipping verification succeeds, immediately pass the generated source note path to `../llm-wiki/SKILL.md` / `llm-wiki-ingest` and execute the full absorption chain in the same request. Do not stop after clipping or merely suggest the handoff.
 - Treat the saved clipping as a primary source. Let `llm-wiki` resolve the domain, check the intake board, apply the update-first rule, and obey its policy gate before writing `03_Notes`.
-- Report the clipping result and the LLM Wiki result as separate outcomes. If LLM Wiki is blocked by domain ambiguity or a confirmation gate, the clipping still counts as complete.
+- Report the clipping result and the LLM Wiki result as separate outcomes. If absorption is blocked by domain ambiguity or a confirmation gate, report that the clipping succeeded but the combined `保存并吸收` request is waiting at the absorption gate.
 
 ## Non-Negotiable Output Contract
 
@@ -96,7 +96,7 @@ Recommended fields:
 - `platform`
 - `assets` when images were downloaded locally
 
-If `published_at`, `title`, `author`, or `platform` is missing, the adapter will use safe fallbacks. If `url` or `markdown` is missing, the adapter fails.
+If `title` or `platform` is missing, the adapter uses a safe fallback. Missing, blank, or placeholder `author` values such as `unknown` stay absent from the final note. Missing `published_at` is not inferred from capture time. If `url` or `markdown` is missing, the adapter fails.
 
 ### 3. Create Article Package
 
@@ -125,14 +125,17 @@ node .agents/skills/article-clip-obsidian/convert.js \
   assets
 ```
 
-In the current vault, prefer the managed skill path `.agents/skills/article-clip-obsidian/...`. Use `.skills/...` only if that is the active published path in the target vault.
+In the current vault, use `.agents/skills/article-clip-obsidian/...`; it is a symlink to the `nemo-skills` source. Use `.skills/...` only if that is the active skill path in another target vault.
 
 The `02_Sources/_clippings` argument is the default destination. Change it only when the user explicitly asks for a different destination in the current request.
 
 The converter:
 - Generates filename: `YYYYMMDDHHmm 标题.md` using `fetched_at`
-- Uses `published_at` for frontmatter `created`
-- Keeps full cleaned article title in frontmatter `source`; only filenames and asset directories are shortened for filesystem safety.
+- Keeps the full cleaned article title in frontmatter `title`; only filenames and asset directories are shortened for filesystem safety
+- Stores the original URL in frontmatter `source`
+- Includes `author` and `published` only when the package provides them
+- Sets `llm_status: new` so every entry uses the same intake state
+- Does not output `created`, `refs`, `ddc`, `llm_domain`, `llm_note`, or `platform`
 - Transforms frontmatter to the vault clipping standard
 - Moves local images to `assets/YYYYMMDDHHmm 标题/`
 - Updates local image references to wiki-link format: `![[assets/YYYYMMDDHHmm 标题/001.jpg]]`
@@ -165,7 +168,8 @@ Before reporting completion, verify:
 - No Markdown image reference points to `http://` or `https://`.
 - No platform image CDN such as `pbs.twimg.com` remains in the note body.
 - Every `![[assets/...]]` embed points to an existing local file.
-- The note frontmatter includes the clipping standard fields: `type`, `status`, `tags`, `created`, `source`, `refs`, `ddc`, and `author`.
+- The note frontmatter includes the clipping standard fields: `type: source`, `status: active`, `tags: [source]`, `title`, `source` containing the original URL, and `llm_status: new`.
+- Optional `author` and `published` fields are present only when available; `created`, `refs`, `ddc`, `llm_domain`, `llm_note`, and `platform` are absent.
 
 Example: `Article saved to 02_Sources/_clippings/202603061234 文章标题.md with 5 images. Acquisition: web-access CDP.`
 
@@ -176,14 +180,13 @@ Frontmatter:
 ```yaml
 ---
 type: source
-status: 待读
-tags: [待处理]
-created: YYYY-MM-DD
-source: "文章标题"
-refs:
-  - "原始URL"
-ddc: "000"
-author: "作者名"
+status: active
+tags: [source]
+title: "文章标题"
+source: "原始URL"
+llm_status: new
+author: "作者名" # optional
+published: YYYY-MM-DD # optional
 ---
 ```
 
@@ -206,7 +209,7 @@ File structure:
 ## Notes
 
 - Use capture time (`captured_at` / `fetched_at`) for filename timestamp.
-- Use publication time (`published_at`) for frontmatter `created`.
+- If publication time is available, normalize `published_at` to optional frontmatter `published`; it does not control the filename.
 - Preserve original content structure and formatting where possible.
 - Handle Chinese characters properly in filenames.
 - Clean up temporary capture/package directories after successful conversion.

@@ -16,19 +16,7 @@
 
 ## Source of Truth
 
-本目录是源头目录。vault 里的 `.agents/skills/article-clip-obsidian/` 是发布出来的 managed copy，不要直接手改。
-
-发布到 vault：
-
-```bash
-node scripts/publish-to-vault.mjs --entry-id article-clip-obsidian --mode OverwriteManagedClean
-```
-
-验证发布：
-
-```bash
-node scripts/verify-publish.mjs --entry-id article-clip-obsidian
-```
+本目录是源头目录。当前 vault 里的 `.agents/skills/article-clip-obsidian/` 是指向本目录的软链接，不是 managed copy。直接修改 `nemo-skills` 源头（或通过该软链接修改）即可，无需 publish / verify。
 
 ## Files
 
@@ -76,12 +64,12 @@ Required:
 - `url`
 - non-empty `markdown`
 
-Optional fields use fallbacks:
+Optional fields:
 
 - `title`: heading, first text line, or URL-derived title
-- `author`: `unknown`
-- `published_at`: capture time
-- `captured_at`: current time
+- `author`: keep only a real non-empty value; otherwise omit it, including placeholders such as `unknown`
+- `published_at`: keep only a real non-empty publication time; do not infer it from capture time
+- `captured_at`: use the current time when absent; this is internal filename-timestamp input only
 - `platform`: URL hostname
 
 ## Usage
@@ -101,7 +89,7 @@ node .agents/skills/article-clip-obsidian/convert.js \
   assets
 ```
 
-In the current vault, the managed path is usually `.agents/skills/article-clip-obsidian/...`; use `.skills/...` only if that is the active published path in the target vault.
+In the current vault, `.agents/skills/article-clip-obsidian/...` is a symlink to this source directory. Use `.skills/...` only if that is the active skill path in another target vault.
 
 Legacy fallback:
 
@@ -127,16 +115,17 @@ node .agents/skills/article-clip-obsidian/convert.js \
 ```yaml
 ---
 type: source
-status: 待读
-tags: [待处理]
-created: YYYY-MM-DD
-source: "文章标题"
-refs:
-  - "原始URL"
-ddc: "000"
-author: "作者名"
+status: active
+tags: [source]
+title: "文章标题"
+source: "原始URL"
+llm_status: new
+author: "作者名" # optional
+published: YYYY-MM-DD # optional
 ---
 ```
+
+`author` 和 `published` 只在真实非空值存在时输出。最终 note 不输出 `created`、`refs`、`ddc`、`llm_domain`、`llm_note`、`platform` 或内部的 `captured_at` / `fetched_at`。
 
 ### Images
 
@@ -180,7 +169,8 @@ The tests cover:
 - Existing converter behavior
 - Title and filename sanitization
 - Zhihu placeholder notice cleanup
-- Adapter metadata fallback
+- Required URL validation and legacy `canonical_url` input compatibility
+- Optional author/publication preservation without placeholder or capture-time fabrication
 - Asset copying and reference rewriting
 - Remote Markdown image localization
 - Remote image download failure reporting
@@ -189,8 +179,16 @@ The tests cover:
 - Duplicate output protection
 - web-access resolver order: project before global before fallback
 - Adapter-to-converter integration
+- Sparse adapter-to-converter output without fabricated optional fields
 
 ## Changelog
+
+### v1.2.0 (2026-07-11)
+
+- Switched the current vault entrypoint documentation from managed copy to symlink source-of-truth semantics.
+- Standardized final clipping frontmatter on `type/status/title/source/llm_status`, with optional real `author` and `published` values.
+- Stopped fabricating `author: unknown` and publication time from capture time.
+- Kept capture time only as internal filename-timestamp input.
 
 ### v1.1.3 (2026-06-03)
 
