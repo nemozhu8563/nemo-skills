@@ -20,6 +20,8 @@ Post content, images, videos, and long-form articles to X using real Chrome brow
 | Script | Purpose |
 |--------|---------|
 | `scripts/x-browser.ts` | Regular posts (text + images) |
+| `scripts/x-post-with-reply.ts` | Publish a regular post, then reply under it with a link |
+| `scripts/x-reply.ts` | Reply to an existing regular post |
 | `scripts/x-video.ts` | Video posts (text + video) |
 | `scripts/x-quote.ts` | Quote tweet with comment |
 | `scripts/x-article.ts` | Long-form article publishing (Markdown) |
@@ -52,6 +54,14 @@ npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello from Claude!" --image ./scre
 # Actually post
 npx -y bun ${SKILL_DIR}/scripts/x-browser.ts "Hello!" --image ./photo.png --submit
 ```
+
+To put the link in the first reply, use one command for both actions:
+
+```bash
+npx -y bun ${SKILL_DIR}/scripts/x-post-with-reply.ts --submit --reply "项目地址：https://github.com/example/repo" "发现一个很有意思的 GitHub 仓库：example"
+```
+
+The command stops before replying if it cannot obtain the main post URL, and reports main-post submission, URL detection, and reply submission separately when it fails.
 
 > **Note**: `${SKILL_DIR}` represents this skill's installation directory. Agent replaces with actual path at runtime.
 
@@ -192,7 +202,7 @@ X Articles supports both standard Markdown and Obsidian wikilink syntax:
 - First run requires manual login (session is saved)
 - X Articles stop at preview by design; the account owner clicks final Publish manually
 - `x-article-package.ts` replaces the retired `nemo-post-to-x` flow; use this skill as the single X publishing entrypoint
-- X Articles treat image placeholders as a hard safety gate: after each image insert, the matching placeholder must disappear; before preview, global `IMAGE_PLACEHOLDER` count must be zero
+- X Articles treat image placeholders as a hard safety gate: each inline image is uploaded up to 3 times until the editor image count increases and the matching placeholder disappears; before preview, global `IMAGE_PLACEHOLDER` count must be zero
 - Regular-post browser windows are closed after operation; preview mode keeps the launched browser open for 30 seconds first
 - Supports macOS, Linux, and Windows
 

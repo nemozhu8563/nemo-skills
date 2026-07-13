@@ -71,7 +71,8 @@ Code blocks become blockquotes (X doesn't support code)
 1. **Cover Image**: `--cover`, then `assets/<article filename>/cover.png`, then frontmatter, then first image
 2. **Remote Images**: Automatically downloaded to temp directory
 3. **Placeholders**: Images in content use `[[IMAGE_PLACEHOLDER_N]]` format
-4. **Insertion**: Placeholders are found, selected, and replaced with actual images
+4. **Insertion**: Placeholders are found, selected, and replaced with actual images through the X Article toolbar media upload
+5. **Retry gate**: Each inline image is uploaded up to 3 times until the editor image count increases and the matching placeholder disappears
 
 For Obsidian articles, the preferred cover convention is:
 
@@ -158,8 +159,8 @@ This replaces the old separate `nemo-post-to-x` package-only flow. Keep `baoyu-p
 8. **Insert Images**: For each placeholder (reverse order):
    - Find placeholder text in editor
    - Select the placeholder
-   - Copy image to clipboard
-   - Paste to replace selection
+   - Open Insert -> Media and upload the image file
+   - Retry upload up to 3 times if the editor does not show a new image
    - If X inserts the image but leaves the placeholder text behind, delete only that placeholder immediately
 9. **Verify**: Confirm no image placeholders remain and the expected images are in the editor
 10. **Preview**: Open preview and leave Chrome there
@@ -186,8 +187,8 @@ Claude:
 
 - **No create button**: Ensure X Premium subscription is active
 - **Cover upload fails**: Check file path and format (PNG, JPEG)
-- **Images not inserting**: Verify placeholders exist in pasted content
-- **Images inserted but placeholders remain**: The script now treats this as an insertion cleanup failure, removes the specific placeholder after the image appears, and refuses to open preview if any `IMAGE_PLACEHOLDER` text remains.
+- **Images not inserting**: Verify placeholders exist in pasted content; the script retries each inline upload up to 3 times before failing closed.
+- **Images inserted but placeholders remain**: The script treats this as an insertion cleanup failure, removes the specific placeholder only after the image appears, and refuses to open preview if any `IMAGE_PLACEHOLDER` text remains.
 - **Content not pasting**: Check HTML clipboard: `npx -y bun ${SKILL_DIR}/scripts/copy-to-clipboard.ts html --file /tmp/test.html`
 - **Clipboard script not found in Chinese/OneDrive paths**: Ensure `x-utils.ts` uses `fileURLToPath(import.meta.url)` for script directory resolution on macOS and Windows.
 - **Nested Bun command fails on Windows**: Ensure helper script calls use `npx.cmd`; macOS/Linux should continue to use `npx`.

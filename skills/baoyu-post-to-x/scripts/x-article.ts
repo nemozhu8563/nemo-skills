@@ -10,12 +10,10 @@ import {
   CHROME_CANDIDATES_BASIC,
   CdpConnection,
   copyHtmlToClipboard,
-  copyImageToClipboard,
   findChromeExecutable,
   getDefaultProfileDir,
   getFreePort,
   getReusableChromeDebugSession,
-  pasteFromClipboard,
   rememberChromeDebugPort,
   sleep,
   waitForChromeDebugPort,
@@ -191,8 +189,222 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       return result.result.value;
     };
 
-    const removePlaceholderText = async (placeholder: string): Promise<boolean> => {
+    const clickByVisibleText = async (texts: string[]): Promise<boolean> => {
       const result = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+        expression: `(() => {
+          const texts = ${JSON.stringify(texts)};
+          const candidates = Array.from(document.querySelectorAll('button, a, div[role="button"], [role="menuitem"]'));
+          const visibleCandidates = candidates.filter((candidate) => {
+            const rect = candidate.getBoundingClientRect();
+            return rect.width > 0 && rect.height > 0;
+          });
+          const match = visibleCandidates.find((candidate) => {
+            const text = (candidate.innerText || candidate.textContent || '').trim();
+            const aria = candidate.getAttribute('aria-label') || '';
+            return texts.some((needle) => text === needle || aria === needle || text.includes(needle) || aria.includes(needle));
+          });
+          if (!match) return false;
+          match.scrollIntoView({ behavior: 'instant', block: 'center' });
+          match.click();
+          return true;
+        })()`,
+        returnByValue: true,
+      }, { sessionId });
+      return result.result.value;
+    };
+
+    const clickApplyAndWaitClosed = async (context: string): Promise<void> => {
+      let clicked = false;
+      const waitStart = Date.now();
+      while (Date.now() - waitStart < 15_000 && !clicked) {
+        const buttonRect = await cdp!.send<{ result: { value: { found: boolean; x: number; y: number } } }>('Runtime.evaluate', {
+          expression: `(() => {
+            const texts = ${JSON.stringify(APPLY_BUTTON_TEXT)};
+            const candidates = Array.from(document.querySelectorAll('[data-testid="applyButton"], button, div[role="button"]'));
+            const match = candidates.find((candidate) => {
+              const rect = candidate.getBoundingClientRect();
+              if (rect.width <= 0 || rect.height <= 0) return false;
+              const text = (candidate.innerText || candidate.textContent || '').trim();
+              const aria = candidate.getAttribute('aria-label') || '';
+              return candidate.getAttribute('data-testid') === 'applyButton'
+                || texts.some((needle) => text === needle || aria === needle || text.includes(needle) || aria.includes(needle));
+            });
+            if (!match) return { found: false, x: 0, y: 0 };
+            match.scrollIntoView({ behavior: 'instant', block: 'center' });
+            const rect = match.getBoundingClientRect();
+            return { found: true, x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+          })()`,
+          returnByValue: true,
+        }, { sessionId });
+
+        if (buttonRect.result.value.found) {
+          await cdp!.send('Input.dispatchMouseEvent', {
+            type: 'mouseMoved',
+            x: buttonRect.result.value.x,
+            y: buttonRect.result.value.y,
+          }, { sessionId });
+          await cdp!.send('Input.dispatchMouseEvent', {
+            type: 'mousePressed',
+            x: buttonRect.result.value.x,
+            y: buttonRect.result.value.y,
+            button: 'left',
+            clickCount: 1,
+          }, { sessionId });
+          await cdp!.send('Input.dispatchMouseEvent', {
+            type: 'mouseReleased',
+            x: buttonRect.result.value.x,
+            y: buttonRect.result.value.y,
+            button: 'left',
+            clickCount: 1,
+          }, { sessionId });
+          clicked = true;
+          break;
+        }
+        await sleep(500);
+      }
+
+      if (!clicked) {
+        console.log(`[x-article] ${context}: Apply button not found, continuing...`);
+        return;
+      }
+
+      const start = Date.now();
+      while (Date.now() - start < 15_000) {
+        const stillOpen = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+          expression: `(() => {
+            const apply = document.querySelector('[data-testid="applyButton"]');
+            if (apply) return true;
+            const texts = ${JSON.stringify(APPLY_BUTTON_TEXT)};
+            const candidates = Array.from(document.querySelectorAll('button, div[role="button"]'));
+            return candidates.some((candidate) => texts.includes((candidate.innerText || '').trim()));
+          })()`,
+          returnByValue: true,
+        }, { sessionId });
+        if (!stillOpen.result.value) {
+          console.log(`[x-article] ${context}: image applied`);
+          await sleep(800);
+          return;
+        }
+        await sleep(500);
+      }
+
+      throw new Error(`${context}: Apply was clicked but the crop/editor dialog did not close.`);
+    };
+
+    const getEditorImageState = async (placeholder: string): Promise<{ imageCount: number; hasPlaceholder: boolean }> => {
+      const state = await cdp!.send<{ result: { value: { imageCount: number; hasPlaceholder: boolean } } }>('Runtime.evaluate', {
+        expression: `(() => {
+          const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+          return {
+            imageCount: editor?.querySelectorAll('img').length || 0,
+            hasPlaceholder: !!editor?.innerText.includes(${JSON.stringify(placeholder)}),
+          };
+        })()`,
+        returnByValue: true,
+      }, { sessionId });
+      return state.result.value;
+    };
+
+    const waitForFileChooserAndSetFile = async (filePath: string): Promise<void> => {
+      const { root } = await cdp!.send<{ root: { nodeId: number } }>('DOM.getDocument', {}, { sessionId });
+      const { nodeIds } = await cdp!.send<{ nodeIds: number[] }>('DOM.querySelectorAll', {
+        nodeId: root.nodeId,
+        selector: 'input[type="file"][multiple], input[type="file"][accept*="video"], input[data-testid="fileInput"]',
+      }, { sessionId });
+
+      if (nodeIds.length > 0) {
+        await cdp!.send('DOM.setFileInputFiles', {
+          nodeId: nodeIds[0],
+          files: [filePath],
+        }, { sessionId });
+        return;
+      }
+
+      let resolved = false;
+      const chooserPromise = new Promise<void>((resolve, reject) => {
+        const timer = setTimeout(() => {
+          if (resolved) return;
+          resolved = true;
+          reject(new Error('Timed out waiting for X media file chooser.'));
+        }, 10_000);
+
+        cdp!.on('Page.fileChooserOpened', async (params) => {
+          if (resolved) return;
+          const event = params as { backendNodeId?: number };
+          if (!event.backendNodeId) return;
+          resolved = true;
+          clearTimeout(timer);
+          try {
+            await cdp!.send('DOM.setFileInputFiles', {
+              backendNodeId: event.backendNodeId,
+              files: [filePath],
+            }, { sessionId });
+            resolve();
+          } catch (error) {
+            reject(error instanceof Error ? error : new Error(String(error)));
+          }
+        });
+      });
+
+      await cdp!.send('Page.setInterceptFileChooserDialog', { enabled: true }, { sessionId });
+      try {
+        const clickedUploadArea = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+          expression: `(() => {
+            const candidates = Array.from(document.querySelectorAll('input[type="file"], button, div[role="button"], [data-testid], div, span'));
+            const viewportCenterX = window.innerWidth / 2;
+            const viewportCenterY = window.innerHeight / 2;
+            const visible = candidates
+              .map((el) => ({ el, rect: el.getBoundingClientRect(), text: (el.innerText || el.textContent || el.getAttribute('aria-label') || '').trim() }))
+              .filter(({ rect }) => rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.right > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth);
+
+            const uploadText = ['选择', '上传', 'Upload', 'Select', 'drop', '拖放'];
+            const textMatch = visible.find(({ text }) => uploadText.some((needle) => text.includes(needle)));
+            const target = textMatch || visible
+              .filter(({ rect }) => rect.width >= 120 && rect.height >= 80)
+              .sort((a, b) => {
+                const acx = a.rect.left + a.rect.width / 2;
+                const acy = a.rect.top + a.rect.height / 2;
+                const bcx = b.rect.left + b.rect.width / 2;
+                const bcy = b.rect.top + b.rect.height / 2;
+                return Math.hypot(acx - viewportCenterX, acy - viewportCenterY) - Math.hypot(bcx - viewportCenterX, bcy - viewportCenterY);
+              })[0];
+
+            if (!target) return false;
+            target.el.scrollIntoView({ behavior: 'instant', block: 'center' });
+            target.el.click();
+            return true;
+          })()`,
+          returnByValue: true,
+        }, { sessionId });
+
+        if (!clickedUploadArea.result.value) {
+          throw new Error('Could not click X media upload area.');
+        }
+
+        await chooserPromise;
+      } finally {
+        await cdp!.send('Page.setInterceptFileChooserDialog', { enabled: false }, { sessionId }).catch(() => {});
+      }
+    };
+
+    const openInlineMediaUploadAndSetFile = async (filePath: string): Promise<void> => {
+      const insertClicked = await clickByVisibleText(['插入', 'Insert']);
+      if (!insertClicked) {
+        throw new Error('Could not click the X Article Insert button for inline media.');
+      }
+      await sleep(400);
+
+      const mediaClicked = await clickByVisibleText(['媒体', 'Media']);
+      if (!mediaClicked) {
+        throw new Error('Could not click the X Article Media menu item.');
+      }
+      await sleep(700);
+
+      await waitForFileChooserAndSetFile(filePath);
+    };
+
+    const removePlaceholderText = async (placeholder: string): Promise<boolean> => {
+      const selected = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
         expression: `(() => {
           const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
           const input = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
@@ -215,15 +427,8 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
             sel.removeAllRanges();
             sel.addRange(range);
 
-            input.focus();
-            const deleted = document.execCommand('delete');
-            input.dispatchEvent(new InputEvent('input', {
-              bubbles: true,
-              inputType: 'deleteContentBackward',
-              data: null,
-            }));
-
-            return deleted && !(editor.innerText || '').includes(placeholder);
+            input.focus({ preventScroll: true });
+            return (sel.toString() || '').trim() === placeholder;
           }
 
           return false;
@@ -231,7 +436,30 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
         returnByValue: true,
       }, { sessionId });
 
-      return result.result.value;
+      if (!selected.result.value) return false;
+
+      await cdp!.send('Input.dispatchKeyEvent', {
+        type: 'keyDown',
+        key: 'Delete',
+        code: 'Delete',
+        windowsVirtualKeyCode: 46,
+      }, { sessionId });
+      await cdp!.send('Input.dispatchKeyEvent', {
+        type: 'keyUp',
+        key: 'Delete',
+        code: 'Delete',
+        windowsVirtualKeyCode: 46,
+      }, { sessionId });
+      await sleep(500);
+
+      const check = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+        expression: `(() => {
+          const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+          return !!editor && !(editor.innerText || '').includes(${JSON.stringify(placeholder)});
+        })()`,
+        returnByValue: true,
+      }, { sessionId });
+      return check.result.value;
     };
 
     console.log('[x-article] Looking for article create button...');
@@ -285,20 +513,8 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
         }, { sessionId });
         console.log('[x-article] Cover image file set');
 
-        // Wait for Apply button to appear and click it
-        console.log('[x-article] Waiting for Apply button...');
-        const applyFound = await waitForElement('[data-testid="applyButton"], button, div[role="button"]', 15_000);
-        if (applyFound) {
-          const clicked = await clickBySelectorsOrText(['[data-testid="applyButton"]'], APPLY_BUTTON_TEXT);
-          if (!clicked) {
-            console.log('[x-article] Apply button text not found, continuing...');
-          } else {
-            console.log('[x-article] Cover image applied');
-            await sleep(1000);
-          }
-        } else {
-          console.log('[x-article] Apply button not found, continuing...');
-        }
+        console.log('[x-article] Waiting for cover Apply button...');
+        await clickApplyAndWaitClosed('cover');
       }
     }
 
@@ -447,45 +663,102 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
 
         // Helper to select placeholder with retry
         const selectPlaceholder = async (maxRetries = 3): Promise<boolean> => {
+          const keyboardFindPlaceholder = async (): Promise<string> => {
+            const modifier = process.platform === 'darwin' ? 4 : 2; // Meta on macOS, Ctrl elsewhere
+            await cdp!.send('Input.dispatchKeyEvent', {
+              type: 'keyDown',
+              key: 'f',
+              code: 'KeyF',
+              windowsVirtualKeyCode: 70,
+              modifiers: modifier,
+            }, { sessionId });
+            await cdp!.send('Input.dispatchKeyEvent', {
+              type: 'keyUp',
+              key: 'f',
+              code: 'KeyF',
+              windowsVirtualKeyCode: 70,
+              modifiers: modifier,
+            }, { sessionId });
+            await sleep(200);
+            await cdp!.send('Input.insertText', { text: img.placeholder }, { sessionId });
+            await sleep(300);
+            await cdp!.send('Input.dispatchKeyEvent', {
+              type: 'keyDown',
+              key: 'Escape',
+              code: 'Escape',
+              windowsVirtualKeyCode: 27,
+            }, { sessionId });
+            await cdp!.send('Input.dispatchKeyEvent', {
+              type: 'keyUp',
+              key: 'Escape',
+              code: 'Escape',
+              windowsVirtualKeyCode: 27,
+            }, { sessionId });
+            await sleep(200);
+            const selectionCheck = await cdp!.send<{ result: { value: string } }>('Runtime.evaluate', {
+              expression: `window.getSelection()?.toString() || ''`,
+              returnByValue: true,
+            }, { sessionId });
+            return selectionCheck.result.value.trim();
+          };
+
           for (let attempt = 1; attempt <= maxRetries; attempt++) {
             // Find, scroll to, and select the placeholder text in the editor.
+            // Draft.js may split visible text across multiple text nodes, so
+            // build a combined text buffer and map the match back to node offsets.
             await cdp!.send('Runtime.evaluate', {
               expression: `(() => {
                 const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+                const input = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
                 if (!editor) return false;
+                if (input) input.focus({ preventScroll: true });
 
                 const placeholder = ${JSON.stringify(img.placeholder)};
-
-                // Search through all text nodes in the editor
                 const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null, false);
+                const parts = [];
                 let node;
+                let combined = '';
 
                 while ((node = walker.nextNode())) {
                   const text = node.textContent || '';
-                  const idx = text.indexOf(placeholder);
-                  if (idx !== -1) {
-                    // Found the placeholder - scroll to it first
-                    const parentElement = node.parentElement;
-                    if (parentElement) {
-                      parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
+                  parts.push({ node, start: combined.length, end: combined.length + text.length });
+                  combined += text;
+                }
 
-                    // Select it
-                    const range = document.createRange();
-                    range.setStart(node, idx);
-                    range.setEnd(node, idx + placeholder.length);
-                    const sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                    return true;
+                const idx = combined.indexOf(placeholder);
+                if (idx === -1) return false;
+                const endIdx = idx + placeholder.length;
+                const startPart = parts.find((part) => part.start <= idx && idx <= part.end);
+                const endPart = parts.find((part) => part.start <= endIdx && endIdx <= part.end);
+                if (!startPart || !endPart) return false;
+
+                const parentElement = startPart.node.parentElement;
+                if (parentElement) {
+                  parentElement.scrollIntoView({ behavior: 'instant', block: 'center' });
+                }
+                if (input) input.focus({ preventScroll: true });
+
+                const range = document.createRange();
+                range.setStart(startPart.node, idx - startPart.start);
+                range.setEnd(endPart.node, endIdx - endPart.start);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+                if (input) input.dispatchEvent(new Event('selectionchange', { bubbles: true }));
+
+                if ((sel.toString() || '').trim() !== placeholder) {
+                  sel.removeAllRanges();
+                  if (window.find && window.find(placeholder)) {
+                    return (window.getSelection()?.toString() || '').trim() === placeholder;
                   }
                 }
-                return false;
+
+                return (sel.toString() || '').trim() === placeholder;
               })()`,
             }, { sessionId });
 
-            // Wait for scroll and selection to settle
-            await sleep(800);
+            // Keep this short; Draft.js can clear script-created selection after focus churn.
+            await sleep(100);
 
             // Verify selection matches the placeholder
             const selectionCheck = await cdp!.send<{ result: { value: string } }>('Runtime.evaluate', {
@@ -499,11 +772,17 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
               return true;
             }
 
+            const findSelectedText = await keyboardFindPlaceholder();
+            if (findSelectedText === img.placeholder) {
+              console.log(`[x-article] Browser find selection verified: "${findSelectedText}"`);
+              return true;
+            }
+
             if (attempt < maxRetries) {
-              console.log(`[x-article] Selection attempt ${attempt} got "${selectedText}", retrying...`);
+              console.log(`[x-article] Selection attempt ${attempt} got "${selectedText || findSelectedText}", retrying...`);
               await sleep(500);
             } else {
-              console.warn(`[x-article] Selection failed after ${maxRetries} attempts, got: "${selectedText}"`);
+              console.warn(`[x-article] Selection failed after ${maxRetries} attempts, got: "${selectedText || findSelectedText}"`);
             }
           }
           return false;
@@ -515,49 +794,30 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
           throw new Error(`Could not select ${img.placeholder}. Not continuing because preview would retain an image placeholder.`);
         }
 
-        console.log(`[x-article] Copying image: ${path.basename(img.localPath)}`);
+        console.log(`[x-article] Uploading inline image: ${path.basename(img.localPath)}`);
 
         // Retry logic for image insertion
         let imageAppeared = false;
-        const maxRetries = 2;
+        const maxRetries = 3;
 
         for (let retry = 0; retry < maxRetries && !imageAppeared; retry++) {
           if (retry > 0) {
-            console.log(`[x-article] Retry ${retry}/${maxRetries - 1} for image: ${path.basename(img.localPath)}`);
+            console.log(`[x-article] Retry upload ${retry + 1}/${maxRetries} for image: ${path.basename(img.localPath)}`);
             // Re-select placeholder for retry
             const reselected = await selectPlaceholder(3);
             if (!reselected) {
-              console.warn(`[x-article] Could not re-select placeholder for retry`);
-              break;
+              throw new Error(`Could not re-select ${img.placeholder} for retry. Not opening preview because this image was not verified.`);
             }
           }
 
-          // Copy image to clipboard
-          if (!copyImageToClipboard(img.localPath)) {
-            console.warn(`[x-article] Failed to copy image to clipboard`);
+          const beforeUpload = await getEditorImageState(img.placeholder);
+
+          if (!beforeUpload.hasPlaceholder) {
+            console.warn(`[x-article] Placeholder disappeared before upload; retrying selection to avoid corrupting image positions.`);
             continue;
           }
 
-          // Wait for clipboard to be fully ready (longer on Windows for large images)
-          await sleep(3500);
-
-          const beforePaste = await cdp.send<{ result: { value: { imageCount: number; hasPlaceholder: boolean } } }>('Runtime.evaluate', {
-            expression: `(() => {
-              const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
-              return {
-                imageCount: editor?.querySelectorAll('img').length || 0,
-                hasPlaceholder: !!editor?.innerText.includes(${JSON.stringify(img.placeholder)}),
-              };
-            })()`,
-            returnByValue: true,
-          }, { sessionId });
-
-          if (!beforePaste.result.value.hasPlaceholder) {
-            console.warn(`[x-article] Placeholder disappeared before paste; retrying selection to avoid corrupting image positions.`);
-            continue;
-          }
-
-          // Focus editor to keep the selected placeholder as the paste target.
+          // Focus editor to keep the selected placeholder as the upload target.
           await cdp.send('Runtime.evaluate', {
             expression: `(() => {
               const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
@@ -566,42 +826,33 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
           }, { sessionId });
           await sleep(300);
 
-          // Paste image using paste script (activates Chrome, sends real keystroke)
-          console.log(`[x-article] Pasting image...`);
-          if (pasteFromClipboard('Google Chrome', 5, 1000)) {
-            console.log(`[x-article] Paste keystroke sent: ${path.basename(img.localPath)}`);
-          } else {
-            console.warn(`[x-article] Failed to send paste keystroke after retries`);
+          console.log(`[x-article] Opening inline image upload...`);
+          try {
+            await openInlineMediaUploadAndSetFile(img.localPath);
+          } catch (error) {
+            console.warn(`[x-article] Inline media chooser failed: ${error instanceof Error ? error.message : String(error)}`);
             continue;
           }
+          console.log(`[x-article] Inline image file set: ${path.basename(img.localPath)}`);
 
-          // First, wait for image to appear in editor (not just paste keystroke)
+          // First, wait for image to appear in editor.
           console.log(`[x-article] Waiting for image to appear in editor...`);
-          const appearWaitTime = 10000; // 10 seconds to appear
+          const appearWaitTime = 30000; // 30 seconds to appear
           const appearStartTime = Date.now();
 
           while (Date.now() - appearStartTime < appearWaitTime) {
             await sleep(500);
 
             // Check if an image element appeared in the editor
-            const imageCheck = await cdp.send<{ result: { value: { imageCount: number; hasPlaceholder: boolean } } }>('Runtime.evaluate', {
-              expression: `(() => {
-                const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
-                return {
-                  imageCount: editor?.querySelectorAll('img').length || 0,
-                  hasPlaceholder: !!editor?.innerText.includes(${JSON.stringify(img.placeholder)}),
-                };
-              })()`,
-              returnByValue: true,
-            }, { sessionId });
+            const imageCheck = await getEditorImageState(img.placeholder);
 
-            if (imageCheck.result.value.imageCount > beforePaste.result.value.imageCount && !imageCheck.result.value.hasPlaceholder) {
+            if (imageCheck.imageCount > beforeUpload.imageCount && !imageCheck.hasPlaceholder) {
               imageAppeared = true;
               console.log(`[x-article] Image appeared in editor after ${Date.now() - appearStartTime}ms`);
               break;
             }
 
-            if (imageCheck.result.value.imageCount > beforePaste.result.value.imageCount && imageCheck.result.value.hasPlaceholder) {
+            if (imageCheck.imageCount > beforeUpload.imageCount && imageCheck.hasPlaceholder) {
               console.warn(`[x-article] Image appeared but ${img.placeholder} remained. Removing placeholder text now...`);
               const removed = await removePlaceholderText(img.placeholder);
               if (!removed) {
@@ -609,18 +860,9 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
                 continue;
               }
 
-              const cleanupCheck = await cdp.send<{ result: { value: { imageCount: number; hasPlaceholder: boolean } } }>('Runtime.evaluate', {
-                expression: `(() => {
-                  const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
-                  return {
-                    imageCount: editor?.querySelectorAll('img').length || 0,
-                    hasPlaceholder: !!editor?.innerText.includes(${JSON.stringify(img.placeholder)}),
-                  };
-                })()`,
-                returnByValue: true,
-              }, { sessionId });
+              const cleanupCheck = await getEditorImageState(img.placeholder);
 
-              if (cleanupCheck.result.value.imageCount > beforePaste.result.value.imageCount && !cleanupCheck.result.value.hasPlaceholder) {
+              if (cleanupCheck.imageCount > beforeUpload.imageCount && !cleanupCheck.hasPlaceholder) {
                 imageAppeared = true;
                 console.log(`[x-article] Placeholder removed after image insert: ${img.placeholder}`);
                 break;
@@ -638,7 +880,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
             }, { sessionId });
 
             if (!restoreCheck.result.value) {
-              console.warn(`[x-article] Paste removed placeholder without inserting an image; restoring placeholder for manual recovery.`);
+              console.warn(`[x-article] Upload removed placeholder without inserting an image; restoring placeholder for manual recovery.`);
               await cdp.send('Runtime.evaluate', {
                 expression: `(() => {
                   const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
@@ -659,8 +901,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
         }
 
         if (!imageAppeared) {
-          console.warn(`[x-article] Image did not appear after ${maxRetries} attempts - skipping`);
-          continue;
+          throw new Error(`Image ${path.basename(img.localPath)} did not pass editor verification after ${maxRetries} upload attempts. Not opening preview.`);
         }
 
         // Now wait for upload to complete
