@@ -55,12 +55,13 @@ For technical personal-IP essays, read `references/technical-personal-ip.md` bef
    - Borrow only the useful structure or move, not the wording. If no asset fits the topic, say briefly that the asset pass was skipped or produced no usable match; do not force an unrelated hook.
 5. Decide the article type and write a one-sentence thesis.
 6. For technical experiments, build the spine: problem -> solution -> process -> pitfalls -> result -> judgment.
-7. For technical personal-IP essays, load `references/technical-personal-ip.md` and use its spine.
-8. Explain every important technical term with plain language or one everyday analogy.
-9. Include reproducible details when the article promises a practical path: commands, paths, options, configs, screenshots placeholders, or exact decision criteria when available.
-10. Add a pitfalls section with 2-5 specific problems for tutorials and field reports. If the material has no real pitfalls, say so and do not fabricate them.
-11. End sections with short judgment sentences that clarify why the detail matters.
-12. Run the self-check before final output.
+7. For tutorials or how-to drafts, read `references/tutorial-flow-examples.md` and create a section-level operation contract before drafting or revising steps: each section needs one reader action, allowed content, and a success check.
+8. For technical personal-IP essays, load `references/technical-personal-ip.md` and use its spine.
+9. Explain every important technical term with plain language or one everyday analogy.
+10. Include reproducible details when the article promises a practical path: commands, paths, options, configs, screenshots placeholders, or exact decision criteria when available.
+11. Add a pitfalls section with 2-5 specific problems for tutorials and field reports. If the material has no real pitfalls, say so and do not fabricate them.
+12. End sections with short judgment sentences that clarify why the detail matters.
+13. Run the self-check before final output.
 
 ## Voice Rules
 
@@ -83,6 +84,8 @@ For technical personal-IP essays, read `references/technical-personal-ip.md` bef
 - Do not turn a tool into a万能 solution. Always mention fit and limits when relevant.
 - Do not use marketing overclaim words like "神器", "颠覆", "神级", unless the user explicitly asks for a hype style.
 - Do not write a fake "踩坑提醒" if no pitfall evidence exists.
+- Do not add tutorial arrangement commentary such as "这里不需要", "后面再讲", "真正的测试放到后面", "第一篇里", "本文先不", "这篇不展开", or "不放进第一篇"; if a boundary is needed, phrase it as a reader-facing operation rule.
+- Do not use vague audience labels like "普通读者" when the article has a clearer reader name. Use the article's reader term, such as "新手", "第一次安装 Codex 的人", or the user's specified audience.
 - Do not auto-assemble drafts from unrelated writing assets. For local asset-bank use, borrow only topic-fit structure and record the fit or skip; never let the asset drag the article away from the real material.
 - Do not switch into campaign, brand-copy, or corporate announcement voice.
 - Do not add emoji.
@@ -125,6 +128,9 @@ Before finalizing, verify:
 - Every factual claim is supported by provided material or marked as unknown.
 - Every important technical concept has a plain explanation or analogy.
 - Steps are reproducible where the article promises a tutorial.
+- For tutorials, both argument logic and operation logic are smooth: claims have reasons and boundaries, while each step belongs to the current section's reader action.
+- For tutorials, login checks, environment checks, smoke tests, troubleshooting, and conceptual explanation stay in their own sections unless the outline explicitly merges them.
+- For tutorials, the draft speaks from the reader's next action, not from the author's article plan; audience labels match the article's actual reader.
 - Pitfalls are concrete and evidence-backed.
 - The tone is direct and practical, not sermon-like.
 - The article avoids hype and empty abstractions.
@@ -136,5 +142,6 @@ Before finalizing, verify:
 ## References
 
 - Read `references/style-profile.md` for extracted Nemo voice rules, evidence from existing local articles, reusable mechanisms from `nemo-writer`, and anti-patterns.
+- Read `references/tutorial-flow-examples.md` when writing or revising tutorials, how-to guides, setup guides, or step-by-step workflow articles.
 - Read `references/technical-personal-ip.md` when the article should turn real technical practice, AI workflow, project work, content work, or entrepreneurial observation into a Nemo-style personal judgment article.
 - Read `references/wechat-longform-title.md` when creating, selecting, or checking titles for WeChat/公众号 longform and Nemo technical personal-IP articles.
