@@ -11,6 +11,14 @@ For a full 知识质量检查 pass, read `references/知识质量检查.md` afte
 
 Treat `05_Templates/笔记整理归档SOP.md` as the current directory-identity rule source: `02_Sources` keeps raw evidence, `03_Notes` keeps durable judgments, `04_Projects` keeps project operating truth, `docs/solutions` keeps CE method assets, and `.llm-wiki` keeps governance state.
 
+Treat the `learning-loop` book stack as out of normal weekly-lint backlog scope by default:
+
+- `02_Sources/_books/<book-slug>/`
+- `02_Sources/_intake/books/<book-slug>/`
+- `04_Projects/学习/<book-title>/`
+
+These layers belong to the learning system. Do not flag them as stale intake, absorption debt, or topology pressure unless the user explicitly asks to audit a learning project or promote a mature learner-owned judgment into `03_Notes`.
+
 ## Read these files first
 
 - `02_Sources/LLM Wiki 处理台.base`
@@ -28,9 +36,9 @@ Run this skill as 自动执行优先：先吸收和小修，再报告不确定�
 
 Automatically do safe, local, reversible work when the target is clear:
 
-- absorb a source into an existing `03_Notes` page when the durable judgment and target page are obvious
-- add missing `source_refs` to an existing note
-- set source-local `llm_status`, `llm_domain`, `ddc`, and `llm_note` after absorption
+- absorb a source into an existing `03_Notes` page when the durable judgment and target page are obvious, closing the full evidence chain before marking it absorbed
+- add missing frontmatter `source_refs` to an existing `03_Notes` note
+- after a verified absorption, merge and preserve source-local `derived_refs`, write a contribution-specific `llm_note`, read back each target using its own provenance contract, and set `llm_status: absorbed` last
 - add a short durable principle from `docs/solutions` to an existing note
 - add project or published-article references to an existing note without editing protected published bodies
 - refresh small SOP/checklist wording when the current rule is already settled
@@ -57,20 +65,22 @@ Use `02_Sources/LLM Wiki 处理台.base` as the first-pass source operations boa
 - `待复核` -> ambiguous / sensitive candidates requiring another pass
 - `已吸收` -> already completed source items
 
-When drilling into one candidate, inspect the minimal note-local frontmatter contract:
-
-- `llm_status`
-- `llm_domain`
-- `ddc`
-- `llm_note`
+When drilling into one candidate, keep the shared five-field capture contract distinct from LLM Wiki-only metadata. Every newly captured source note should have `type: source`, `status: active`, non-empty `title`, non-empty `source`, and explicit `llm_status: new`.
 
 Default interpretation:
 
-- blank `llm_status` means `new` / `待分流`
-- these fields describe operational state only
-- `.llm-wiki` remains the canonical truth / governance layer
+- a missing or blank historical `llm_status` means `new` / `待分流`; new capture entrypoints still write `new` explicitly
+- among LLM Wiki-specific fields, only `llm_status` is an intake field
+- `llm_domain` and `ddc` are optional routing aids, not capture requirements
+- `review` and `ignore` require a reason in `llm_note`; `llm_note` and `derived_refs` are absorption evidence when the completion gate requires them
+- these fields describe operational state and evidence only
+- `.llm-wiki` remains governance truth for domain registry, policy, lifecycle, topology, and routing context
+- source frontmatter plus verified target evidence is the truth for source absorption state
+
+Treat every `llm_status: absorbed` value as a claim to verify, not proof by itself. A valid absorbed item must have an actual or already-confirmed knowledge contribution in `03_Notes`, reverse frontmatter `source_refs` on every `03_Notes` target, per-entry `source_ref` to the local source note on every accepted AI_Media expression asset, a source `derived_refs` list that preserves and covers every known target, a contribution-specific `llm_note`, and successful post-write read-back. Source URL/path may remain as additional asset provenance, but cannot replace `source_ref`. When knowledge already existed, `llm_note` must say `仅补强证据，未改变结论`. If no stable value exists, use `ignore` with a reason. Weekly lint must never repair intake by filling `absorbed` status alone; either complete the full evidence chain or report the item as incomplete. Never derive or sync `absorbed` from a registry, routing record, bootstrap report, or lint report; those `.llm-wiki` artifacts govern domain context, not source absorption truth.
 
 Do not begin this review with repo-wide search unless you are specifically validating downstream references or reconciling a suspected mismatch.
+Skip the `learning-loop` book stack during this intake review unless the lint target explicitly includes that learning area.
 
 ### 2. Review the wiki body
 
@@ -143,6 +153,7 @@ By default, write the report to `.llm-wiki/reports/知识质量检查-YYYYMMDD.m
 Lint is automation-first with guardrails.
 
 - Do safe absorptions and small fixes directly.
+- For absorption fixes, write `03_Notes` frontmatter `source_refs` and asset-entry `source_ref` provenance first, merge new targets into existing source `derived_refs`, read each target back by type, set `llm_status: absorbed` last, and read the source again.
 - Keep source/project/solution originals in place; absorb only durable judgments, boundaries, principles, or reusable methods.
 - Do not perform broad rewrites unless the user explicitly asks to turn findings into an edit pass.
 - If you make substantive fixes, update `Log` when the domain uses one.

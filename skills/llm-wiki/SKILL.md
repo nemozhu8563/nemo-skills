@@ -16,6 +16,25 @@ Use this skill when the user is talking about any of these jobs:
 - 做 weekly lint / 健康检查 / 维护
 - 检查某篇 `02_Sources` 文章是否已处理 / 还在哪个状态
 
+## Learning-loop boundary
+
+Do not treat the `learning-loop` book stack as ordinary `llm-wiki` intake backlog.
+
+Default ignore scope:
+
+- `02_Sources/_books/<book-slug>/`
+- `02_Sources/_intake/books/<book-slug>/`
+- `04_Projects/学习/<book-title>/`
+
+These layers belong to the learning system, not to normal wiki queue operations.
+
+Default rule:
+
+- do not route lesson notes, course maps, curriculum files, study-session notes, or raw book packages into domains by default
+- do not催办 these layers as stale source backlog
+- only engage when the user explicitly wants a learner-owned durable judgment promoted into `03_Notes`
+- if the task is about study progress, review rhythm, or organizing the learning package itself, route to `learning-loop` instead of normal `llm-wiki`
+
 ## Meaning of 总结 / 提炼 in LLM Wiki
 
 When the user says `用 llm-wiki 总结`, `提炼`, `吸收`, `改成那篇文章`, or asks to include the current conversation with a source, treat it as **knowledge absorption**, not a normal source-note summary.
@@ -27,11 +46,25 @@ Default behavior:
 3. create a new concept / question / synthesis page only when necessary
 4. when useful or requested, separately extract reusable AI_Media expression assets into `04_Projects/AI_Media/80_Assets/*.md`
 5. leave only a short processing record in the source note
-6. update `llm_domain`, `llm_status`, and `llm_note`
+6. record the actual contribution in `llm_note`, merge every known downstream target into `derived_refs` without dropping prior values, and update `llm_status` only after the absorption completion gate passes
 
 Do not satisfy this request by pasting a long summary or conversation recap back into the original `02_Sources` note.
 
 If the same source can support different viewpoints for different MOCs, absorb the relevant viewpoint into each matching page. Do not force a single "correct" angle when the material is reusable from multiple knowledge angles.
+
+## Absorption completion gate
+
+`llm_status: absorbed` is a verified outcome, not a processing label. A source may be marked `absorbed` only after all of these conditions pass:
+
+1. At least one target under `03_Notes` was substantively updated, or the run confirmed that the durable knowledge already exists there and added this source as supporting evidence.
+2. Every `03_Notes` target has a frontmatter `source_refs` entry pointing back to the source note.
+3. Every accepted AI_Media expression-asset entry has a per-entry `source_ref` pointing to the local source note. Source URL/path may remain as additional provenance, but cannot replace `source_ref`. Do not add aggregate-file frontmatter `source_refs` merely to satisfy this gate.
+4. Merge new targets into the source note's existing `derived_refs`; preserve every known downstream target and list all knowledge-page and accepted expression-asset targets from both prior and current runs.
+5. The source note's `llm_note` says what the source contributed. Do not use a generic record such as `已处理`.
+6. Read back the source and all targets after writing. Verify file existence, `03_Notes` reverse `source_refs`, asset-entry `source_ref` to the local source note, complete forward `derived_refs`, and that the recorded contribution matches the actual write.
+7. Set `llm_status: absorbed` only after steps 1-6 pass, then read back the source once more to confirm the terminal state.
+
+If the source was examined but has no stable value to add, set `llm_status: ignore` and record the reason in `llm_note`; do not pretend it was absorbed. If the durable knowledge already existed and the source only adds corroborating evidence, it may be `absorbed`, but `llm_note` must explicitly say `仅补强证据，未改变结论` and the bidirectional references must still pass.
 
 ## Grounding order
 
@@ -62,30 +95,31 @@ Do **not** start with global search.
 Use this order:
 
 1. check `02_Sources/LLM Wiki 处理台.base` first as the operational intake board
-2. check the source note's frontmatter (`llm_status`, `llm_domain`, `ddc`, `llm_note`)
-3. check `.llm-wiki` truth-layer artifacts (`domains.json`, routing / bootstrap reports) when status needs confirmation
+2. check the source note's `llm_status`; for a claimed terminal state, also inspect `llm_note` and `derived_refs`
+3. check `.llm-wiki` governance artifacts (`domains.json`, policy, lifecycle, topology, routing / bootstrap reports) for governance context; never use a registry or report as absorption proof
 4. use global search only as a final cross-check for downstream absorption evidence in `03_Notes`, `00_MOC`, or other derived references
 
 Interpretation rule:
 
 - `Base = day-to-day operating board`
 - `frontmatter = note-local operational status surface`
-- `.llm-wiki = truth layer / governance record`
+- `.llm-wiki = governance truth for domain registry, policy, lifecycle, topology, and routing context`
+- `source frontmatter + verified bidirectional evidence = source absorption-state truth`
 - `global search = fallback verification layer`
 
-If the Base and `.llm-wiki` disagree, trust `.llm-wiki` and propose a Base/frontmatter sync.
+If the Base and `.llm-wiki` disagree about domain registry, policy, lifecycle, topology, or routing context, trust `.llm-wiki`. For source absorption state, trust only source frontmatter plus verified target evidence. Never derive or sync `llm_status: absorbed` from a registry, routing record, bootstrap report, or lint report; complete the absorption gate or report the evidence gap.
 
-Minimum frontmatter contract for these checks:
+Every newly captured source note still follows the shared five-field capture contract:
 
-- `llm_status`
-- `llm_domain`
-- `ddc`
-- `llm_note`
+- `type: source`
+- `status: active`
+- non-empty `title`
+- non-empty `source`
+- explicit `llm_status: new`
 
-Default interpretation:
+For historical compatibility, a missing or blank `llm_status` is read as `new` / `待分流`; new capture entrypoints should still write `llm_status: new` explicitly.
 
-- blank `llm_status` means `new` / `待分流`
-- these fields are operational metadata, not the canonical truth layer
+Among LLM Wiki-specific fields, only `llm_status` is an intake field. `llm_domain` and `ddc` are optional routing aids, not capture requirements. `review` and `ignore` require a reason in `llm_note`; `llm_note` and `derived_refs` become absorption evidence only when the completion gate requires them. These fields are operational metadata, and `llm_status` alone is never sufficient absorption proof.
 
 ## Domain resolution
 
@@ -141,9 +175,11 @@ These rules apply in every lane:
 - Prefer updating existing domain pages in `03_Notes` before creating new pages.
 - Treat `02_Sources/_clippings` and `02_Sources/_legacy` as primary source territory.
 - Treat `04_Projects` material as derived source territory and only extract judgment-layer content from it.
+- Exclude the `learning-loop` book stack from normal queue discovery and source-status pressure by default: `02_Sources/_books/...`, `02_Sources/_intake/books/...`, and `04_Projects/学习/...` stay in the learning system unless the user explicitly requests promotion of a mature judgment into `03_Notes`.
 - Keep AI_Media expression assets separate from wiki knowledge: `03_Notes` stores stable judgments; `80_Assets` stores reusable expression moves; topic-only evidence stays in `materials.md`.
 - Do not copy article rhetoric, narrative scaffolding, or packaging into wiki pages.
-- If a page receives a substantive change, update its `updated_at` and `source_refs`.
+- If a `03_Notes` page receives a substantive change, update its `updated_at` and frontmatter `source_refs`. If an AI_Media expression-asset entry is added, give it a per-entry `source_ref` to the local source note; source URL/path may remain as additional provenance but cannot replace that link.
+- Never repair an `absorbed` label by changing status alone. Repair or complete the target write, `03_Notes` frontmatter `source_refs`, asset-entry `source_ref` provenance, merged source `derived_refs`, contribution note, and read-back evidence first.
 - If the kernel map changes materially, update `Index`; if the system state changed materially, update `Log`.
 - Before write batches, promotion, demotion, bootstrap exit, or independent-surface mutation, use the canonical gate in `05_Templates/scripts/llm_wiki_policy_gate.py`.
 - Normal source absorption into existing `03_Notes` pages should pass as `ingest_write --ingest-risk normal`, regardless of `bootstrap` or `steady_state`.

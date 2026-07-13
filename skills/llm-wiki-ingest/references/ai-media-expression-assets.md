@@ -56,7 +56,7 @@ Write accepted assets to the smallest matching file:
 An asset candidate must pass all of these:
 
 - reusable across more than one future AI_Media topic
-- traceable to a real source via `source_ref` or source URL/path
+- traceable through a per-entry `source_ref` pointing to the local source note; `source_url` / `source_path` may be kept as additional provenance, but cannot replace that local link
 - improves future writing structure, entry, explanation, judgment, or persuasion
 - distinct enough from existing nearby assets to be worth adding
 - concise enough to be searched and reused later

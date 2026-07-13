@@ -25,21 +25,21 @@ This is not a different knowledge logic from steady-state ingest. It is the same
 - Before each write batch, check the gate with `05_Templates/scripts/llm_wiki_policy_gate.py` using `ingest_write --ingest-risk normal` for ordinary page updates.
 - Bootstrap exit itself is not automatic: `bootstrap -> steady_state` requires confirmation via the canonical gate.
 - If the target domain is `parent_managed`, do not create or mutate independent Index / Log / lint surfaces.
+- Do not pull the `learning-loop` book stack into bootstrap queue construction by default. `02_Sources/_books/...`, `02_Sources/_intake/books/...`, and `04_Projects/学习/...` belong to the learning system unless the user explicitly wants a mature learner-owned judgment promoted into `03_Notes`.
 
 Do not send material to review merely because the topic mentions law, medicine, mental health, public health, accident, education, family, parenting, investment, or self-harm. Send it to review only when the write would become concrete advice, make responsibility/fact conclusions, rely on unstable facts, propagate private information, lack enough context, or require new independent operating surfaces.
 
-For `02_Sources` queue checks, use this minimal frontmatter contract on candidate notes:
-
-- `llm_status`
-- `llm_domain`
-- `ddc`
-- `llm_note`
+For `02_Sources` queue checks, keep the shared five-field capture contract distinct from LLM Wiki-only metadata. Every newly captured source note should have `type: source`, `status: active`, non-empty `title`, non-empty `source`, and explicit `llm_status: new`.
 
 Default interpretation:
 
-- blank `llm_status` means `new` / `待分流`
+- a missing or blank historical `llm_status` means `new` / `待分流`; new capture entrypoints still write `new` explicitly
+- among LLM Wiki-specific fields, only `llm_status` is an intake field
+- `llm_domain` and `ddc` are optional routing aids, not capture requirements
+- `review` and `ignore` require a reason in `llm_note`; `llm_note` and `derived_refs` are absorption evidence when closing the completion gate
 - frontmatter is queue-local operational metadata
-- `.llm-wiki` remains the canonical truth / governance layer
+- `.llm-wiki` remains governance truth for domain registry, policy, lifecycle, topology, and routing context
+- source frontmatter plus verified target evidence is the truth for source absorption state
 
 ## Batch workflow
 
@@ -54,9 +54,11 @@ Prefer this order:
 
 For bootstrap queue construction, prefer the Base as the first operating surface and use raw folder listing only as a fallback or reconciliation pass.
 
-If a candidate's Base position and note-local frontmatter disagree with `.llm-wiki`, trust `.llm-wiki` and treat the Base/frontmatter as needing sync.
+If a candidate's Base position disagrees with `.llm-wiki` about domain registry, policy, lifecycle, topology, or routing context, trust `.llm-wiki`. For absorption state, never derive or sync `llm_status: absorbed` from a registry, routing record, bootstrap report, or lint report; source frontmatter and the full evidence chain must pass the completion gate.
 
 Do not start bootstrap queue discovery with repo-wide search. Use search only as a fallback when reconciling downstream references or investigating suspected drift.
+
+Explicitly exclude `02_Sources/_books/...`, `02_Sources/_intake/books/...`, and `04_Projects/学习/...` from the default bootstrap queue. Do not treat lesson notes, course maps, curriculum files, study-session notes, or raw book packages as batch-ingest candidates unless the user explicitly asks for judgment promotion.
 
 ### 2. Process one source at a time
 
@@ -69,7 +71,20 @@ For each source:
 5. avoid copying rhetorical wrappers from source material
 6. if the change would require new independent operating surfaces for a `parent_managed` domain, stop and surface a promotion proposal instead of writing
 
-### 3. After each small batch
+### 3. Close the completion gate for every source
+
+Batching never lowers the single-source completion standard. For each source:
+
+1. Actually update at least one `03_Notes` target, or confirm that the durable knowledge already exists and add the source as corroborating evidence.
+2. Add the source to every `03_Notes` target's frontmatter `source_refs`.
+3. For every accepted AI_Media expression asset, add a per-entry `source_ref` pointing to the local source note. Source URL/path may remain as additional provenance, but cannot replace `source_ref`; do not add aggregate-file frontmatter `source_refs` merely for this gate.
+4. On the source, merge new targets into existing `derived_refs`, preserving every known knowledge-page and accepted expression-asset target from prior and current runs, and write an `llm_note` that says what the source contributed.
+5. Read back the source and all targets; verify file existence, forward `derived_refs`, reverse `03_Notes` `source_refs`, asset-entry `source_ref` to the local source note, and the recorded contribution.
+6. Only then set `llm_status: absorbed`, and read the source back once more. Never bulk-fill `absorbed` as metadata repair.
+
+If the knowledge already existed, the source may be absorbed only after the evidence links are added and `llm_note` says `仅补强证据，未改变结论`. If no stable value can be added or corroborated, use `llm_status: ignore` with a reason in `llm_note`.
+
+### 4. After each small batch
 
 Refresh the operating files as needed:
 
