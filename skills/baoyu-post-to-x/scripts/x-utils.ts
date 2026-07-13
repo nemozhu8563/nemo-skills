@@ -270,6 +270,20 @@ export class CdpConnection {
   }
 }
 
+export async function closeChromeDebugSession(profileDir: string): Promise<void> {
+  const reusable = await getReusableChromeDebugSession(profileDir);
+  if (!reusable) return;
+
+  let cdp: CdpConnection | null = null;
+  try {
+    cdp = await CdpConnection.connect(reusable.wsUrl, 10_000, { defaultTimeoutMs: 5_000 });
+    await cdp.send('Browser.close', {}, { timeoutMs: 5_000 });
+  } finally {
+    cdp?.close();
+    clearChromeDebugPort(profileDir, reusable.port);
+  }
+}
+
 export async function insertTextIntoComposer(
   cdp: CdpConnection,
   sessionId: string,

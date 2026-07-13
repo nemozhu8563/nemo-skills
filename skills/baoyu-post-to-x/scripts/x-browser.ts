@@ -43,6 +43,51 @@ interface XBrowserOptions {
   profileDir?: string;
   chromePath?: string;
   reuseDebugSession?: boolean;
+  keepChromeOpen?: boolean;
+}
+
+export interface PostResult {
+  postUrl?: string;
+  retainedChrome?: boolean;
+}
+
+function normalizeStatusUrl(value: string): string | null {
+  const match = value.match(/(?:https?:\/\/)?(?:x\.com|twitter\.com)\/((?:i\/web)|[^/?#]+)\/status\/(\d+)/i);
+  if (!match) return null;
+  return `https://x.com/${match[1]}/status/${match[2]}`;
+}
+
+async function collectStatusUrls(cdp: CdpConnection, sessionId: string): Promise<string[]> {
+  const result = await cdp.send<{ result: { value: string[] } }>('Runtime.evaluate', {
+    expression: `(() => {
+      const values = [window.location.href];
+      for (const anchor of document.querySelectorAll('[data-testid="toast"] a[href*="/status/"], [role="alert"] a[href*="/status/"], [aria-live] a[href*="/status/"]')) {
+        values.push(anchor.href);
+      }
+      return values;
+    })()`,
+    returnByValue: true,
+  }, { sessionId });
+
+  return Array.from(new Set((result.result.value ?? [])
+    .map(normalizeStatusUrl)
+    .filter((value): value is string => Boolean(value))));
+}
+
+async function waitForPostedStatusUrl(
+  cdp: CdpConnection,
+  sessionId: string,
+  beforeUrls: readonly string[],
+  timeoutMs = 30_000,
+): Promise<string | undefined> {
+  const before = new Set(beforeUrls);
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    await sleep(1_000);
+    const fresh = (await collectStatusUrls(cdp, sessionId)).find((url) => !before.has(url));
+    if (fresh) return fresh;
+  }
+  return undefined;
 }
 
 function getEnvTimeoutMs(name: string, fallbackMs: number): number {
@@ -225,7 +270,7 @@ async function pasteImageFromClipboard(
   return true;
 }
 
-export async function postToX(options: XBrowserOptions): Promise<void> {
+export async function postToX(options: XBrowserOptions): Promise<PostResult> {
   const {
     text,
     images = [],
@@ -233,6 +278,7 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
     timeoutMs = 120_000,
     profileDir = getDefaultProfileDir(),
     reuseDebugSession = true,
+    keepChromeOpen = false,
   } = options;
 
   const chromePath = options.chromePath ?? findChromeExecutable(CHROME_CANDIDATES_FULL);
@@ -266,6 +312,7 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
   }
 
   let cdp: CdpConnection | null = null;
+  let retainedChrome = false;
 
   try {
     if (!wsUrl) {
@@ -359,27 +406,34 @@ export async function postToX(options: XBrowserOptions): Promise<void> {
     }
 
     if (submit) {
+      const statusUrlsBeforeSubmit = await collectStatusUrls(cdp, sessionId);
       console.log('[x-browser] Submitting post...');
       const clicked = await clickComposerSubmitButton(cdp, sessionId);
       if (!clicked) {
         throw new Error('Could not find a visible composer submit button.');
       }
-      await sleep(2000);
-      console.log('[x-browser] Post submitted!');
+      const postUrl = await waitForPostedStatusUrl(cdp, sessionId, statusUrlsBeforeSubmit);
+      if (postUrl) console.log(`[x-browser] Post submitted: ${postUrl}`);
+      else console.warn('[x-browser] Post was submitted, but its URL was not detected.');
+      retainedChrome = launchedChrome && keepChromeOpen;
+      if (retainedChrome) console.log('[x-browser] Retaining Chrome session for the follow-up reply.');
+      return { postUrl, retainedChrome };
     } else {
       console.log('[x-browser] Post composed (preview mode). Add --submit to post.');
       console.log('[x-browser] Browser will stay open for 30 seconds for preview...');
       await sleep(30_000);
     }
+
+    return {};
   } finally {
     if (cdp) {
-      if (launchedChrome) {
+      if (launchedChrome && !retainedChrome) {
         try { await cdp.send('Browser.close', {}, { timeoutMs: 5_000 }); } catch {}
       }
       cdp.close();
     }
 
-    if (launchedChrome) {
+    if (launchedChrome && !retainedChrome) {
       if (chrome) {
         setTimeout(() => {
           if (!chrome?.killed) try { chrome.kill('SIGKILL'); } catch {}
@@ -460,7 +514,9 @@ async function main(): Promise<void> {
   await postToX({ text, images, submit, profileDir, reuseDebugSession });
 }
 
-await main().catch((err) => {
-  console.error(`Error: ${err instanceof Error ? err.message : String(err)}`);
-  process.exit(1);
-});
+if (import.meta.main) {
+  await main().catch((err) => {
+    console.error(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    process.exit(1);
+  });
+}
