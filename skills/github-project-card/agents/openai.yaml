@@ -1,0 +1,7 @@
+interface:
+  display_name: "GitHub Project Card"
+  short_description: "把 GitHub 项目写成中文短介绍卡片"
+  default_prompt: "Use $github-project-card to turn this GitHub repo into a concise Chinese project card with two image suggestions."
+
+policy:
+  allow_implicit_invocation: true
