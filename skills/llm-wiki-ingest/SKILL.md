@@ -75,7 +75,7 @@ For `02_Sources` material, check the intake board before doing anything else:
 1. open `02_Sources/LLM Wiki 处理台.base`
 2. inspect the note's `llm_status`; blank is the same intake state as `new`
 3. if status is blank, treat it as `new` / 待分流
-4. if it claims `absorbed`, inspect `llm_note`, complete `derived_refs`, every `03_Notes` target's reverse `source_refs`, and every accepted asset entry's `source_ref` to the local source note before accepting the claim
+4. if it claims `absorbed`, inspect `llm_note`, complete `derived_refs`, whether every `03_Notes` target exists, and every accepted asset entry's `source_ref` to the local source note before accepting the claim
 5. only then consult `.llm-wiki` routing or bootstrap artifacts for governance context; never use those artifacts as absorption proof
 
 Do not start with global search just to answer "has this source been processed?"
@@ -149,14 +149,14 @@ Keep it short and reviewable.
 When the gate returns `allow`, or when the user approves a `confirm` package:
 
 1. Update at least one target wiki page under `03_Notes`, or confirm that the durable knowledge already exists there and use this source as additional evidence.
-2. Refresh `updated_at` on substantively changed `03_Notes` pages and append a real frontmatter `source_refs` entry pointing back to the source on every `03_Notes` target.
+2. Refresh `updated` on substantively changed `03_Notes` pages when the field is present. 普通 `03_Notes` 不再使用 frontmatter `source_refs`; a small `## 核心来源` section may be maintained only for manually confirmed core sources and is not part of the completion gate.
 3. Update `Index` if topology changed and update `Log` with the substantive ingest event when those surfaces are allowed. If the domain is `parent_managed`, do not create or mutate independent Index / Log / lint surfaces; surface a promotion proposal instead.
 4. Append approved AI_Media expression assets only when the optional asset pass produced accepted candidates. Add a per-entry `source_ref` pointing to the local source note. Source URL/path may remain as additional provenance, but cannot replace `source_ref`; do not add aggregate-file frontmatter `source_refs` merely for this gate.
 5. On the source note, merge the new targets into existing `derived_refs`. Preserve every known prior target and list every knowledge page and accepted expression-asset target from both prior and current runs. Write `llm_note` as a concise statement of what was added, corrected, distinguished, or strengthened.
-6. Before changing the source status, read back the source and all downstream files. Verify that every file exists, every `03_Notes` target has reverse `source_refs`, every accepted asset entry has `source_ref` to the local source note, every known target is present in `derived_refs`, and `llm_note` matches the actual contribution.
+6. Before changing the source status, read back the source and all downstream files. Verify that every file exists, every accepted asset entry has `source_ref` to the local source note, every known target is present in `derived_refs`, and `llm_note` matches the actual contribution.
 7. Only after steps 1-6 pass, set `llm_status: absorbed`, then read back the source once more to verify the terminal state. Never mark a source absorbed by changing status alone.
 
-If the knowledge was already present, still add this source to the `03_Notes` target's frontmatter `source_refs`, merge the target into the source's existing `derived_refs`, and write `llm_note` with the explicit wording `仅补强证据，未改变结论`. If the source has no stable value to add or corroborate, set `llm_status: ignore` and explain why in `llm_note`; do not mark it absorbed.
+If the knowledge was already present, merge the target into the source's existing `derived_refs` and write `llm_note` with the explicit wording `仅补强证据，未改变结论`. If the source has no stable value to add or corroborate, set `llm_status: ignore` and explain why in `llm_note`; do not mark it absorbed.
 
 ## Creation bar
 

@@ -70,8 +70,8 @@ Usually this is `1-2` pages plus `Log`.
 
 When edits are substantive:
 
-- update `updated_at`
-- add the relevant `source_refs` if the query synthesized from source-backed pages
+- update `updated` when the field is present
+- 普通 `03_Notes` 不再使用 frontmatter `source_refs`; if the query synthesized from source-backed pages, preserve the complete machine relation on each Source's `derived_refs`, and add only a few manually confirmed sources to the target's bottom `## 核心来源` when useful
 - append a `query -> write-back` entry to the target domain log if it exists
 
 ## Output contract

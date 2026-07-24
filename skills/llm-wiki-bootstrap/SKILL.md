@@ -76,10 +76,10 @@ For each source:
 Batching never lowers the single-source completion standard. For each source:
 
 1. Actually update at least one `03_Notes` target, or confirm that the durable knowledge already exists and add the source as corroborating evidence.
-2. Add the source to every `03_Notes` target's frontmatter `source_refs`.
+2. On the source, merge new targets into existing `derived_refs`, preserving every known knowledge-page and accepted expression-asset target from prior and current runs, and write an `llm_note` that says what the source contributed.
 3. For every accepted AI_Media expression asset, add a per-entry `source_ref` pointing to the local source note. Source URL/path may remain as additional provenance, but cannot replace `source_ref`; do not add aggregate-file frontmatter `source_refs` merely for this gate.
-4. On the source, merge new targets into existing `derived_refs`, preserving every known knowledge-page and accepted expression-asset target from prior and current runs, and write an `llm_note` that says what the source contributed.
-5. Read back the source and all targets; verify file existence, forward `derived_refs`, reverse `03_Notes` `source_refs`, asset-entry `source_ref` to the local source note, and the recorded contribution.
+4. 普通 `03_Notes` 不再使用 frontmatter `source_refs`; keep only a small set of manually confirmed sources under `## 核心来源` when useful, and do not treat that section as a completion-gate requirement.
+5. Read back the source and all targets; verify file existence, forward `derived_refs`, asset-entry `source_ref` to the local source note, and the recorded contribution.
 6. Only then set `llm_status: absorbed`, and read the source back once more. Never bulk-fill `absorbed` as metadata repair.
 
 If the knowledge already existed, the source may be absorbed only after the evidence links are added and `llm_note` says `仅补强证据，未改变结论`. If no stable value can be added or corroborated, use `llm_status: ignore` with a reason in `llm_note`.

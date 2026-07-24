@@ -16,11 +16,11 @@ function readContract(filePath) {
   return fs.readFileSync(filePath, 'utf-8');
 }
 
-test('all absorption entrypoints preserve target-specific reverse provenance', () => {
+test('all absorption entrypoints use source-side provenance for ordinary notes', () => {
   for (const filePath of contractFiles) {
     const contract = readContract(filePath);
     assert.match(contract, /03_Notes/);
-    assert.match(contract, /`source_refs`/);
+    assert.match(contract, /普通 `03_Notes` 不再使用 frontmatter `source_refs`/);
     assert.match(contract, /`source_ref`/);
     assert.match(contract, /AI_Media|expression.asset|表达资产/i);
     assert.match(contract, /cannot replace|不能替代/i);
