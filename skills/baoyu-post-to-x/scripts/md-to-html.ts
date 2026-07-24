@@ -166,6 +166,8 @@ function convertMarkdownToHtml(markdown: string, imageCallback: (src: string, al
   const lines = markdown.split('\n');
   const blocks: string[] = [];
   let inCodeBlock = false;
+  let codeBlockMode: 'blockquote' | 'plain' = 'blockquote';
+  let codeFenceLength = 0;
   let codeBlockContent: string[] = [];
   let inList = false;
   let listItems: string[] = [];
@@ -178,6 +180,16 @@ function convertMarkdownToHtml(markdown: string, imageCallback: (src: string, al
       listItems = [];
       inList = false;
     }
+  };
+
+  const flushCodeBlock = () => {
+    const content = codeBlockContent.map((line) => escapeHtml(line)).join('<br>');
+    const tag = codeBlockMode === 'plain' ? 'p' : 'blockquote';
+    blocks.push(`<${tag}>${content}</${tag}>`);
+    codeBlockContent = [];
+    codeBlockMode = 'blockquote';
+    codeFenceLength = 0;
+    inCodeBlock = false;
   };
 
   const processInline = (text: string, inlineImageCallback?: (src: string, alt: string) => string): string => {
@@ -226,23 +238,25 @@ function convertMarkdownToHtml(markdown: string, imageCallback: (src: string, al
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
 
-    // Code block
-    if (line.startsWith('```')) {
-      if (inCodeBlock) {
-        // X doesn't support <pre><code>, convert to blockquote
-        const codeContent = codeBlockContent.map((l) => escapeHtml(l)).join('<br>');
-        blocks.push(`<blockquote>${codeContent}</blockquote>`);
-        codeBlockContent = [];
-        inCodeBlock = false;
-      } else {
-        flushList();
-        inCodeBlock = true;
+    if (inCodeBlock) {
+      const closingFence = line.match(/^(`{3,})\s*$/);
+      if (closingFence && closingFence[1]!.length >= codeFenceLength) {
+        flushCodeBlock();
+        continue;
       }
+
+      codeBlockContent.push(line);
       continue;
     }
 
-    if (inCodeBlock) {
-      codeBlockContent.push(line);
+    // X has no reliable fenced-code rendering. Normal fences become blockquotes.
+    // Use ```x-plain for selectable verbatim text without Markdown inline parsing.
+    const openingFence = line.match(/^(`{3,})(.*)$/);
+    if (openingFence) {
+      flushList();
+      inCodeBlock = true;
+      codeFenceLength = openingFence[1]!.length;
+      codeBlockMode = openingFence[2]!.trim().toLowerCase() === 'x-plain' ? 'plain' : 'blockquote';
       continue;
     }
 
@@ -335,6 +349,7 @@ function convertMarkdownToHtml(markdown: string, imageCallback: (src: string, al
     blocks.push(`<p>${processedLine}</p>`);
   }
 
+  if (inCodeBlock) flushCodeBlock();
   flushList();
 
   return {

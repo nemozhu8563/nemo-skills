@@ -30,11 +30,13 @@ If the user only gives a vague topic, produce a short angle diagnosis first inst
 ## Workflow
 
 1. Identify the post type:
+   - `判断立场型`: personal knowledge, a durable synthesis, or a current controversy where Nemo has one clear, defensible position.
    - `方法判断型`: AI tools, project reviews, content systems, business judgment, workflow lessons.
    - `情绪判断型`: bullying, relationship, family, social rules, victims, shame, pressure, anger.
    - `实时提醒型`: incidents, tool risks, version accidents, security warnings, temporary avoidance.
 2. Extract one main conflict. 一条短推只服务一个主要传播目标。
 3. Choose the structure:
+   - 判断立场型: disputable judgment -> one visible reason, counterexample, or allocation conflict -> what this changes -> sharp closing judgment.
    - 方法判断型: real friction -> central judgment -> mechanism -> usable reminder.
    - 情绪判断型:刺痛场景 -> 第一反应 -> memorable contrast/metaphor -> boundary -> cold judgment.
    - 实时提醒型: background -> risk -> where to check -> temporary handling -> current boundary.

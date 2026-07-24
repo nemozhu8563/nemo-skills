@@ -67,6 +67,18 @@ Use `web-access` to choose the lightest reliable acquisition route:
 - WeChat, Zhihu, X/Twitter, Xiaohongshu, login-required pages, or dynamic pages: use Chrome CDP through `web-access`.
 - When CDP is used, follow `web-access` requirements: run its dependency check, show its automation-risk notice to the user, use a self-created background tab, check site-pattern references when available, and close the tab when done.
 
+#### CDP recovery before asking the user
+
+Treat CDP connectivity and website login as separate states. A failed `check-deps.mjs` only proves that the automation proxy is not attached yet; it does **not** prove that the user is logged out.
+
+For a browser-backed source, recover in this order before asking the user to do anything:
+
+1. Start the configured browser when it is not running, then rerun `check-deps.mjs` after a brief wait.
+2. If it still fails, use an unsandboxed local check to inspect the browser process, the configured debugging port, and `http://127.0.0.1:<port>/json/version`. A response containing `webSocketDebuggerUrl` means CDP is available; rerun `check-deps.mjs` and continue.
+3. Only after CDP is confirmed available should the agent infer login state from the target page itself. Do not tell the user to log in, enable debugging, or otherwise change their browser until the target page demonstrably shows a login wall or the local checks show that CDP cannot be enabled automatically.
+
+Report the actual condition precisely: for example, say “automation has not attached to Chrome yet” rather than “you are not logged in.”
+
 The acquisition result must be normalized into a capture JSON with this shape:
 
 ```json

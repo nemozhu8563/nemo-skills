@@ -142,6 +142,9 @@ npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
 
 # Compose and open preview. Final publish is manual.
 npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md
+
+# Replace an existing draft body and reopen its preview. The current cover is kept.
+npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --edit-url https://x.com/compose/articles/edit/123456
 ```
 
 For Obsidian articles with many inline screenshots where exact image placement matters, create a package first:
@@ -158,6 +161,7 @@ The package writes `manifest.json`, `article.html`, `article.txt`, and `operator
 | `<markdown>` | Markdown file path (positional argument) |
 | `--cover <path>` | Cover image path |
 | `--title <text>` | Override article title |
+| `--edit-url <url>` | Replace an existing draft body while keeping its current cover |
 | `--submit` | Ignored for X Articles; final publish is manual after preview |
 
 **Frontmatter** (optional):
@@ -188,6 +192,15 @@ X Articles supports both standard Markdown and Obsidian wikilink syntax:
 | Obsidian wikilink | `![[path\]\]` | `![[image.png\]\]` |
 | Obsidian with alt | `![[path\|alt\]\]` | `![[photo.png|My photo\]\]` |
 | Remote images | `![alt](https://...)` or `![[https://...\]\]` | `![[https://example.com/img.png\]\]` |
+
+For long prompts or configuration appendices that readers should copy as exact text, use an `x-plain` fence. The X conversion preserves characters and line breaks, skips inline Markdown parsing, and renders the block as normal selectable text instead of a blockquote:
+
+````markdown
+```x-plain
+[features.multi_agent_v2]
+max_concurrent_threads_per_session = 7
+```
+````
 
 **Remote Image Download**:
 

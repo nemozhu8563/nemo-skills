@@ -73,6 +73,7 @@ interface ArticleOptions {
   markdownPath: string;
   coverImage?: string;
   title?: string;
+  editUrl?: string;
   submit?: boolean;
   profileDir?: string;
   chromePath?: string;
@@ -80,6 +81,12 @@ interface ArticleOptions {
 
 export async function publishArticle(options: ArticleOptions): Promise<void> {
   const { markdownPath, submit = false, profileDir = getDefaultProfileDir() } = options;
+  const articleUrl = options.editUrl ?? X_ARTICLES_URL;
+  const isEditMode = Boolean(options.editUrl);
+
+  if (options.editUrl && !/^https:\/\/x\.com\/compose\/articles\/edit\/\d+\/?$/.test(options.editUrl)) {
+    throw new Error(`Invalid X Article edit URL: ${options.editUrl}`);
+  }
 
   console.log('[x-article] Parsing markdown...');
   const parsed = await parseMarkdown(markdownPath, {
@@ -118,7 +125,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       '--no-default-browser-check',
       '--disable-blink-features=AutomationControlled',
       '--start-maximized',
-      X_ARTICLES_URL,
+      articleUrl,
     ], { stdio: 'ignore' });
     launchedChrome = true;
   }
@@ -139,8 +146,8 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       : undefined;
 
     if (!pageTarget) {
-      const { targetId } = await cdp.send<{ targetId: string }>('Target.createTarget', { url: X_ARTICLES_URL });
-      pageTarget = { targetId, url: X_ARTICLES_URL, type: 'page' };
+      const { targetId } = await cdp.send<{ targetId: string }>('Target.createTarget', { url: articleUrl });
+      pageTarget = { targetId, url: articleUrl, type: 'page' };
     }
 
     const { sessionId } = await cdp.send<{ sessionId: string }>('Target.attachToTarget', { targetId: pageTarget.targetId, flatten: true });
@@ -462,13 +469,15 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       return check.result.value;
     };
 
-    console.log('[x-article] Looking for article create button...');
-    const createButtonFound = await waitForAnySelector(I18N_SELECTORS.createArticleButton, 10_000);
+    if (!isEditMode) {
+      console.log('[x-article] Looking for article create button...');
+      const createButtonFound = await waitForAnySelector(I18N_SELECTORS.createArticleButton, 10_000);
 
-    if (createButtonFound) {
-      console.log('[x-article] Clicking article create button...');
-      await clickBySelectorsOrText(I18N_SELECTORS.createArticleButton, ['Write', '撰写', '作成', '작성']);
-      await sleep(5000);
+      if (createButtonFound) {
+        console.log('[x-article] Clicking article create button...');
+        await clickBySelectorsOrText(I18N_SELECTORS.createArticleButton, ['Write', '撰写', '作成', '작성']);
+        await sleep(5000);
+      }
     }
 
     // Wait for editor (title textarea)
@@ -482,7 +491,7 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
     }
 
     // Upload cover image
-    if (parsed.coverImage) {
+    if (parsed.coverImage && !isEditMode) {
       console.log('[x-article] Uploading cover image...');
 
       // Click "Add photos or video" button
@@ -536,6 +545,22 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       }, { sessionId });
       await sleep(200);
 
+      if (isEditMode) {
+        await cdp.send('Runtime.evaluate', {
+          expression: `(() => {
+            const selectors = ${titleInputSelectors};
+            for (const sel of selectors) {
+              const el = document.querySelector(sel);
+              if (el && typeof el.select === 'function') {
+                el.select();
+                return true;
+              }
+            }
+            return false;
+          })()`,
+        }, { sessionId });
+      }
+
       // Type title character by character using insertText
       await cdp.send('Input.insertText', { text: parsed.title }, { sessionId });
       await sleep(300);
@@ -565,6 +590,168 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       })()`,
     }, { sessionId });
     await sleep(300);
+
+    if (isEditMode) {
+      console.log('[x-article] Clearing existing article body...');
+      const modifier = process.platform === 'darwin' ? 4 : 2; // Meta on macOS, Ctrl elsewhere
+
+      const editorClickPoint = await cdp.send<{ result: { value: {
+        found: boolean;
+        x: number;
+        y: number;
+        textLength: number;
+        imageCount: number;
+      } } }>('Runtime.evaluate', {
+        expression: `(() => {
+          const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
+          const content = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+          if (!editor) {
+            return { found: false, x: 0, y: 0, textLength: 0, imageCount: 0 };
+          }
+
+          editor.scrollIntoView({ behavior: 'instant', block: 'start' });
+          const rect = editor.getBoundingClientRect();
+          const left = Math.max(0, rect.left);
+          const right = Math.min(window.innerWidth, rect.right);
+          const top = Math.max(0, rect.top);
+          const bottom = Math.min(window.innerHeight, rect.bottom);
+
+          if (right <= left || bottom <= top) {
+            return { found: false, x: 0, y: 0, textLength: 0, imageCount: 0 };
+          }
+
+          return {
+            found: true,
+            x: left + (right - left) / 2,
+            // X keeps a sticky formatting bar over the first ~100px of the
+            // viewport. Click lower when the editor begins above that bar.
+            y: Math.min(bottom - 1, Math.max(top + Math.min(36, (bottom - top) / 2), 180)),
+            textLength: ((content || editor).innerText || '').trim().length,
+            imageCount: (content || editor).querySelectorAll('img').length,
+          };
+        })()`,
+        returnByValue: true,
+      }, { sessionId });
+
+      const beforeClear = editorClickPoint.result.value;
+      if (!beforeClear.found) {
+        throw new Error('Could not find a visible X Article body editor. Existing draft was not changed.');
+      }
+
+      if (beforeClear.textLength > 0 || beforeClear.imageCount > 0) {
+        await cdp.send('Input.dispatchMouseEvent', {
+          type: 'mouseMoved',
+          x: beforeClear.x,
+          y: beforeClear.y,
+        }, { sessionId });
+        await cdp.send('Input.dispatchMouseEvent', {
+          type: 'mousePressed',
+          x: beforeClear.x,
+          y: beforeClear.y,
+          button: 'left',
+          clickCount: 1,
+        }, { sessionId });
+        await cdp.send('Input.dispatchMouseEvent', {
+          type: 'mouseReleased',
+          x: beforeClear.x,
+          y: beforeClear.y,
+          button: 'left',
+          clickCount: 1,
+        }, { sessionId });
+        await sleep(200);
+
+        const focusCheck = await cdp.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+          expression: `(() => {
+            const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
+            const active = document.activeElement;
+            return !!editor && !!active && (active === editor || editor.contains(active));
+          })()`,
+          returnByValue: true,
+        }, { sessionId });
+
+        if (!focusCheck.result.value) {
+          throw new Error('Could not focus the X Article body editor with a real pointer click. Existing draft was not changed.');
+        }
+
+        await cdp.send('Input.dispatchKeyEvent', {
+          type: 'rawKeyDown',
+          key: 'a',
+          code: 'KeyA',
+          windowsVirtualKeyCode: 65,
+          modifiers: modifier,
+          commands: ['SelectAll'],
+        }, { sessionId });
+        await cdp.send('Input.dispatchKeyEvent', {
+          type: 'keyUp',
+          key: 'a',
+          code: 'KeyA',
+          windowsVirtualKeyCode: 65,
+          modifiers: modifier,
+        }, { sessionId });
+        await sleep(200);
+
+        const selectionCheck = await cdp.send<{ result: { value: {
+          editorLength: number;
+          selectedLength: number;
+          startsInside: boolean;
+          endsInside: boolean;
+        } } }>('Runtime.evaluate', {
+          expression: `(() => {
+            const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
+            const content = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+            const selection = window.getSelection();
+            const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+            return {
+              editorLength: ((content || editor)?.innerText || '').trim().length,
+              selectedLength: (selection?.toString() || '').trim().length,
+              startsInside: !!editor && !!range && (range.startContainer === editor || editor.contains(range.startContainer)),
+              endsInside: !!editor && !!range && (range.endContainer === editor || editor.contains(range.endContainer)),
+            };
+          })()`,
+          returnByValue: true,
+        }, { sessionId });
+
+        const selected = selectionCheck.result.value;
+        const coversBody = selected.startsInside
+          && selected.endsInside
+          && selected.selectedLength >= Math.max(0, selected.editorLength - 20);
+
+        if (!coversBody) {
+          throw new Error(`Refusing to clear draft because SelectAll did not cover the article body safely: selected=${selected.selectedLength}, editor=${selected.editorLength}, startsInside=${selected.startsInside}, endsInside=${selected.endsInside}`);
+        }
+
+        console.log(`[x-article] Existing body selected safely (${selected.selectedLength}/${selected.editorLength} chars)`);
+      }
+
+      await cdp.send('Input.dispatchKeyEvent', {
+        type: 'rawKeyDown',
+        key: 'Backspace',
+        code: 'Backspace',
+        windowsVirtualKeyCode: 8,
+      }, { sessionId });
+      await cdp.send('Input.dispatchKeyEvent', {
+        type: 'keyUp',
+        key: 'Backspace',
+        code: 'Backspace',
+        windowsVirtualKeyCode: 8,
+      }, { sessionId });
+      await sleep(700);
+
+      const cleared = await cdp.send<{ result: { value: { textLength: number; imageCount: number } } }>('Runtime.evaluate', {
+        expression: `(() => {
+          const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+          return {
+            textLength: (editor?.innerText || '').trim().length,
+            imageCount: editor?.querySelectorAll('img').length || 0,
+          };
+        })()`,
+        returnByValue: true,
+      }, { sessionId });
+
+      if (cleared.result.value.textLength > 0 || cleared.result.value.imageCount > 0) {
+        throw new Error(`Could not clear existing draft body safely: text=${cleared.result.value.textLength}, images=${cleared.result.value.imageCount}`);
+      }
+    }
 
     // Method 1: Simulate paste event with HTML data
     console.log('[x-article] Attempting to insert HTML via paste event...');
@@ -1057,6 +1244,7 @@ Usage:
 Options:
   --title <title>     Override title
   --cover <image>     Override cover image
+  --edit-url <url>    Replace the body of an existing X Article draft; keeps its current cover
   --submit            Ignored for X Articles; final publish is manual
   --profile <dir>     Chrome profile directory
   --help              Show this help
@@ -1084,6 +1272,7 @@ async function main(): Promise<void> {
   let markdownPath: string | undefined;
   let title: string | undefined;
   let coverImage: string | undefined;
+  let editUrl: string | undefined;
   let submit = false;
   let profileDir: string | undefined;
 
@@ -1093,6 +1282,8 @@ async function main(): Promise<void> {
       title = args[++i];
     } else if (arg === '--cover' && args[i + 1]) {
       coverImage = args[++i];
+    } else if (arg === '--edit-url' && args[i + 1]) {
+      editUrl = args[++i];
     } else if (arg === '--submit') {
       submit = true;
     } else if (arg === '--profile' && args[i + 1]) {
@@ -1112,7 +1303,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  await publishArticle({ markdownPath, title, coverImage, submit, profileDir });
+  await publishArticle({ markdownPath, title, coverImage, editUrl, submit, profileDir });
 }
 
 await main().catch((err) => {

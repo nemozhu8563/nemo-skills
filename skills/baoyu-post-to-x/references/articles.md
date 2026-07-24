@@ -20,6 +20,9 @@ npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --cover ./cover.jpg
 # Compose and open preview. Final publish is manual.
 npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md
 
+# Replace an existing draft body and keep its current cover
+npx -y bun ${SKILL_DIR}/scripts/x-article.ts article.md --edit-url https://x.com/compose/articles/edit/123456
+
 # Prepare a deterministic package for Chrome-assisted/manual verification
 npx -y bun ${SKILL_DIR}/scripts/x-article-package.ts article.md
 ```
@@ -54,6 +57,10 @@ More content here.
 
 \`\`\`
 Code blocks become blockquotes (X doesn't support code)
+\`\`\`
+
+\`\`\`x-plain
+Exact prompt or configuration text stays selectable and keeps its line breaks.
 \`\`\`
 ```
 
@@ -143,6 +150,7 @@ This replaces the old separate `nemo-post-to-x` package-only flow. Keep `baoyu-p
 | `> quote` | `<blockquote>` |
 | `` `code` `` | `<code>` |
 | ```` ``` ```` | `<blockquote>` (X limitation) |
+| fenced block with language `x-plain` | `<p>` with `<br>`; no inline Markdown parsing |
 | `- item` | `<ul><li>` |
 | `1. item` | `<ol><li>` |
 | `![](img)` | Image placeholder |
@@ -198,6 +206,7 @@ Claude:
 1. `md-to-html.ts` converts Markdown to HTML:
    - Extracts frontmatter (title, cover)
    - Converts markdown to HTML
+   - Renders `x-plain` fences as selectable verbatim text without blockquote or emphasis conversion
    - Replaces images with unique placeholders
    - Downloads remote images locally
    - Uses `assets/<article>/cover.png` as the default Obsidian cover when present
