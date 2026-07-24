@@ -27,7 +27,7 @@ This inventory is the execution gate for publishing nemo-managed skills into the
 | `idea-spark` | `skill_dir` | `delete` | `delete` | 用户已确认删除，不再发布 |
 | `inbox-processor` | `skill_dir` | `delete` | `delete` | 用户已确认删除，不再发布 |
 | `interdisciplinary-research` | `skill_dir` | `migrate_now` | `keep` | 跨学科研究方法和信源约束 |
-| `json-canvas` | `skill_dir` | `migrate_now` | `keep` | Obsidian Canvas 创建和编辑 |
+| `json-canvas` | `external_skill` | `external` | `external` | 由 `kepano/obsidian-skills` 维护；本仓库不再发布 |
 | `kie-image-gen` | `skill_dir` | `migrate_now` | `provider` | kie.ai / Nano Banana 图像 provider |
 | `learning-loop` | `skill_dir` | `migrate_now` | `keep` | 书籍学习闭环和轻量课题学习 fallback |
 | `llm-wiki` | `skill_dir` | `migrate_now` | `keep` | 知识库吸收和治理总入口 |
@@ -38,8 +38,8 @@ This inventory is the execution gate for publishing nemo-managed skills into the
 | `markitdown-client` | `skill_dir` | `delete` | `delete` | 当前不用它做 Obsidian 适配链路 |
 | `nemo-writer` | `skill_dir` | `migrate_now` | `keep` | 中文长文写作唯一主入口 |
 | `obsidian-archive` | `skill_dir` | `delete` | `delete` | 旧文章检查职责改由只读脚本承接 |
-| `obsidian-bases` | `skill_dir` | `migrate_now` | `keep` | Obsidian Bases 官方 skill |
-| `obsidian-markdown` | `skill_dir` | `migrate_now` | `keep` | Obsidian Markdown 官方 skill |
+| `obsidian-bases` | `external_skill` | `external` | `external` | 由 `kepano/obsidian-skills` 维护；本仓库不再发布 |
+| `obsidian-markdown` | `external_skill` | `external` | `external` | 由 `kepano/obsidian-skills` 维护；本仓库不再发布 |
 | `publish-article` | `skill_dir` | `migrate_now` | `keep` | 发布后归档和 frontmatter 更新 |
 | `tryvalo-imagegen` | `skill_dir` | `migrate_now` | `provider` | TryValo/new-api/gpt-image-2 图像 provider |
 | `wechat-article-writer` | `skill_dir` | `delete` | `delete` | 旧公众号文章工作流已退役，不并入 nemo-writer |

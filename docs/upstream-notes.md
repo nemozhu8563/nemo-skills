@@ -2,10 +2,9 @@
 
 Track origin and maintenance posture here before migrating later batches.
 
-## Batch 1
-- `obsidian-bases`: treated as nemo-maintained after migration.
-- `obsidian-markdown`: treated as nemo-maintained after migration.
-- `json-canvas`: treated as nemo-maintained after migration.
+## Batch 1 (externalized 2026-07-24)
+- `obsidian-bases`, `obsidian-markdown`, and `json-canvas` are provided directly by `https://github.com/kepano/obsidian-skills`.
+- Their local source directories were removed. This repository must not publish or recreate them.
 
 ## Batch 2
 - `interdisciplinary-research`: treated as nemo-maintained after migration with bundled demo PDF.

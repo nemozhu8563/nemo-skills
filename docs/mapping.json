@@ -185,13 +185,6 @@
       "status": "migrate_now"
     },
     {
-      "id": "json-canvas",
-      "type": "skill_dir",
-      "source": "skills/json-canvas",
-      "destination": ".agents/skills/json-canvas",
-      "status": "migrate_now"
-    },
-    {
       "id": "kie-image-gen",
       "type": "skill_dir",
       "source": "skills/kie-image-gen",
@@ -260,20 +253,6 @@
       "source": "skills/obsidian-archive",
       "destination": ".agents/skills/obsidian-archive",
       "status": "delete"
-    },
-    {
-      "id": "obsidian-bases",
-      "type": "skill_dir",
-      "source": "skills/obsidian-bases",
-      "destination": ".agents/skills/obsidian-bases",
-      "status": "migrate_now"
-    },
-    {
-      "id": "obsidian-markdown",
-      "type": "skill_dir",
-      "source": "skills/obsidian-markdown",
-      "destination": ".agents/skills/obsidian-markdown",
-      "status": "migrate_now"
     },
     {
       "id": "publish-article",

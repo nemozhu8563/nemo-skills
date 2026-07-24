@@ -11,7 +11,6 @@ This file is the human-readable retention source for the current migration. It m
 - `baoyu-post-to-x`
 - `baoyu-translate`
 - `interdisciplinary-research`
-- `json-canvas`
 - `learning-loop`
 - `llm-wiki`
 - `llm-wiki-bootstrap`
@@ -19,8 +18,6 @@ This file is the human-readable retention source for the current migration. It m
 - `llm-wiki-query-writeback`
 - `llm-wiki-weekly-lint`
 - `nemo-writer`
-- `obsidian-bases`
-- `obsidian-markdown`
 - `publish-article`
 - `wechat-publisher`
 - `zhihu-collection-sync`
@@ -28,6 +25,14 @@ This file is the human-readable retention source for the current migration. It m
 - `baoyu-cover-image`
 - `kie-image-gen`
 - `tryvalo-imagegen`
+
+## External Source Of Truth
+
+- `json-canvas`
+- `obsidian-bases`
+- `obsidian-markdown`
+
+These entrypoints are maintained by `https://github.com/kepano/obsidian-skills`. Project installations must symlink to that repository's canonical checkout instead of publishing copies from `nemo-skills`.
 
 ## Delete Or Do Not Migrate
 
