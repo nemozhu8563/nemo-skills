@@ -42,8 +42,10 @@ interface XBrowserOptions {
   timeoutMs?: number;
   profileDir?: string;
   chromePath?: string;
+  connectPort?: number;
   reuseDebugSession?: boolean;
   keepChromeOpen?: boolean;
+  onSubmitClicked?: () => void | Promise<void>;
 }
 
 export interface PostResult {
@@ -277,6 +279,7 @@ export async function postToX(options: XBrowserOptions): Promise<PostResult> {
     submit = false,
     timeoutMs = 120_000,
     profileDir = getDefaultProfileDir(),
+    connectPort,
     reuseDebugSession = true,
     keepChromeOpen = false,
   } = options;
@@ -286,13 +289,15 @@ export async function postToX(options: XBrowserOptions): Promise<PostResult> {
 
   await mkdir(profileDir, { recursive: true });
 
-  const reusable = reuseDebugSession ? await getReusableChromeDebugSession(profileDir) : null;
-  let port = reusable?.port;
-  let wsUrl = reusable?.wsUrl;
+  const reusable = connectPort == null && reuseDebugSession ? await getReusableChromeDebugSession(profileDir) : null;
+  let port = connectPort ?? reusable?.port;
+  let wsUrl = connectPort == null ? reusable?.wsUrl : undefined;
   let launchedChrome = false;
   let chrome: ReturnType<typeof spawn> | null = null;
 
-  if (reusable) {
+  if (connectPort != null) {
+    console.log(`[x-browser] Connecting to externally managed Chrome on port ${connectPort}.`);
+  } else if (reusable) {
     console.log(`[x-browser] Reusing Chrome debug session on port ${reusable.port} (profile: ${profileDir})`);
   } else {
     port = await getFreePort();
@@ -319,7 +324,7 @@ export async function postToX(options: XBrowserOptions): Promise<PostResult> {
       const chromeStartupTimeoutMs = getEnvTimeoutMs('X_BROWSER_CHROME_STARTUP_TIMEOUT_MS', 120_000);
       console.log(`[x-browser] Waiting for Chrome debug port (timeout: ${chromeStartupTimeoutMs}ms)...`);
       wsUrl = await waitForChromeDebugPort(port!, chromeStartupTimeoutMs, { includeLastError: true });
-      rememberChromeDebugPort(profileDir, port!);
+      if (connectPort == null) rememberChromeDebugPort(profileDir, port!);
     }
     cdp = await CdpConnection.connect(wsUrl, 30_000, { defaultTimeoutMs: 15_000 });
 
@@ -412,6 +417,7 @@ export async function postToX(options: XBrowserOptions): Promise<PostResult> {
       if (!clicked) {
         throw new Error('Could not find a visible composer submit button.');
       }
+      await options.onSubmitClicked?.();
       const postUrl = await waitForPostedStatusUrl(cdp, sessionId, statusUrlsBeforeSubmit);
       if (postUrl) console.log(`[x-browser] Post submitted: ${postUrl}`);
       else console.warn('[x-browser] Post was submitted, but its URL was not detected.');
@@ -454,6 +460,7 @@ Options:
   --image <path>          Add image (can be repeated, max 4)
   --submit                Actually post (default: preview only)
   --profile <dir>         Dedicated Chrome profile directory
+  --connect-port <port>   Connect to an already-running Chrome debug port
   --reuse-debug-session   Explicitly prefer reusing a previous dedicated-profile CDP session
   --diagnose-chrome       Verify isolated Chrome CDP startup, then close
   --help                  Show this help
@@ -478,6 +485,7 @@ async function main(): Promise<void> {
   const images: string[] = [];
   let submit = false;
   let profileDir: string | undefined;
+  let connectPort: number | undefined;
   let reuseDebugSession = true;
   let diagnoseChrome = false;
   const textParts: string[] = [];
@@ -490,6 +498,12 @@ async function main(): Promise<void> {
       submit = true;
     } else if (arg === '--profile' && args[i + 1]) {
       profileDir = args[++i];
+    } else if (arg === '--connect-port' && args[i + 1]) {
+      const parsedPort = Number.parseInt(args[++i]!, 10);
+      if (!Number.isInteger(parsedPort) || parsedPort <= 0 || parsedPort > 65_535) {
+        throw new Error('--connect-port must be a valid TCP port.');
+      }
+      connectPort = parsedPort;
     } else if (arg === '--reuse-debug-session') {
       reuseDebugSession = true;
     } else if (arg === '--diagnose-chrome') {
@@ -511,7 +525,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  await postToX({ text, images, submit, profileDir, reuseDebugSession });
+  await postToX({ text, images, submit, profileDir, connectPort, reuseDebugSession });
 }
 
 if (import.meta.main) {

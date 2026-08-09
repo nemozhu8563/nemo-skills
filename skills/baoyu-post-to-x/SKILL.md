@@ -61,6 +61,20 @@ To put the link in the first reply, use one command for both actions:
 npx -y bun ${SKILL_DIR}/scripts/x-post-with-reply.ts --submit --reply "项目地址：https://github.com/example/repo" "发现一个很有意思的 GitHub 仓库：example"
 ```
 
+For scheduled automation, pass an absolute result file outside the repository. The script atomically records `running`, `succeeded`, or `failed` plus the main-post URL and reply verification stages. Reusing a result file that already records an active or externally visible run is rejected to prevent duplicate posts.
+
+```bash
+npx -y bun ${SKILL_DIR}/scripts/x-post-with-reply.ts --result-file "$HOME/Library/Caches/nemo-automations/github-x-09-30/data/example--repo.json" --submit --reply "项目地址：https://github.com/example/repo" "发现一个很有意思的 GitHub 仓库：example"
+```
+
+On Windows, keep the result under `%LOCALAPPDATA%\\nemo-automations\\<automation-id>\\data\\`. Automation callers must continue following the command process to its real exit; the result file is durable recovery and duplicate-prevention state, not a replacement for process supervision.
+
+When the dedicated profile cannot retain an X login, explicitly connect the user's already logged-in Chrome debug session instead:
+
+```bash
+npx -y bun ${SKILL_DIR}/scripts/x-post-with-reply.ts --connect-port 9222 --submit --reply "项目地址：https://github.com/example/repo" "发现一个很有意思的 GitHub 仓库：example"
+```
+
 The command stops before replying if it cannot obtain the main post URL, and reports main-post submission, URL detection, and reply submission separately when it fails.
 
 > **Note**: `${SKILL_DIR}` represents this skill's installation directory. Agent replaces with actual path at runtime.
@@ -72,6 +86,7 @@ The command stops before replying if it cannot obtain the main post URL, and rep
 | `--image <path>` | Image file path (can be repeated, max 4) |
 | `--submit` | Actually post (default: preview only) |
 | `--profile <dir>` | Custom dedicated Chrome profile directory |
+| `--result-file <path>` | Absolute path for atomic run state and duplicate prevention |
 | `--reuse-debug-session` | Explicitly prefer reusing a previous dedicated-profile CDP session |
 | `--diagnose-chrome` | Verify isolated Chrome CDP startup, then close without opening X |
 

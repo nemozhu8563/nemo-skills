@@ -22,10 +22,21 @@ interface ReplyOptions {
   timeoutMs?: number;
   profileDir?: string;
   chromePath?: string;
+  connectPort?: number;
+  onSubmitClicked?: () => void | Promise<void>;
 }
 
 export interface ReplyResult {
   submitted: boolean;
+  submissionClicked: boolean;
+  verifiedOnPostPage: boolean;
+}
+
+export class ReplyVerificationError extends Error {
+  constructor() {
+    super('Reply submit button was clicked, but the reply could not be verified on the direct post page.');
+    this.name = 'ReplyVerificationError';
+  }
 }
 
 function normalizeTweetUrl(value: string): string | null {
@@ -35,6 +46,34 @@ function normalizeTweetUrl(value: string): string | null {
 }
 
 type TargetInfo = { targetId: string; url: string; type: string };
+
+export interface RenderedReply {
+  text: string;
+  links: string[];
+}
+
+function normalized(value: string): string {
+  return value.replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+export function repoSlugFromReplyText(text: string): string | undefined {
+  const match = text.match(/https?:\/\/(?:www\.)?github\.com\/([^/?#]+\/[^/?#]+)/i);
+  return match?.[1]?.toLowerCase();
+}
+
+export function replyAppearsOnPostPage(reply: RenderedReply, expectedText: string): boolean {
+  const expected = normalized(expectedText);
+  const candidateText = normalized(reply.text);
+  if (candidateText.includes(expected)) return true;
+
+  const urlStart = expectedText.search(/https?:\/\//i);
+  const label = normalized(urlStart >= 0 ? expectedText.slice(0, urlStart) : expectedText);
+  const repoSlug = repoSlugFromReplyText(expectedText);
+  if (!label || !repoSlug || !candidateText.includes(label)) return false;
+
+  return candidateText.includes(repoSlug)
+    || reply.links.some((link) => normalized(link).includes(`github.com/${repoSlug}`));
+}
 
 async function getPageTargets(cdp: CdpConnection): Promise<TargetInfo[]> {
   const targets = await cdp.send<{ targetInfos: TargetInfo[] }>('Target.getTargets');
@@ -106,21 +145,96 @@ async function clickReplySubmitButton(cdp: CdpConnection, sessionId: string): Pr
   return result.result.value;
 }
 
+interface ThreadSnapshot {
+  replyCount?: number;
+  replies: RenderedReply[];
+}
+
+function statusIdFromTweetUrl(tweetUrl: string): string {
+  const match = tweetUrl.match(/\/status\/(\d+)/);
+  if (!match) throw new Error(`Could not extract status ID from ${tweetUrl}`);
+  return match[1]!;
+}
+
+async function readThreadSnapshot(
+  cdp: CdpConnection,
+  sessionId: string,
+  statusId: string,
+): Promise<ThreadSnapshot> {
+  const result = await cdp.send<{ result: { value: ThreadSnapshot } }>('Runtime.evaluate', {
+    expression: `(() => {
+      const statusId = ${JSON.stringify(statusId)};
+      const articles = Array.from(document.querySelectorAll('article'));
+      const parent = articles.find((article) => Array.from(article.querySelectorAll('a[href*="/status/"]'))
+        .some((link) => link.getAttribute('href')?.includes('/status/' + statusId)));
+      const labels = Array.from(parent?.querySelectorAll('[aria-label]') ?? [])
+        .map((element) => element.getAttribute('aria-label') || '');
+      const replyLabel = labels.find((label) => /\\d[\\d,.]*\\s*(?:回复|repl(?:y|ies))/i.test(label));
+      const countMatch = replyLabel?.match(/(\\d[\\d,.]*)\\s*(?:回复|repl(?:y|ies))/i);
+      const replyCount = countMatch ? Number.parseFloat(countMatch[1].replace(/,/g, '')) : undefined;
+      return {
+        replyCount: Number.isFinite(replyCount) ? replyCount : undefined,
+        replies: articles.map((article) => ({
+          text: article.innerText || '',
+          links: Array.from(article.querySelectorAll('a[href]')).map((link) => link.href || ''),
+        })),
+      };
+    })()`,
+    returnByValue: true,
+  }, { sessionId });
+  return result.result.value;
+}
+
+async function waitForPublishedReply(
+  cdp: CdpConnection,
+  sessionId: string,
+  statusId: string,
+  text: string,
+  timeoutMs: number,
+  before: ThreadSnapshot,
+): Promise<boolean> {
+  const start = Date.now();
+  let reloaded = false;
+  while (Date.now() - start < timeoutMs) {
+    const current = await readThreadSnapshot(cdp, sessionId, statusId);
+    if (current.replies.some((reply) => replyAppearsOnPostPage(reply, text))) {
+      const replyCountChanged = before.replyCount != null && current.replyCount != null
+        ? ` (${before.replyCount} → ${current.replyCount} replies)`
+        : '';
+      console.log(`[x-reply] Reply visible on the direct post page${replyCountChanged}.`);
+      return true;
+    }
+
+    if (!reloaded && Date.now() - start >= timeoutMs / 2) {
+      reloaded = true;
+      console.log('[x-reply] Reply is not rendered yet; reloading the direct post page once.');
+      await cdp.send('Page.reload', { ignoreCache: true }, { sessionId });
+      await sleep(2_000);
+    } else {
+      await cdp.send('Runtime.evaluate', {
+        expression: 'window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" })',
+      }, { sessionId });
+    }
+    await sleep(1_000);
+  }
+  return false;
+}
+
 export async function replyToX(options: ReplyOptions): Promise<ReplyResult> {
   const tweetUrl = normalizeTweetUrl(options.tweetUrl);
   if (!tweetUrl) throw new Error(`Invalid tweet URL: ${options.tweetUrl}`);
 
-  const { text, submit = false, timeoutMs = 120_000, profileDir = getDefaultProfileDir() } = options;
+  const { text, submit = false, timeoutMs = 120_000, profileDir = getDefaultProfileDir(), connectPort } = options;
   const chromePath = options.chromePath ?? findChromeExecutable(CHROME_CANDIDATES_FULL);
   if (!chromePath) throw new Error('Chrome not found. Set X_BROWSER_CHROME_PATH env var.');
   await mkdir(profileDir, { recursive: true });
 
-  const reusable = await getReusableChromeDebugSession(profileDir);
-  let port = reusable?.port;
-  let wsUrl = reusable?.wsUrl;
+  const reusable = connectPort == null ? await getReusableChromeDebugSession(profileDir) : null;
+  let port = connectPort ?? reusable?.port;
+  let wsUrl = connectPort == null ? reusable?.wsUrl : undefined;
   let launchedChrome = false;
   let chrome: ReturnType<typeof spawn> | null = null;
-  if (!reusable) {
+  if (!reusable && connectPort == null) {
     port = await getFreePort();
     chrome = spawn(chromePath, [
       `--remote-debugging-port=${port}`,
@@ -138,7 +252,7 @@ export async function replyToX(options: ReplyOptions): Promise<ReplyResult> {
   try {
     if (!wsUrl) {
       wsUrl = await waitForChromeDebugPort(port!, 30_000, { includeLastError: true });
-      rememberChromeDebugPort(profileDir, port!);
+      if (connectPort == null) rememberChromeDebugPort(profileDir, port!);
     }
     cdp = await CdpConnection.connect(wsUrl, 30_000, { defaultTimeoutMs: 15_000 });
     let page = launchedChrome ? await waitForPageTarget(cdp, 5_000) : undefined;
@@ -166,11 +280,21 @@ export async function replyToX(options: ReplyOptions): Promise<ReplyResult> {
       if (!await waitForReplyEditor(cdp, sessionId, timeoutMs)) throw new Error('Timed out waiting for the reply editor.');
     }
 
-    await insertTextIntoComposer(cdp, sessionId, text);
-    if (!submit) return { submitted: false };
+    console.log('[x-reply] Typing reply...');
+    // A native paste targets the frontmost Chrome tab, which can differ from
+    // this CDP-attached reply page. Keep reply text scoped to the target page.
+    await insertTextIntoComposer(cdp, sessionId, text, undefined, { preferClipboard: false });
+    if (!submit) return { submitted: false, submissionClicked: false, verifiedOnPostPage: false };
+    console.log('[x-reply] Submitting reply...');
+    const statusId = statusIdFromTweetUrl(tweetUrl);
+    const beforeReply = await readThreadSnapshot(cdp, sessionId, statusId);
     if (!await clickReplySubmitButton(cdp, sessionId)) throw new Error('Could not find a visible reply submit button.');
-    await sleep(2_000);
-    return { submitted: true };
+    await options.onSubmitClicked?.();
+    if (!await waitForPublishedReply(cdp, sessionId, statusId, text, 20_000, beforeReply)) {
+      throw new ReplyVerificationError();
+    }
+    console.log('[x-reply] Reply submitted and confirmed on the post page.');
+    return { submitted: true, submissionClicked: true, verifiedOnPostPage: true };
   } finally {
     if (cdp) {
       if (launchedChrome) {
@@ -185,13 +309,29 @@ export async function replyToX(options: ReplyOptions): Promise<ReplyResult> {
 }
 
 if (import.meta.main) {
-  const [tweetUrl, ...textParts] = process.argv.slice(2).filter((arg) => arg !== '--submit');
-  const submit = process.argv.includes('--submit');
+  const args = process.argv.slice(2);
+  let tweetUrl: string | undefined;
+  let submit = false;
+  let connectPort: number | undefined;
+  const textParts: string[] = [];
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index]!;
+    if (arg === '--submit') submit = true;
+    else if (arg === '--connect-port' && args[index + 1]) {
+      const parsedPort = Number.parseInt(args[++index]!, 10);
+      if (!Number.isInteger(parsedPort) || parsedPort <= 0 || parsedPort > 65_535) {
+        console.error('Error: --connect-port must be a valid TCP port.');
+        process.exit(1);
+      }
+      connectPort = parsedPort;
+    } else if (!arg.startsWith('-') && !tweetUrl) tweetUrl = arg;
+    else if (!arg.startsWith('-')) textParts.push(arg);
+  }
   if (!tweetUrl || textParts.length === 0) {
-    console.error('Usage: npx -y bun x-reply.ts <tweet-url> [--submit] <reply text>');
+    console.error('Usage: npx -y bun x-reply.ts <tweet-url> [--connect-port <port>] [--submit] <reply text>');
     process.exit(1);
   }
-  await replyToX({ tweetUrl, text: textParts.join(' '), submit }).catch((error) => {
+  await replyToX({ tweetUrl, text: textParts.join(' '), submit, connectPort }).catch((error) => {
     console.error(`Error: ${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);
   });

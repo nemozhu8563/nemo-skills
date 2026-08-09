@@ -122,6 +122,17 @@ export async function waitForChromeDebugPort(
     } catch (error) {
       lastError = error;
     }
+    // Some externally managed Chrome sessions intentionally do not expose
+    // /json/version. Their DevToolsActivePort file still records the browser
+    // WebSocket path, which is required when explicitly attaching by port.
+    for (const activePortPath of getDevToolsActivePortPaths()) {
+      try {
+        const [activePort, wsPath] = fs.readFileSync(activePortPath, 'utf8').trim().split(/\r?\n/, 2);
+        if (Number(activePort) === port && wsPath?.startsWith('/devtools/browser/')) {
+          return `ws://127.0.0.1:${port}${wsPath}`;
+        }
+      } catch {}
+    }
     await sleep(200);
   }
 
@@ -129,6 +140,32 @@ export async function waitForChromeDebugPort(
     throw new Error(`Chrome debug port not ready: ${lastError instanceof Error ? lastError.message : String(lastError)}`);
   }
   throw new Error('Chrome debug port not ready');
+}
+
+function getDevToolsActivePortPaths(): string[] {
+  const home = os.homedir();
+  if (process.platform === 'darwin') {
+    return [
+      path.join(home, 'Library/Application Support/Google/Chrome/DevToolsActivePort'),
+      path.join(home, 'Library/Application Support/Google/Chrome Canary/DevToolsActivePort'),
+      path.join(home, 'Library/Application Support/Chromium/DevToolsActivePort'),
+      path.join(home, 'Library/Application Support/Microsoft Edge/DevToolsActivePort'),
+    ];
+  }
+  if (process.platform === 'win32') {
+    const localAppData = process.env.LOCALAPPDATA || '';
+    return [
+      path.join(localAppData, 'Google/Chrome/User Data/DevToolsActivePort'),
+      path.join(localAppData, 'Google/Chrome Canary/User Data/DevToolsActivePort'),
+      path.join(localAppData, 'Chromium/User Data/DevToolsActivePort'),
+      path.join(localAppData, 'Microsoft/Edge/User Data/DevToolsActivePort'),
+    ];
+  }
+  return [
+    path.join(home, '.config/google-chrome/DevToolsActivePort'),
+    path.join(home, '.config/chromium/DevToolsActivePort'),
+    path.join(home, '.config/microsoft-edge/DevToolsActivePort'),
+  ];
 }
 
 export function getChromeDebugPortStatePath(profileDir: string): string {
@@ -289,6 +326,7 @@ export async function insertTextIntoComposer(
   sessionId: string,
   text: string,
   selector = '[data-testid="tweetTextarea_0"]',
+  options: { preferClipboard?: boolean } = {},
 ): Promise<void> {
   const normalizeComposerText = (value: string): string => (
     value
@@ -341,7 +379,7 @@ export async function insertTextIntoComposer(
 
   const normalizedExpected = normalizeComposerText(text);
 
-  if (copyTextToClipboard(text)) {
+  if (options.preferClipboard !== false && copyTextToClipboard(text)) {
     await focusComposer();
     await sleep(200);
     if (pasteFromClipboard('Google Chrome', 5, 500)) {
