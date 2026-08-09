@@ -22,6 +22,8 @@ Post content, images, videos, and long-form articles to X using real Chrome brow
 | `scripts/x-browser.ts` | Regular posts (text + images) |
 | `scripts/x-post-with-reply.ts` | Publish a regular post, then reply under it with a link |
 | `scripts/x-reply.ts` | Reply to an existing regular post |
+| `scripts/x-verify-post-with-reply.ts` | Read-only dedicated-profile health check and post/reply verification |
+| `scripts/x-timeline-dom.ts` | Read-only, sanitized timeline DOM snapshots for scheduled collectors |
 | `scripts/x-video.ts` | Video posts (text + video) |
 | `scripts/x-quote.ts` | Quote tweet with comment |
 | `scripts/x-article.ts` | Long-form article publishing (Markdown) |
@@ -69,10 +71,18 @@ npx -y bun ${SKILL_DIR}/scripts/x-post-with-reply.ts --result-file "$HOME/Librar
 
 On Windows, keep the result under `%LOCALAPPDATA%\\nemo-automations\\<automation-id>\\data\\`. Automation callers must continue following the command process to its real exit; the result file is durable recovery and duplicate-prevention state, not a replacement for process supervision.
 
-When the dedicated profile cannot retain an X login, explicitly connect the user's already logged-in Chrome debug session instead:
+Scheduled publishers must verify the dedicated profile before starting an externally visible action. This command is read-only and leaves a healthy dedicated session available for the publisher to reuse:
 
 ```bash
-npx -y bun ${SKILL_DIR}/scripts/x-post-with-reply.ts --connect-port 9222 --submit --reply "项目地址：https://github.com/example/repo" "发现一个很有意思的 GitHub 仓库：example"
+npx -y bun ${SKILL_DIR}/scripts/x-verify-post-with-reply.ts --health-check --keep-open --timeout-ms 45000
+```
+
+Do not use the user's daily Chrome, a fixed port such as `9222`, or a general-purpose browser connector as the scheduled publishing fallback. If health checking fails, stop before publishing and preserve the run state for a later read-only reconciliation.
+
+To reconcile an interrupted run with a known main-post URL without typing or clicking:
+
+```bash
+npx -y bun ${SKILL_DIR}/scripts/x-verify-post-with-reply.ts --tweet-url "https://x.com/example/status/123" --repo-slug "example/repo" --timeout-ms 45000
 ```
 
 The command stops before replying if it cannot obtain the main post URL, and reports main-post submission, URL detection, and reply submission separately when it fails.
@@ -87,10 +97,9 @@ The command stops before replying if it cannot obtain the main post URL, and rep
 | `--submit` | Actually post (default: preview only) |
 | `--profile <dir>` | Custom dedicated Chrome profile directory |
 | `--result-file <path>` | Absolute path for atomic run state and duplicate prevention |
-| `--reuse-debug-session` | Explicitly prefer reusing a previous dedicated-profile CDP session |
-| `--diagnose-chrome` | Verify isolated Chrome CDP startup, then close without opening X |
+| `--connect-port <port>` | Explicit existing CDP port for an operator-controlled recovery run; scheduled tasks should omit it |
 
-**Default browser behavior**: regular posts first try to reuse a healthy dedicated-profile CDP session; if none is available, they launch a fresh isolated Chrome. They never attach to the user's current Chrome, and the launched browser is closed after submit or preview.
+**Default browser behavior**: regular posts first try to reuse a healthy dedicated-profile CDP session; if none is available, they launch a fresh isolated Chrome. They never attach to the user's current Chrome. A read-only health check can keep the dedicated session open for scheduled reuse.
 
 ---
 
