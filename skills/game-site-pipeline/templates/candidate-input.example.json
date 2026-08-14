@@ -1,0 +1,21 @@
+{
+  "example_only": true,
+  "key": "game:example-game",
+  "name": "Example Game",
+  "source_report": "/absolute/path/to/radar-report.md",
+  "qualification": {
+    "trends_status": "rising",
+    "semrush_database": "us",
+    "semrush_volume": 1000,
+    "semrush_kd": 20,
+    "long_tail_count": 12,
+    "serp_status": "mixed",
+    "reliable_source_count": 2
+  },
+  "platform_ids": [
+    {
+      "platform": "steam",
+      "id": "replace-with-real-app-id"
+    }
+  ]
+}

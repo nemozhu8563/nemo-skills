@@ -1,0 +1,57 @@
+interface:
+  display_name: "Game Site Pipeline"
+  short_description: "总编排热词游戏站阶段 Skill，共享一套有证据、有门禁、可恢复的状态机"
+  default_prompt: "Use $game-site-pipeline to inspect the current project state, route exactly one matching stage Skill, return after its gate passes, and keep candidate, content, deployment, telemetry, indexing, growth and template evidence separate."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "python3"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow public sources and explicitly authorized private analytics readback; forbid credentials"
+    generated_public_claims: "claim-level-evidence-bound"
+  permissions:
+    network: "none in the bundled CLI; external research and provider operations require separate tools and scope"
+    file_write: "user-selected project artifacts and project content only"
+    subprocess: "local validation, build and test commands named by the project"
+    interactive: "required for primary-keyword approval and every external side effect"
+  degradation:
+    openai: "local-state-machine-plus-authorized-provider-tools"
+    claude: "local-state-machine-plus-manual-provider-handoff"
+    generic: "local-state-machine-and-human-readback"
+gates:
+  governed:
+    - "one central state machine routes exactly one stage owner at a time"
+    - "candidate lock requires exact human confirmation"
+    - "one page owns one intent and no normalized keyword alias overlaps"
+    - "every page has two sources; sensitive claims have current trusted evidence"
+    - "five human-reviewed pages precede batch expansion"
+    - "external actions require matching active authorization ids"
+    - "deployment, telemetry, indexing and data are proved separately"
+    - "no valid GSC data means diagnostics plus day-7/day-14 review, not growth or retirement"
+    - "local tests, trigger eval, output eval, secret scan and public-claim guard pass"
+name: game-site-pipeline
+version: 0.1.0
+mode: governed
+inputs:
+  - "one qualified game-keyword-radar candidate plus human primary-keyword approval"
+  - "page contracts, sources, content files, local checks and optional provider readbacks"
+outputs:
+  - "immutable candidate lock and recoverable pipeline state"
+  - "page matrix, evidence pack, content manifest, launch report and analytics snapshot"
+  - "explicit blockers, missing evidence and evidence-based lifecycle decision"
+side_effects:
+  default: "local project records only"
+  external: "never executed by the bundled CLI and always separately authorized"
+privacy:
+  prohibited: ["passwords", "cookies", "tokens", "private keys", "browser storage", "provider credentials"]

@@ -1,0 +1,17 @@
+{
+  "key": "game:test-game",
+  "name": "Test Game",
+  "source_report": "radar-report.md",
+  "qualification": {
+    "trends_status": "rising",
+    "semrush_database": "us",
+    "semrush_volume": 1200,
+    "semrush_kd": 22,
+    "long_tail_count": 14,
+    "serp_status": "mixed",
+    "reliable_source_count": 3
+  },
+  "platform_ids": [
+    {"platform": "steam", "id": "123456"}
+  ]
+}

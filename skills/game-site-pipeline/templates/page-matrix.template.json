@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "candidate_key": "game:example-game",
+  "base_locale": "en-US",
+  "locales": [
+    {
+      "locale": "en-US",
+      "demand_validated": true,
+      "demand_evidence": [
+        "candidate-lock qualification"
+      ],
+      "content_complete": true
+    }
+  ],
+  "pages": [
+    {
+      "page_id": "codes-en",
+      "slug": "example-game-codes",
+      "page_type": "codes",
+      "locale": "en-US",
+      "primary_keyword": "example game codes",
+      "keyword_aliases": [
+        "codes for example game"
+      ],
+      "intent_key": "example-game-codes-current",
+      "search_intent": "Find currently valid redemption codes and how to redeem them",
+      "user_goal": "Copy a current code and understand its redemption status",
+      "allowed_fields": [
+        "code",
+        "reward",
+        "status",
+        "checked_at",
+        "source"
+      ],
+      "allowed_actions": [
+        "copy_code",
+        "open_official_source"
+      ],
+      "allowed_states": [
+        "active",
+        "expired",
+        "unknown"
+      ],
+      "non_goals": [
+        "account login",
+        "code generation",
+        "unverified reward promises"
+      ]
+    }
+  ]
+}

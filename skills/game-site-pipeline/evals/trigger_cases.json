@@ -1,0 +1,119 @@
+{
+  "recommended_threshold": 0.5,
+  "description_required_concepts": [
+    "pipeline",
+    "candidate",
+    "evidence",
+    "authorization"
+  ],
+  "positive_concepts": {
+    "pipeline": [
+      "game site pipeline",
+      "游戏站全链路",
+      "热词游戏站全链路",
+      "从选词到上线复盘",
+      "建站流水线",
+      "游戏站流水线",
+      "热词游戏站",
+      "游戏站验证"
+    ],
+    "candidate": [
+      "candidate lock",
+      "锁词",
+      "主词确认",
+      "页面矩阵",
+      "游戏词建站"
+    ],
+    "evidence": [
+      "evidence pack",
+      "claim-level",
+      "来源",
+      "内容门禁",
+      "批量内页",
+      "第 14 天数据",
+      "grow",
+      "通用基础设施",
+      "游戏专属内容"
+    ],
+    "authorization": [
+      "部署门禁",
+      "授权",
+      "gsc",
+      "ga",
+      "上线复盘"
+    ]
+  },
+  "negative_patterns": [
+    "只找词",
+    "只运行雷达",
+    "不要建站",
+    "只解释",
+    "通用 seo"
+  ],
+  "should_trigger": [
+    {
+      "text": "候选词已经找好了，用热词游戏站全链路从锁词做到上线后复盘",
+      "family": "cn_full_pipeline"
+    },
+    {
+      "text": "把这个 Roblox 主词锁定，做页面矩阵、证据包和首批五页内容门禁",
+      "family": "cn_lock_build"
+    },
+    {
+      "text": "继续游戏站流水线，检查本地构建后是否满足部署门禁",
+      "family": "cn_resume_gate"
+    },
+    {
+      "text": "Use the game site pipeline to move this approved candidate through evidence, local verification, deployment authorization, and GSC observation",
+      "family": "en_pipeline"
+    },
+    {
+      "text": "根据 GSC 第 14 天数据决定这个热词游戏站 grow、hold 还是 retire",
+      "family": "cn_growth_decision"
+    },
+    {
+      "text": "这个游戏站验证完成了，区分通用基础设施和游戏专属内容后沉淀模板",
+      "family": "cn_template"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "只运行 Steam 和 Roblox 游戏热词雷达找候选",
+      "family": "radar_only"
+    },
+    {
+      "text": "帮我解释 Semrush KD 的含义",
+      "family": "explain_only"
+    },
+    {
+      "text": "写一篇通用 SEO 教程",
+      "family": "generic_seo"
+    },
+    {
+      "text": "直接替我买域名并扣款，不要确认",
+      "family": "unsafe_purchase"
+    },
+    {
+      "text": "给我的企业官网设计联系我们页面",
+      "family": "unrelated_site"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "从 Steam 和 Roblox 找中腰部游戏词，再用 Semrush 验证",
+      "family": "game_keyword_radar"
+    },
+    {
+      "text": "分析我现有网站的 GSC 搜索词和 CTR 机会",
+      "family": "gsc_seo_opportunity"
+    },
+    {
+      "text": "把一个已经写好的普通 Next.js 网站部署到 Vercel",
+      "family": "generic_deploy"
+    },
+    {
+      "text": "研究一个竞品网站的页面结构和关键词",
+      "family": "competitor_research"
+    }
+  ]
+}

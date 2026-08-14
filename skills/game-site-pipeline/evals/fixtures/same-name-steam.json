@@ -1,0 +1,17 @@
+{
+  "key": "game:shared-name",
+  "name": "Shared Name",
+  "source_report": "radar-report.md",
+  "qualification": {
+    "trends_status": "rising",
+    "semrush_database": "us",
+    "semrush_volume": 800,
+    "semrush_kd": 18,
+    "long_tail_count": 11,
+    "serp_status": "open",
+    "reliable_source_count": 2
+  },
+  "platform_ids": [
+    {"platform": "steam", "id": "111"}
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nemo.local/game-site-pipeline/candidate-lock.schema.json",
+  "title": "Game Site Candidate Lock",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "key",
+    "name",
+    "source_report",
+    "source_report_sha256",
+    "locked_at",
+    "qualification",
+    "platform_ids",
+    "decision"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "key": {"type": "string", "pattern": "^game:[a-z0-9][a-z0-9-]*$"},
+    "name": {"type": "string", "minLength": 1},
+    "source_report": {"type": "string", "minLength": 1},
+    "source_report_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "locked_at": {"type": "string", "format": "date-time"},
+    "qualification": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "trends_status",
+        "semrush_database",
+        "semrush_volume",
+        "semrush_kd",
+        "long_tail_count",
+        "serp_status",
+        "reliable_source_count"
+      ],
+      "properties": {
+        "trends_status": {"const": "rising"},
+        "semrush_database": {"type": "string", "minLength": 1},
+        "semrush_volume": {"type": "number", "exclusiveMinimum": 0},
+        "semrush_kd": {"type": "number", "minimum": 0, "exclusiveMaximum": 30},
+        "long_tail_count": {"type": "integer", "minimum": 10},
+        "serp_status": {"enum": ["open", "mixed"]},
+        "reliable_source_count": {"type": "integer", "minimum": 2}
+      }
+    },
+    "platform_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["platform", "id"],
+        "properties": {
+          "platform": {"type": "string", "minLength": 1},
+          "id": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "approved_by", "confirmed_key", "rationale"],
+      "properties": {
+        "status": {"const": "approved"},
+        "approved_by": {"type": "string", "minLength": 1},
+        "confirmed_key": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

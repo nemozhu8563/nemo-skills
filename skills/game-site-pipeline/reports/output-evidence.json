@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "evidence_kind": "behavior_specification",
+  "generated_at": "2026-08-07",
+  "local_evidence": {
+    "unit_tests": "18/18 passed",
+    "trigger_eval": "15/15 passed",
+    "output_eval": "8/8 passed"
+  },
+  "missing_evidence": [
+    "provider-backed output from a real deployed game site",
+    "human blind review of a real generated page batch",
+    "GSC or GA performance readback",
+    "indexing, traffic, ranking, revenue or advertising outcome"
+  ],
+  "note": "Recorded fixtures and behavior tests are not provider or human outcome evidence."
+}
