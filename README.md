@@ -1,45 +1,18 @@
 # nemo-skills
 
-`nemo-skills` is the source-of-truth repository for skills you actively maintain.
+`nemo-skills` is the Nemo-maintained source collection inside the parent [awesome-skills](../README.md) directory. The parent README owns the overall source and installation policy; this repository owns only its self-maintained packages.
 
-## Source of truth rule
-- Edit migrated skills here, not in the Obsidian vault.
-- Publish managed copies back into the vault with `node scripts/publish-to-vault.mjs` or `bun scripts/publish-to-vault.mjs`.
-- Verify generated copies with `node scripts/verify-publish.mjs` or `bun scripts/verify-publish.mjs`.
-- Roll back with `node scripts/rollback-publish.mjs` or `bun scripts/rollback-publish.mjs`.
+## Scope
 
-## Required vault target
-- Scripts do not infer a default vault. Always pass `--vault-root <path>`.
-- Current vault root: `/Users/nemo/Documents/Obsidian`
-- Managed destination root: `<vault-root>/.agents/skills`
-- Rollback backup root: `<vault-root>/.agents/.nemo-backups/skills`
+- Keep Nemo-maintained Skills under `skills/<skill-name>`.
+- Do not use this repository as the umbrella inventory for upstream clones or project-local Skills.
+- Consumers link directly to the relevant package directory; do not create a copied installation.
 
-## Default safety rules
-- Because both this repo and the vault live under OneDrive, live links / junctions are default-forbidden.
-- The default mode is publish/materialize managed copies.
-- Generated copies carry `do not edit here` warnings and drift metadata.
+## Legacy migration tooling
 
-## Current publish set
+`docs/mapping.json` and the publish/verify/rollback scripts remain as historical migration and recovery tooling. They are not the installation path for new Skills; create a scoped symlink instead.
 
-The publish set is controlled by `docs/mapping.json`. Only entries with `status: "migrate_now"` are eligible for publish.
-
-Common commands:
-
-```bash
-# Publish one skill
-node scripts/publish-to-vault.mjs --vault-root /Users/nemo/Documents/Obsidian --entry-id article-illustrate --mode OverwriteManagedClean
-
-# Verify one skill
-node scripts/verify-publish.mjs --vault-root /Users/nemo/Documents/Obsidian --entry-id article-illustrate
-
-# Publish all migrate_now entries
-node scripts/publish-to-vault.mjs --vault-root /Users/nemo/Documents/Obsidian --only-migrate-now --mode OverwriteManagedClean
-
-# Roll back a publish batch
-node scripts/rollback-publish.mjs --vault-root /Users/nemo/Documents/Obsidian --batch-id 20260516T111507Z --entry-id article-illustrate
-```
-
-The target vault is intentionally required at call time. This keeps AI/tooling invocations explicit and prevents accidental publishes into stale OneDrive vault paths.
+## Nemo-owned entrypoint inventory
 
 Primary entrypoints:
 
@@ -56,6 +29,10 @@ Primary entrypoints:
 - `publish-article`
 - `wechat-publisher`
 - `zhihu-collection-sync`
+
+## Explicitly project-scoped entrypoints
+
+- `nemo-domain-launch` is linked only from `game-site` and `payforplus`; it is not a global or Obsidian entrypoint.
 
 Provider/sub-skill surfaces:
 
