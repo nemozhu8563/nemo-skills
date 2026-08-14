@@ -1,0 +1,55 @@
+{
+  "name": "game-site-templater",
+  "version": "0.1.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-07",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "dependencies": [
+    {
+      "skill": "game-site-pipeline",
+      "version": ">=0.2.0",
+      "required": true
+    }
+  ],
+  "intent": {
+    "job_to_be_done": "把第一个已验证站点中真正通用的基础设施提炼出来，同时显式排除游戏专属品牌、内容、证据、域名和统计身份。",
+    "target_users": [
+      "Nemo",
+      "game-site operator"
+    ],
+    "inputs": [
+      "`grow` 且第一个站点已有人工批准的有效数据决策"
+    ],
+    "outputs": [
+      "框架/配置/内容三层边界清单",
+      "无产品身份和凭证的本地模板",
+      "第二游戏 substitution test 与残留扫描证据",
+      "批准后的 template_readiness 和 templated gate"
+    ],
+    "exclusions": [
+      "把首个尚无数据的站点提前抽成框架",
+      "连同游戏内容、品牌、来源和统计 ID 一起复制",
+      "以模板化为理由自动批量建十个站"
+    ]
+  },
+  "release_gates": [
+    "central_pipeline_dependency",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "trigger_eval",
+    "export_skill_ir",
+    "suite_contract_tests",
+    "action_boundary",
+    "missing_evidence_guard"
+  ]
+}

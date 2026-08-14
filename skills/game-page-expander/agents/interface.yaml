@@ -1,0 +1,52 @@
+interface:
+  display_name: "Game Page Expander"
+  short_description: "在 grow 后按真实机会有限批量扩页并重走上线观察门"
+  default_prompt: "Use $game-page-expander within the central game-site-pipeline contract. Verify the current stage, own only this stage's artifacts, pass the central semantic gate, and report blockers without claiming external completion."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "python3"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "read-only research in planning/evidence; external relaunch is delegated to game-site-launch with exact authorization"
+    generated_public_claims: "central-gate-and-evidence-bound"
+  permissions:
+    network: "read-only research in planning/evidence; external relaunch is delegated to game-site-launch with exact authorization"
+    file_write: "decision-log.md 中的扩页批次说明, 由 planner/evidence/builder/qa/launch/telemetry 各自更新的既有产物"
+    subprocess: "central game-site-pipeline CLI plus project-local checks named by the project"
+    interactive: "required for batch scope, reusable prompt, first-five human review, relaunch actions and observation handoff"
+  degradation:
+    openai: "central-cli-plus-available-scoped-tools"
+    claude: "central-cli-plus-manual-provider-handoff"
+    generic: "central-cli-and-human-evidence-handoff"
+gates:
+  production:
+    - "at least ten candidate pages map to explicit search intents"
+    - "generation runs in small same-type batches after a manual page pattern works"
+    - "every page has independent evidence and differentiated useful content"
+    - "five new pages receive human review before relaunch"
+name: game-page-expander
+version: 0.1.0
+mode: production
+inputs:
+  - "`grow`，且增长决定包含有效 GSC/关键词机会；单篇手动流程已被证明"
+outputs:
+  - "至少十个内页的意图清单和有限批次计划"
+  - "可复用但证据受限的页面生产契约"
+  - "更新后的矩阵、证据、内容、QA 和人审结果"
+  - "重发/telemetry handoff，或最终 observing gate"
+side_effects:
+  default: "local project artifacts only"
+  external: "only exact user-authorized actions explicitly owned by this Skill"
+privacy:
+  prohibited: ["passwords", "cookies", "tokens", "private keys", "browser storage", "provider credentials"]
