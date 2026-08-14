@@ -1,0 +1,52 @@
+interface:
+  display_name: "Game Site Growth"
+  short_description: "用有效数据和人工批准决定 grow、hold 或 retire"
+  default_prompt: "Use $game-site-growth within the central game-site-pipeline contract. Verify the current stage, own only this stage's artifacts, pass the central semantic gate, and report blockers without claiming external completion."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "python3"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "none by default; use the already recorded snapshot, with refresh routed to game-site-telemetry"
+    generated_public_claims: "central-gate-and-evidence-bound"
+  permissions:
+    network: "none by default; use the already recorded snapshot, with refresh routed to game-site-telemetry"
+    file_write: "analytics-snapshot.json 中的 decision, 由中央 transition 追加的 decision-log.md 记录"
+    subprocess: "central game-site-pipeline CLI plus project-local checks named by the project"
+    interactive: "required for the final grow, hold, or retire approval and rationale"
+  degradation:
+    openai: "central-cli-plus-available-scoped-tools"
+    claude: "central-cli-plus-manual-provider-handoff"
+    generic: "central-cli-and-human-evidence-handoff"
+gates:
+  production:
+    - "grow and retire require valid GSC performance data"
+    - "hold is the only decision allowed without valid GSC data"
+    - "recommendation is separated from human approval"
+    - "raw period, counts, opportunity and uncertainty remain visible"
+name: game-site-growth
+version: 0.1.0
+mode: production
+inputs:
+  - "`observing` 且 analytics snapshot 已通过中央校验；`hold` 必须先由 telemetry 更新后回到 observing"
+outputs:
+  - "事实/推断/不确定性分开的数据复盘"
+  - "grow/hold/retire 推荐与备选"
+  - "用户批准的 analytics decision"
+  - "中央决策 gate、状态和下一步路由"
+side_effects:
+  default: "local project artifacts only"
+  external: "only exact user-authorized actions explicitly owned by this Skill"
+privacy:
+  prohibited: ["passwords", "cookies", "tokens", "private keys", "browser storage", "provider credentials"]

@@ -1,0 +1,85 @@
+{
+  "cases": [
+    {
+      "id": "existing_property_needs_readback_not_creation_claim",
+      "prompt": "Use my existing GSC and GA properties",
+      "input_files": [
+        "analytics-snapshot.json"
+      ],
+      "baseline_output": "Claims it created or configured the properties.",
+      "with_skill_output": "Records setup_mode existing and an actual property readback without creation claims.",
+      "assertions": [
+        "GSC and GA are separate",
+        "setup_mode is existing",
+        "readback_at is present"
+      ],
+      "human_notes": "Provider readback is missing from this fixture."
+    },
+    {
+      "id": "created_properties_need_separate_authorization",
+      "prompt": "Create GSC and GA for this deployed site",
+      "input_files": [
+        "pipeline-state.json",
+        "analytics-snapshot.json"
+      ],
+      "baseline_output": "Uses deployment permission for both properties.",
+      "with_skill_output": "Requires separate gsc_setup and ga_setup authorization IDs.",
+      "assertions": [
+        "gsc_setup authorization is independent",
+        "ga_setup authorization is independent",
+        "credentials are not recorded"
+      ],
+      "human_notes": "Actual account operation is not performed."
+    },
+    {
+      "id": "no_data_schedules_reviews",
+      "prompt": "GSC has no valid data yet",
+      "input_files": [
+        "analytics-snapshot.json"
+      ],
+      "baseline_output": "Writes zeros or declares failure.",
+      "with_skill_output": "Records no_valid_data, technical checks, and day-7/day-14 review dates.",
+      "assertions": [
+        "metrics are not fabricated",
+        "two future review dates exist",
+        "growth and retire remain blocked"
+      ],
+      "human_notes": "Review dates must be interpreted in the project timezone."
+    },
+    {
+      "id": "indexing_is_not_performance",
+      "prompt": "The sitemap is reachable, so mark traffic verified",
+      "input_files": [
+        "analytics-snapshot.json"
+      ],
+      "baseline_output": "Conflates sitemap, indexing and performance.",
+      "with_skill_output": "Keeps sitemap, indexed pages and GSC query data as separate evidence.",
+      "assertions": [
+        "sitemap reachability is diagnostic",
+        "indexing does not prove clicks",
+        "Google Indexing API is not used"
+      ],
+      "human_notes": "A real inspection result is missing evidence."
+    },
+    {
+      "id": "review_cycle_returns_to_observing",
+      "prompt": "Refresh a hold or grow expansion project",
+      "input_files": [
+        "pipeline-state.json",
+        "analytics-snapshot.json",
+        "launch-report.json"
+      ],
+      "baseline_output": "Reuses an old snapshot and changes the lifecycle decision.",
+      "with_skill_output": "Writes a new scoped snapshot and only returns to observing through the central gate.",
+      "assertions": [
+        "site and property match the deployment",
+        "snapshot period is explicit",
+        "growth decision is delegated"
+      ],
+      "human_notes": "End-to-end property evidence is not yet available."
+    }
+  ],
+  "evidence_kind": "behavior_specification",
+  "provider_backed": false,
+  "human_review": false
+}

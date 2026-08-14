@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "evidence_kind": "behavior_specification",
+  "summary": {
+    "total": 5,
+    "passed": 5
+  },
+  "checked_by": "deterministic contract test",
+  "checked_at": "2026-08-07",
+  "limitations": [
+    "No GSC or GA provider run was performed.",
+    "No human blind review was performed.",
+    "Passing assertions do not prove indexing or traffic."
+  ]
+}

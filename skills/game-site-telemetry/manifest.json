@@ -1,0 +1,60 @@
+{
+  "name": "game-site-telemetry",
+  "version": "0.1.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-07",
+  "status": "active",
+  "maturity_tier": "governed",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "dependencies": [
+    {
+      "skill": "game-site-pipeline",
+      "version": ">=0.2.0",
+      "required": true
+    }
+  ],
+  "intent": {
+    "job_to_be_done": "把“装了统计”拆成属性真实存在、数据是否有效、页面是否收录和下一次观察时间四层证据，避免把配置成功当成流量验证。",
+    "target_users": [
+      "Nemo",
+      "game-site operator"
+    ],
+    "inputs": [
+      "初次建站为 `deployed`；复查可从 `hold`；扩页重发可从 `grow` 且 launch readback 已更新"
+    ],
+    "outputs": [
+      "GSC 与 GA 独立的 property readback",
+      "索引、sitemap 和技术检查证据",
+      "带真实时间区间的 analytics-snapshot.json",
+      "telemetry_verified/observing gate 和下一复查日期"
+    ],
+    "exclusions": [
+      "把 property 创建成功说成已有流量",
+      "用零填补尚未返回的数据",
+      "在没有授权时创建 GSC/GA 或读取其他站点"
+    ]
+  },
+  "release_gates": [
+    "central_pipeline_dependency",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "trigger_eval",
+    "export_skill_ir",
+    "suite_contract_tests",
+    "action_boundary",
+    "missing_evidence_guard",
+    "secret_scan",
+    "rollback_boundary",
+    "explicit_external_authorization",
+    "provider_readback",
+    "public_claim_guard"
+  ]
+}
