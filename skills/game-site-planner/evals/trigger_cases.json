@@ -1,0 +1,90 @@
+{
+  "recommended_threshold": 0.5,
+  "description_required_concepts": [
+    "planning",
+    "matrix",
+    "contract",
+    "cannibalization"
+  ],
+  "positive_concepts": {
+    "planning": [
+      "plan",
+      "site planner",
+      "页面规划",
+      "serp 研究",
+      "竞品信息架构"
+    ],
+    "matrix": [
+      "page-matrix.json",
+      "页面矩阵",
+      "一页一意图",
+      "primary keyword"
+    ],
+    "contract": [
+      "function contracts",
+      "function contract",
+      "功能契约",
+      "允许字段",
+      "非目标"
+    ],
+    "cannibalization": [
+      "non-cannibalizing",
+      "cannibalization",
+      "关键词蚕食",
+      "intent key",
+      "别名冲突"
+    ]
+  },
+  "negative_patterns": [
+    "不要使用这个 skill",
+    "跳过门禁",
+    "直接默认通过",
+    "只解释"
+  ],
+  "should_trigger": [
+    {
+      "text": "研究这个已锁定游戏的 SERP，做页面规划和 page-matrix.json",
+      "family": "positive_1"
+    },
+    {
+      "text": "给攻略站建立一页一意图的页面矩阵，并先写功能契约",
+      "family": "positive_2"
+    },
+    {
+      "text": "检查 page-matrix.json 的 primary keyword 和 intent key，避免关键词蚕食",
+      "family": "positive_3"
+    },
+    {
+      "text": "Plan the locked game site with function contracts and page-matrix.json",
+      "family": "positive_4"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "只运行 Steam 和 Roblox 游戏热词雷达",
+      "family": "negative_1"
+    },
+    {
+      "text": "不用页面契约，直接生成一百个页面",
+      "family": "negative_2"
+    },
+    {
+      "text": "帮我把站点部署到 Vercel",
+      "family": "negative_3"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "为现有 page-matrix.json 收集双来源证据",
+      "family": "neighbor_1"
+    },
+    {
+      "text": "根据证据包实现页面和 content-manifest.json",
+      "family": "neighbor_2"
+    },
+    {
+      "text": "用 GSC 第 14 天数据决定 grow 还是 hold",
+      "family": "neighbor_3"
+    }
+  ]
+}

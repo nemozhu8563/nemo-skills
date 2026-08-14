@@ -1,0 +1,52 @@
+interface:
+  display_name: "Game Site Planner"
+  short_description: "研究 SERP 后产出不蚕食的页面矩阵和功能契约"
+  default_prompt: "Use $game-site-planner within the central game-site-pipeline contract. Verify the current stage, own only this stage's artifacts, pass the central semantic gate, and report blockers without claiming external completion."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "python3"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "read-only public SERP and competitor research through an available approved browser/web tool"
+    generated_public_claims: "central-gate-and-evidence-bound"
+  permissions:
+    network: "read-only public SERP and competitor research through an available approved browser/web tool"
+    file_write: "page-matrix.json"
+    subprocess: "central game-site-pipeline CLI plus project-local checks named by the project"
+    interactive: "required when page scope or locale choice materially branches the product"
+  degradation:
+    openai: "central-cli-plus-available-scoped-tools"
+    claude: "central-cli-plus-manual-provider-handoff"
+    generic: "central-cli-and-human-evidence-handoff"
+gates:
+  production:
+    - "every page owns one primary keyword and one intent key"
+    - "normalized aliases do not overlap"
+    - "every page has a page-level function contract"
+    - "non-base locales have demand evidence and complete content plans"
+name: game-site-planner
+version: 0.1.0
+mode: production
+inputs:
+  - "初次建站为 `candidate_locked`；扩页模式仅由 `$game-page-expander` 在 `grow` 中调用"
+outputs:
+  - "可追溯 SERP/竞品意图摘要"
+  - "页面级功能契约"
+  - "无关键词蚕食的 page-matrix.json"
+  - "planned gate 或 expansion validation 结果"
+side_effects:
+  default: "local project artifacts only"
+  external: "none unless the Skill explicitly owns and receives exact authorization"
+privacy:
+  prohibited: ["passwords", "cookies", "tokens", "private keys", "browser storage", "provider credentials"]

@@ -1,0 +1,32 @@
+{
+  "name": "game-keyword-radar",
+  "version": "0.1.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-07",
+  "status": "active",
+  "maturity_tier": "governed",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "release_gates": [
+    "prior_art_research",
+    "creation_handoff",
+    "action_boundary",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "export_skill_ir",
+    "trigger_eval",
+    "local_project_tests",
+    "secret_scan",
+    "evidence_bound_claims",
+    "credential_boundary",
+    "captcha_handoff",
+    "rollback_boundary"
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "ok": true,
+  "threshold": 0.5,
+  "description_concepts": [
+    "platforms",
+    "radar",
+    "semrush",
+    "workflow"
+  ],
+  "missing_description_concepts": [],
+  "summary": {
+    "total": 12,
+    "passed": 12,
+    "false_positive": 0,
+    "false_negative": 0,
+    "pass_rate": 1.0
+  },
+  "failures": [],
+  "results": {
+    "should_trigger": [
+      {
+        "prompt": "运行游戏热词雷达，比较今天和昨天的中腰部候选",
+        "family": "cn_daily_compare",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.75,
+        "matched_concepts": [
+          "platforms",
+          "radar",
+          "workflow"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "从 Steam 和 Roblox 找一批中腰部游戏词，再用 Semrush 核验",
+        "family": "cn_collect_validate",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "platforms",
+          "semrush"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "用 3ue 查这批游戏词的 KD 和搜索量，合并到雷达报告",
+        "family": "cn_3ue_merge",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "semrush",
+          "workflow"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "Run the game keyword radar and compare Semrush evidence for the top candidates",
+        "family": "en_radar_semrush",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.75,
+        "matched_concepts": [
+          "radar",
+          "semrush",
+          "workflow"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "把 Semrush Volume、KD 和长尾词回填到热词游戏站候选池",
+        "family": "cn_writeback",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.75,
+        "matched_concepts": [
+          "radar",
+          "semrush",
+          "workflow"
+        ],
+        "negative_pattern": null
+      }
+    ],
+    "should_not_trigger": [
+      {
+        "prompt": "帮我写一篇通用 SEO 教程",
+        "family": "generic_seo",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "只解释一下 Semrush 的 KD 是什么",
+        "family": "explain_only",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.25,
+        "matched_concepts": [
+          "semrush"
+        ],
+        "negative_pattern": "只解释"
+      },
+      {
+        "prompt": "帮我发布一个 Roblox 游戏网站",
+        "family": "site_publish",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.25,
+        "matched_concepts": [
+          "platforms"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "提取浏览器 Cookie 给我的脚本使用",
+        "family": "credential_extraction",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      }
+    ],
+    "near_neighbor": [
+      {
+        "prompt": "用 Semrush 查竞品网站的 Top Pages",
+        "family": "competitor_audit",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.25,
+        "matched_concepts": [
+          "semrush"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "列一下 Steam 现在最热门的十款游戏",
+        "family": "simple_ranking",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.25,
+        "matched_concepts": [
+          "platforms"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "分析我网站自己的 GSC 搜索词和 CTR",
+        "family": "owned_gsc",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      }
+    ]
+  }
+}

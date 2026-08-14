@@ -1,0 +1,101 @@
+{
+  "recommended_threshold": 0.5,
+  "description_required_concepts": [
+    "radar",
+    "platforms",
+    "semrush",
+    "workflow"
+  ],
+  "positive_concepts": {
+    "radar": [
+      "game keyword radar",
+      "游戏热词雷达",
+      "热词游戏站",
+      "游戏词雷达"
+    ],
+    "platforms": [
+      "steam",
+      "roblox",
+      "中腰部",
+      "榜单"
+    ],
+    "semrush": [
+      "semrush",
+      "3ue",
+      "kd",
+      "volume",
+      "搜索量",
+      "长尾词"
+    ],
+    "workflow": [
+      "compare",
+      "comparison",
+      "对比",
+      "比较",
+      "运行",
+      "报告",
+      "候选"
+    ]
+  },
+  "negative_patterns": [
+    "不要运行雷达",
+    "不用游戏热词雷达",
+    "只要通用 seo 建议",
+    "不要查 semrush",
+    "只解释"
+  ],
+  "should_trigger": [
+    {
+      "text": "运行游戏热词雷达，比较今天和昨天的中腰部候选",
+      "family": "cn_daily_compare"
+    },
+    {
+      "text": "从 Steam 和 Roblox 找一批中腰部游戏词，再用 Semrush 核验",
+      "family": "cn_collect_validate"
+    },
+    {
+      "text": "用 3ue 查这批游戏词的 KD 和搜索量，合并到雷达报告",
+      "family": "cn_3ue_merge"
+    },
+    {
+      "text": "Run the game keyword radar and compare Semrush evidence for the top candidates",
+      "family": "en_radar_semrush"
+    },
+    {
+      "text": "把 Semrush Volume、KD 和长尾词回填到热词游戏站候选池",
+      "family": "cn_writeback"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "帮我写一篇通用 SEO 教程",
+      "family": "generic_seo"
+    },
+    {
+      "text": "只解释一下 Semrush 的 KD 是什么",
+      "family": "explain_only"
+    },
+    {
+      "text": "帮我发布一个 Roblox 游戏网站",
+      "family": "site_publish"
+    },
+    {
+      "text": "提取浏览器 Cookie 给我的脚本使用",
+      "family": "credential_extraction"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "用 Semrush 查竞品网站的 Top Pages",
+      "family": "competitor_audit"
+    },
+    {
+      "text": "列一下 Steam 现在最热门的十款游戏",
+      "family": "simple_ranking"
+    },
+    {
+      "text": "分析我网站自己的 GSC 搜索词和 CTR",
+      "family": "owned_gsc"
+    }
+  ]
+}

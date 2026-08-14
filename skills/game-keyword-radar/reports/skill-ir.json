@@ -1,0 +1,120 @@
+{
+  "schema_version": "2.0.0-qiaomu-lite",
+  "generated_at": "2026-08-07",
+  "package": {
+    "name": "game-keyword-radar",
+    "version": "0.1.0",
+    "owner": "Nemo",
+    "maturity_tier": "governed",
+    "lifecycle_stage": "local",
+    "upstream_inspiration": null,
+    "upstream_sync": {}
+  },
+  "intent": {
+    "description": "Run and govern a game keyword radar workflow that collects middle-tail Steam and Roblox candidates, compares historical momentum, validates search demand through 3ue/Semrush Volume, KD, intent and long-tail evidence, and writes combined local Markdown/CSV reports. Use for 生财航海热词游戏站、游戏热词雷达、中腰部游戏关键词、Steam/Roblox 找词、3ue 或 Semrush 核验、候选增量对比和报告回填；not for generic SEO advice, unrelated competitor research, credential extraction, or automatic publishing.",
+    "job_to_be_done": "Run and govern a game keyword radar workflow that collects middle-tail Steam and Roblox candidates, compares historical momentum, validates search demand through 3ue/Semrush Volume, KD, intent and long-tail evidence, and writes combined local Markdown/CSV reports. Use for 生财航海热词游戏站、游戏热词雷达、中腰部游戏关键词、Steam/Roblox 找词、3ue 或 Semrush 核验、候选增量对比和报告回填；not for generic SEO advice, unrelated competitor research, credential extraction, or automatic publishing.",
+    "target_users": [
+      "Qiaomu operator"
+    ],
+    "inputs": [],
+    "outputs": [],
+    "exclusions": [],
+    "qiaomu_defaults": {}
+  },
+  "triggers": {
+    "should_trigger": [
+      "运行游戏热词雷达，比较今天和昨天的中腰部候选",
+      "从 Steam 和 Roblox 找一批中腰部游戏词，再用 Semrush 核验",
+      "用 3ue 查这批游戏词的 KD 和搜索量，合并到雷达报告",
+      "Run the game keyword radar and compare Semrush evidence for the top candidates",
+      "把 Semrush Volume、KD 和长尾词回填到热词游戏站候选池"
+    ],
+    "should_not_trigger": [
+      "帮我写一篇通用 SEO 教程",
+      "只解释一下 Semrush 的 KD 是什么",
+      "帮我发布一个 Roblox 游戏网站",
+      "提取浏览器 Cookie 给我的脚本使用"
+    ],
+    "near_neighbor": [
+      "用 Semrush 查竞品网站的 Top Pages",
+      "列一下 Steam 现在最热门的十款游戏",
+      "分析我网站自己的 GSC 搜索词和 CTR"
+    ]
+  },
+  "workflow": {
+    "router_rules": [],
+    "compact_workflow": [],
+    "gate_ladder": [],
+    "output_contract": [
+      "已验证事实：本轮实际来源状态、候选数量、真实 Semrush 字段和测试结果。",
+      "推断：为什么某词值得继续核验。",
+      "未完成：验证码、额度、登录、SERP 或 Trends 等缺口。",
+      "本地文件：最新 Markdown、CSV、人工核验表和运行时快照路径。"
+    ]
+  },
+  "resources": {
+    "references": [
+      "references/workflow.md"
+    ],
+    "scripts": [],
+    "evals": [
+      "evals/trigger_cases.json"
+    ],
+    "reports": [
+      "reports/creation-handoff.md",
+      "reports/prior-art-research.md",
+      "reports/skill-ir.json",
+      "reports/trigger-eval.json"
+    ]
+  },
+  "portability": {
+    "canonical_format": "agent-skills",
+    "adapter_targets": [
+      "openai",
+      "claude",
+      "generic",
+      "agent-skills-compatible"
+    ],
+    "activation": {
+      "mode": "manual",
+      "paths": []
+    },
+    "execution": {
+      "context": "inline",
+      "shell": "bash"
+    },
+    "trust": {
+      "source_tier": "local",
+      "remote_inline_execution": "forbid",
+      "remote_metadata_policy": "allow public market data and visible authenticated-page facts; forbid credential extraction",
+      "generated_public_claims": "evidence-bound"
+    },
+    "permissions": {
+      "network": "Steam, Roblox, optional YouTube, Google verification links, and user-authorized 3ue/Semrush visible-page queries",
+      "file_write": "configured local project validation/report paths and external runtime cache only",
+      "subprocess": "project npm test and radar commands; local validation tools",
+      "interactive": "required for login, CAPTCHA, quota or materially branching database choice"
+    },
+    "degradation": {
+      "openai": "native-browser-assisted",
+      "claude": "manual-semrush-writeback",
+      "generic": "local-radar-plus-manual-validation"
+    }
+  },
+  "gates": {
+    "governed": [
+      "exact Semrush fields only; missing values remain empty",
+      "no credential, cookie, token or browser-storage extraction",
+      "CAPTCHA and account-side effects require user control",
+      "source failure and first-run baseline are reported explicitly",
+      "hard qualification gate is preserved",
+      "local tests and secret scan pass before completion"
+    ]
+  },
+  "evidence_boundary": {
+    "generated_reports_are_evidence": true,
+    "planned_work_is_evidence": false,
+    "missing_external_or_human_evidence_label": "missing evidence",
+    "public_claim_policy": "claim only what local validation, install proof, human review, or provider-backed evidence actually supports"
+  }
+}

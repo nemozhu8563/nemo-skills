@@ -1,0 +1,54 @@
+interface:
+  display_name: "Game Keyword Radar"
+  short_description: "从 Steam/Roblox 找中腰部游戏词，并合并 3ue/Semrush 搜索证据"
+  default_prompt: "Use $game-keyword-radar to run the local Steam/Roblox middle-tail game keyword radar, validate a small batch through my existing 3ue/Semrush browser channel, write only exact visible metrics back to the local validation CSV, rerun the comparison report, and clearly separate verified facts from missing evidence."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow public market data and visible authenticated-page facts; forbid credential extraction"
+    generated_public_claims: "evidence-bound"
+  permissions:
+    network: "Steam, Roblox, optional YouTube, Google verification links, and user-authorized 3ue/Semrush visible-page queries"
+    file_write: "configured local project validation/report paths and external runtime cache only"
+    subprocess: "project npm test and radar commands; local validation tools"
+    interactive: "required for login, CAPTCHA, quota or materially branching database choice"
+  degradation:
+    openai: "native-browser-assisted"
+    claude: "manual-semrush-writeback"
+    generic: "local-radar-plus-manual-validation"
+gates:
+  governed:
+    - "exact Semrush fields only; missing values remain empty"
+    - "no credential, cookie, token or browser-storage extraction"
+    - "CAPTCHA and account-side effects require user control"
+    - "source failure and first-run baseline are reported explicitly"
+    - "hard qualification gate is preserved"
+    - "local tests and secret scan pass before completion"
+name: game-keyword-radar
+version: 0.1.0
+mode: governed
+inputs:
+  - "local radar configuration and source results"
+  - "optional visible 3ue/Semrush query results"
+outputs:
+  - "combined Markdown and CSV candidate reports"
+  - "Semrush-enriched validation rows"
+  - "source status, history comparison and remaining evidence gaps"
+side_effects:
+  default: "local project and runtime writes only"
+  external: "read-only browser queries unless separately authorized"
+privacy:
+  prohibited: ["passwords", "cookies", "tokens", "localStorage", "shared account details", "proxy node configuration"]

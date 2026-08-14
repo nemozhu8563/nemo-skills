@@ -1,0 +1,55 @@
+{
+  "name": "game-candidate-lock",
+  "version": "0.1.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-07",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "dependencies": [
+    {
+      "skill": "game-site-pipeline",
+      "version": ">=0.2.0",
+      "required": true
+    }
+  ],
+  "intent": {
+    "job_to_be_done": "把雷达中的“可进入主词复核”候选变成一个明确由人批准、平台身份不含糊、不可原地改写的站点项目起点。",
+    "target_users": [
+      "Nemo",
+      "game-site operator"
+    ],
+    "inputs": [
+      "合格雷达候选，且当前项目尚无 `candidate-lock.json`"
+    ],
+    "outputs": [
+      "不可变、可哈希的候选身份",
+      "由用户原话支持的批准记录",
+      "中央 CLI 的 validate/status 结果",
+      "下一步 planner handoff 与所有 missing evidence"
+    ],
+    "exclusions": [
+      "替用户从多个候选中静默选赢家",
+      "把一次热度尖峰或模型判断当作合格证据",
+      "为修正候选而覆盖 candidate-lock.json"
+    ]
+  },
+  "release_gates": [
+    "central_pipeline_dependency",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "trigger_eval",
+    "export_skill_ir",
+    "suite_contract_tests",
+    "action_boundary",
+    "missing_evidence_guard"
+  ]
+}
