@@ -9,3 +9,6 @@ __pycache__/
 
 # rebuildable install artifacts
 skills/*/node_modules/
+
+# macOS Finder metadata
+.DS_Store
