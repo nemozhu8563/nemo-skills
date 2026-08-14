@@ -1,0 +1,1591 @@
+{
+  "ok": true,
+  "complete": true,
+  "researched_at": "2026-08-14",
+  "queries": [
+    "Cloudflare Pages custom domain deployment",
+    "Vercel custom domain Cloudflare DNS deployment",
+    "deployment skill formal domain AGENTS.md"
+  ],
+  "metric_semantics": {
+    "skills_sh_installs": "ecosystem install telemetry; not ratings or correctness",
+    "skillsmp_repo_stars": "GitHub repository stars; not installs, ratings, or skill-specific quality",
+    "cross_catalog_score": "not calculated; metrics remain separate"
+  },
+  "query_runs": [
+    {
+      "query": "Cloudflare Pages custom domain deployment",
+      "skills_sh": "ok",
+      "skillsmp": "ok",
+      "skills_sh_candidates": 18,
+      "skillsmp_candidates": 10
+    },
+    {
+      "query": "Vercel custom domain Cloudflare DNS deployment",
+      "skills_sh": "ok",
+      "skillsmp": "ok",
+      "skills_sh_candidates": 13,
+      "skillsmp_candidates": 6
+    },
+    {
+      "query": "deployment skill formal domain AGENTS.md",
+      "skills_sh": "ok",
+      "skillsmp": "ok",
+      "skills_sh_candidates": 19,
+      "skillsmp_candidates": 4
+    }
+  ],
+  "candidate_family_count": 67,
+  "candidates": [
+    {
+      "family_key": "get-convex/agent-skills:convex-domains",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Vercel custom domain Cloudflare DNS deployment",
+        "owner_repo": "get-convex/agent-skills",
+        "skill_name": "convex-domains",
+        "family_key": "get-convex/agent-skills:convex-domains",
+        "skills_sh_installs": 6500,
+        "skills_sh_installs_display": "6.5K",
+        "skills_sh_url": "https://skills.sh/get-convex/agent-skills/convex-domains"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "mblode/agent-skills:multi-tenant-architecture",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Vercel custom domain Cloudflare DNS deployment",
+        "owner_repo": "mblode/agent-skills",
+        "skill_name": "multi-tenant-architecture",
+        "family_key": "mblode/agent-skills:multi-tenant-architecture",
+        "skills_sh_installs": 1200,
+        "skills_sh_installs_display": "1.2K",
+        "skills_sh_url": "https://skills.sh/mblode/agent-skills/multi-tenant-architecture"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "parcadei/continuous-claude-v3:implement_plan_micro",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "parcadei/continuous-claude-v3",
+        "skill_name": "implement_plan_micro",
+        "family_key": "parcadei/continuous-claude-v3:implement_plan_micro",
+        "skills_sh_installs": 465,
+        "skills_sh_installs_display": "465",
+        "skills_sh_url": "https://skills.sh/parcadei/continuous-claude-v3/implement_plan_micro"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "secondsky/claude-skills:nuxt-studio",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "secondsky/claude-skills",
+        "skill_name": "nuxt-studio",
+        "family_key": "secondsky/claude-skills:nuxt-studio",
+        "skills_sh_installs": 298,
+        "skills_sh_installs_display": "298",
+        "skills_sh_url": "https://skills.sh/secondsky/claude-skills/nuxt-studio"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "julianobarbosa/claude-code-skills:cloudflare-dns",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Vercel custom domain Cloudflare DNS deployment",
+        "owner_repo": "julianobarbosa/claude-code-skills",
+        "skill_name": "cloudflare-dns",
+        "family_key": "julianobarbosa/claude-code-skills:cloudflare-dns",
+        "skills_sh_installs": 173,
+        "skills_sh_installs_display": "173",
+        "skills_sh_url": "https://skills.sh/julianobarbosa/claude-code-skills/cloudflare-dns"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "genericservice/claude-skills:cloudflare-pages",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "genericservice/claude-skills",
+        "skill_name": "cloudflare-pages",
+        "family_key": "genericservice/claude-skills:cloudflare-pages",
+        "skills_sh_installs": 90,
+        "skills_sh_installs_display": "90",
+        "skills_sh_url": "https://skills.sh/genericservice/claude-skills/cloudflare-pages"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "bagelhole/devops-security-agent-skills:cloudflare-pages",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "bagelhole/devops-security-agent-skills",
+        "skill_name": "cloudflare-pages",
+        "family_key": "bagelhole/devops-security-agent-skills:cloudflare-pages",
+        "skills_sh_installs": 87,
+        "skills_sh_installs_display": "87",
+        "skills_sh_url": "https://skills.sh/bagelhole/devops-security-agent-skills/cloudflare-pages"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "davepoon/buildwithclaude:cf-proxy",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "davepoon/buildwithclaude",
+        "skill_name": "cf-proxy",
+        "family_key": "davepoon/buildwithclaude:cf-proxy",
+        "skills_sh_installs": 64,
+        "skills_sh_installs_display": "64",
+        "skills_sh_url": "https://skills.sh/davepoon/buildwithclaude/cf-proxy"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "steipete/agent-scripts:clickclack",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "steipete/agent-scripts",
+        "skill_name": "clickclack",
+        "family_key": "steipete/agent-scripts:clickclack",
+        "skills_sh_installs": 59,
+        "skills_sh_installs_display": "59",
+        "skills_sh_url": "https://skills.sh/steipete/agent-scripts/clickclack"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "alphaonedev/openclaw-graph:cs-formal",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "alphaonedev/openclaw-graph",
+        "skill_name": "cs-formal",
+        "family_key": "alphaonedev/openclaw-graph:cs-formal",
+        "skills_sh_installs": 58,
+        "skills_sh_installs_display": "58",
+        "skills_sh_url": "https://skills.sh/alphaonedev/openclaw-graph/cs-formal"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "itallstartedwithaidea/agent-skills:edge-deployment",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "itallstartedwithaidea/agent-skills",
+        "skill_name": "edge-deployment",
+        "family_key": "itallstartedwithaidea/agent-skills:edge-deployment",
+        "skills_sh_installs": 57,
+        "skills_sh_installs_display": "57",
+        "skills_sh_url": "https://skills.sh/itallstartedwithaidea/agent-skills/edge-deployment"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "bm629/agent-skills:cloudflare-pages-ops",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "bm629/agent-skills",
+        "skill_name": "cloudflare-pages-ops",
+        "family_key": "bm629/agent-skills:cloudflare-pages-ops",
+        "skills_sh_installs": 56,
+        "skills_sh_installs_display": "56",
+        "skills_sh_url": "https://skills.sh/bm629/agent-skills/cloudflare-pages-ops"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "makerjackie/jackie-skills-starter:cloudflare-dns",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Vercel custom domain Cloudflare DNS deployment",
+        "owner_repo": "makerjackie/jackie-skills-starter",
+        "skill_name": "cloudflare-dns",
+        "family_key": "makerjackie/jackie-skills-starter:cloudflare-dns",
+        "skills_sh_installs": 45,
+        "skills_sh_installs_display": "45",
+        "skills_sh_url": "https://skills.sh/makerjackie/jackie-skills-starter/cloudflare-dns"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "daviddwlee84/agent-skills:project-knowledge-harness",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "daviddwlee84/agent-skills",
+        "skill_name": "project-knowledge-harness",
+        "family_key": "daviddwlee84/agent-skills:project-knowledge-harness",
+        "skills_sh_installs": 44,
+        "skills_sh_installs_display": "44",
+        "skills_sh_url": "https://skills.sh/daviddwlee84/agent-skills/project-knowledge-harness"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "fellipeutaka/leon:ai-repo-setup",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "fellipeutaka/leon",
+        "skill_name": "ai-repo-setup",
+        "family_key": "fellipeutaka/leon:ai-repo-setup",
+        "skills_sh_installs": 43,
+        "skills_sh_installs_display": "43",
+        "skills_sh_url": "https://skills.sh/fellipeutaka/leon/ai-repo-setup"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "richtabor/agent-skills:review-agents-md",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "richtabor/agent-skills",
+        "skill_name": "review-agents-md",
+        "family_key": "richtabor/agent-skills:review-agents-md",
+        "skills_sh_installs": 43,
+        "skills_sh_installs_display": "43",
+        "skills_sh_url": "https://skills.sh/richtabor/agent-skills/review-agents-md"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "petekp/claude-code-setup:formal-verify",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "petekp/claude-code-setup",
+        "skill_name": "formal-verify",
+        "family_key": "petekp/claude-code-setup:formal-verify",
+        "skills_sh_installs": 39,
+        "skills_sh_installs_display": "39",
+        "skills_sh_url": "https://skills.sh/petekp/claude-code-setup/formal-verify"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "lovstudio/skills:lovstudio:deploy-to-vercel",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Vercel custom domain Cloudflare DNS deployment",
+        "owner_repo": "lovstudio/skills",
+        "skill_name": "lovstudio:deploy-to-vercel",
+        "family_key": "lovstudio/skills:lovstudio:deploy-to-vercel",
+        "skills_sh_installs": 28,
+        "skills_sh_installs_display": "28",
+        "skills_sh_url": "https://skills.sh/lovstudio/skills/lovstudio:deploy-to-vercel"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "whawkinsiv/solo-founder-skills:deploy",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Vercel custom domain Cloudflare DNS deployment",
+        "owner_repo": "whawkinsiv/solo-founder-skills",
+        "skill_name": "deploy",
+        "family_key": "whawkinsiv/solo-founder-skills:deploy",
+        "skills_sh_installs": 24,
+        "skills_sh_installs_display": "24",
+        "skills_sh_url": "https://skills.sh/whawkinsiv/solo-founder-skills/deploy"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "popmechanic/vibesos:cloudflare",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "popmechanic/vibesos",
+        "skill_name": "cloudflare",
+        "family_key": "popmechanic/vibesos:cloudflare",
+        "skills_sh_installs": 23,
+        "skills_sh_installs_display": "23",
+        "skills_sh_url": "https://skills.sh/popmechanic/vibesos/cloudflare"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "oldwinter/skills:cloudflare-deploy",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "oldwinter/skills",
+        "skill_name": "cloudflare-deploy",
+        "family_key": "oldwinter/skills:cloudflare-deploy",
+        "skills_sh_installs": 22,
+        "skills_sh_installs_display": "22",
+        "skills_sh_url": "https://skills.sh/oldwinter/skills/cloudflare-deploy"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "sebastianelvis/reaper:formalize-problem",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "sebastianelvis/reaper",
+        "skill_name": "formalize-problem",
+        "family_key": "sebastianelvis/reaper:formalize-problem",
+        "skills_sh_installs": 21,
+        "skills_sh_installs_display": "21",
+        "skills_sh_url": "https://skills.sh/sebastianelvis/reaper/formalize-problem"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "xenodeve/xeno-skills:t4-project-bootstrap",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "xenodeve/xeno-skills",
+        "skill_name": "t4-project-bootstrap",
+        "family_key": "xenodeve/xeno-skills:t4-project-bootstrap",
+        "skills_sh_installs": 19,
+        "skills_sh_installs_display": "19",
+        "skills_sh_url": "https://skills.sh/xenodeve/xeno-skills/t4-project-bootstrap"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "peterbamuhigire/chwezi-dev-engine:doc-architect",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "peterbamuhigire/chwezi-dev-engine",
+        "skill_name": "doc-architect",
+        "family_key": "peterbamuhigire/chwezi-dev-engine:doc-architect",
+        "skills_sh_installs": 18,
+        "skills_sh_installs_display": "18",
+        "skills_sh_url": "https://skills.sh/peterbamuhigire/chwezi-dev-engine/doc-architect"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "ckorhonen/claude-skills:cloudflare-manager",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "ckorhonen/claude-skills",
+        "skill_name": "cloudflare-manager",
+        "family_key": "ckorhonen/claude-skills:cloudflare-manager",
+        "skills_sh_installs": 17,
+        "skills_sh_installs_display": "17",
+        "skills_sh_url": "https://skills.sh/ckorhonen/claude-skills/cloudflare-manager"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "jetbrains/skills:cloudflare-deploy",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "jetbrains/skills",
+        "skill_name": "cloudflare-deploy",
+        "family_key": "jetbrains/skills:cloudflare-deploy",
+        "skills_sh_installs": 15,
+        "skills_sh_installs_display": "15",
+        "skills_sh_url": "https://skills.sh/jetbrains/skills/cloudflare-deploy"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "cyberelf/agent_skills:retrospect",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "cyberelf/agent_skills",
+        "skill_name": "retrospect",
+        "family_key": "cyberelf/agent_skills:retrospect",
+        "skills_sh_installs": 14,
+        "skills_sh_installs_display": "14",
+        "skills_sh_url": "https://skills.sh/cyberelf/agent_skills/retrospect"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "peterbamuhigire/chwezi-dev-engine:feature-planning",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "peterbamuhigire/chwezi-dev-engine",
+        "skill_name": "feature-planning",
+        "family_key": "peterbamuhigire/chwezi-dev-engine:feature-planning",
+        "skills_sh_installs": 14,
+        "skills_sh_installs_display": "14",
+        "skills_sh_url": "https://skills.sh/peterbamuhigire/chwezi-dev-engine/feature-planning"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "petekp/agent-skills:formal-verify",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "petekp/agent-skills",
+        "skill_name": "formal-verify",
+        "family_key": "petekp/agent-skills:formal-verify",
+        "skills_sh_installs": 13,
+        "skills_sh_installs_display": "13",
+        "skills_sh_url": "https://skills.sh/petekp/agent-skills/formal-verify"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "terraphim/terraphim-skills:ai-config-management",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "terraphim/terraphim-skills",
+        "skill_name": "ai-config-management",
+        "family_key": "terraphim/terraphim-skills:ai-config-management",
+        "skills_sh_installs": 13,
+        "skills_sh_installs_display": "13",
+        "skills_sh_url": "https://skills.sh/terraphim/terraphim-skills/ai-config-management"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "dawiddutoit/custom-claude:cloudflare-dns-operations",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Vercel custom domain Cloudflare DNS deployment",
+        "owner_repo": "dawiddutoit/custom-claude",
+        "skill_name": "cloudflare-dns-operations",
+        "family_key": "dawiddutoit/custom-claude:cloudflare-dns-operations",
+        "skills_sh_installs": 12,
+        "skills_sh_installs_display": "12",
+        "skills_sh_url": "https://skills.sh/dawiddutoit/custom-claude/cloudflare-dns-operations"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "firecrawl/skills:cloudflare-deploy",
+      "queries": [
+        "Cloudflare Pages custom domain deployment",
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "firecrawl/skills",
+        "skill_name": "cloudflare-deploy",
+        "family_key": "firecrawl/skills:cloudflare-deploy",
+        "skills_sh_installs": 12,
+        "skills_sh_installs_display": "12",
+        "skills_sh_url": "https://skills.sh/firecrawl/skills/cloudflare-deploy"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "andrehfp/tinyplate:cloudflare",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Vercel custom domain Cloudflare DNS deployment",
+        "owner_repo": "andrehfp/tinyplate",
+        "skill_name": "cloudflare",
+        "family_key": "andrehfp/tinyplate:cloudflare",
+        "skills_sh_installs": 11,
+        "skills_sh_installs_display": "11",
+        "skills_sh_url": "https://skills.sh/andrehfp/tinyplate/cloudflare"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "ominou5/funnel-architect-plugin:deploy-cloudflare",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "ominou5/funnel-architect-plugin",
+        "skill_name": "deploy-cloudflare",
+        "family_key": "ominou5/funnel-architect-plugin:deploy-cloudflare",
+        "skills_sh_installs": 11,
+        "skills_sh_installs_display": "11",
+        "skills_sh_url": "https://skills.sh/ominou5/funnel-architect-plugin/deploy-cloudflare"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "organvm-iv-taxis/a-i--skills:product-domain-engine",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "organvm-iv-taxis/a-i--skills",
+        "skill_name": "product-domain-engine",
+        "family_key": "organvm-iv-taxis/a-i--skills:product-domain-engine",
+        "skills_sh_installs": 11,
+        "skills_sh_installs_display": "11",
+        "skills_sh_url": "https://skills.sh/organvm-iv-taxis/a-i--skills/product-domain-engine"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "vibeeval/vibecosystem:implement_plan_micro",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "vibeeval/vibecosystem",
+        "skill_name": "implement_plan_micro",
+        "family_key": "vibeeval/vibecosystem:implement_plan_micro",
+        "skills_sh_installs": 11,
+        "skills_sh_installs_display": "11",
+        "skills_sh_url": "https://skills.sh/vibeeval/vibecosystem/implement_plan_micro"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "codejunkie99/gateflow-plugin:gf-formal",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "codejunkie99/gateflow-plugin",
+        "skill_name": "gf-formal",
+        "family_key": "codejunkie99/gateflow-plugin:gf-formal",
+        "skills_sh_installs": 10,
+        "skills_sh_installs_display": "10",
+        "skills_sh_url": "https://skills.sh/codejunkie99/gateflow-plugin/gf-formal"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "d1changgeng/self-evolution-skill:self-evolution",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "d1changgeng/self-evolution-skill",
+        "skill_name": "self-evolution",
+        "family_key": "d1changgeng/self-evolution-skill:self-evolution",
+        "skills_sh_installs": 10,
+        "skills_sh_installs_display": "10",
+        "skills_sh_url": "https://skills.sh/d1changgeng/self-evolution-skill/self-evolution"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "lovstudio/dev-skills:lovstudio-deploy-to-vercel",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Vercel custom domain Cloudflare DNS deployment",
+        "owner_repo": "lovstudio/dev-skills",
+        "skill_name": "lovstudio-deploy-to-vercel",
+        "family_key": "lovstudio/dev-skills:lovstudio-deploy-to-vercel",
+        "skills_sh_installs": 10,
+        "skills_sh_installs_display": "10",
+        "skills_sh_url": "https://skills.sh/lovstudio/dev-skills/lovstudio-deploy-to-vercel"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "mizchi/chezmoi-dotfiles:cloudflare-deploy",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "mizchi/chezmoi-dotfiles",
+        "skill_name": "cloudflare-deploy",
+        "family_key": "mizchi/chezmoi-dotfiles:cloudflare-deploy",
+        "skills_sh_installs": 9,
+        "skills_sh_installs_display": "9",
+        "skills_sh_url": "https://skills.sh/mizchi/chezmoi-dotfiles/cloudflare-deploy"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "opencoredev/domain-sdk:domain-sdk",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Vercel custom domain Cloudflare DNS deployment",
+        "owner_repo": "opencoredev/domain-sdk",
+        "skill_name": "domain-sdk",
+        "family_key": "opencoredev/domain-sdk:domain-sdk",
+        "skills_sh_installs": 9,
+        "skills_sh_installs_display": "9",
+        "skills_sh_url": "https://skills.sh/opencoredev/domain-sdk/domain-sdk"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "tdimino/claude-code-minoan:cloudflare",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "tdimino/claude-code-minoan",
+        "skill_name": "cloudflare",
+        "family_key": "tdimino/claude-code-minoan:cloudflare",
+        "skills_sh_installs": 9,
+        "skills_sh_installs_display": "9",
+        "skills_sh_url": "https://skills.sh/tdimino/claude-code-minoan/cloudflare"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "insulinocytus/skills:cloudflare-deploy",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "insulinocytus/skills",
+        "skill_name": "cloudflare-deploy",
+        "family_key": "insulinocytus/skills:cloudflare-deploy",
+        "skills_sh_installs": 8,
+        "skills_sh_installs_display": "8",
+        "skills_sh_url": "https://skills.sh/insulinocytus/skills/cloudflare-deploy"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "jurgendn/agent-skills:formalism-translator",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "jurgendn/agent-skills",
+        "skill_name": "formalism-translator",
+        "family_key": "jurgendn/agent-skills:formalism-translator",
+        "skills_sh_installs": 7,
+        "skills_sh_installs_display": "7",
+        "skills_sh_url": "https://skills.sh/jurgendn/agent-skills/formalism-translator"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "idkwhatimd0ing/hackathonstarterkit:domain-to-spec",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "deployment skill formal domain AGENTS.md",
+        "owner_repo": "idkwhatimd0ing/hackathonstarterkit",
+        "skill_name": "domain-to-spec",
+        "family_key": "idkwhatimd0ing/hackathonstarterkit:domain-to-spec",
+        "skills_sh_installs": 5,
+        "skills_sh_installs_display": "5",
+        "skills_sh_url": "https://skills.sh/idkwhatimd0ing/hackathonstarterkit/domain-to-spec"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "stakpak/community-paks:cloudflare-workers",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "stakpak/community-paks",
+        "skill_name": "cloudflare-workers",
+        "family_key": "stakpak/community-paks:cloudflare-workers",
+        "skills_sh_installs": 5,
+        "skills_sh_installs_display": "5",
+        "skills_sh_url": "https://skills.sh/stakpak/community-paks/cloudflare-workers"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "makerjackie/skills:cloudflare-dns",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Vercel custom domain Cloudflare DNS deployment",
+        "owner_repo": "makerjackie/skills",
+        "skill_name": "cloudflare-dns",
+        "family_key": "makerjackie/skills:cloudflare-dns",
+        "skills_sh_installs": 4,
+        "skills_sh_installs_display": "4",
+        "skills_sh_url": "https://skills.sh/makerjackie/skills/cloudflare-dns"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "firecrawl/openai-skills:cloudflare-deploy",
+      "queries": [
+        "Cloudflare Pages custom domain deployment",
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "Cloudflare Pages custom domain deployment",
+        "owner_repo": "firecrawl/openai-skills",
+        "skill_name": "cloudflare-deploy",
+        "family_key": "firecrawl/openai-skills:cloudflare-deploy",
+        "skills_sh_installs": 3,
+        "skills_sh_installs_display": "3",
+        "skills_sh_url": "https://skills.sh/firecrawl/openai-skills/cloudflare-deploy"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "obra/superpowers:writing-skills",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "writing-skills",
+        "author": "obra",
+        "description": "Use when creating new skills, editing existing skills, or verifying skills work before deployment",
+        "content_language": "en",
+        "github_url": "https://github.com/obra/superpowers/tree/main/skills/writing-skills",
+        "skillsmp_url": "https://skillsmp.com/creators/obra/superpowers/skills-writing-skills",
+        "repo_stars": 271592,
+        "catalog_updated_at": "2026-08-12T16:53:21+00:00",
+        "source_key": "obra/superpowers:skills/writing-skills",
+        "family_key": "obra/superpowers:writing-skills",
+        "aliases": [],
+        "query": "deployment skill formal domain AGENTS.md"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "affaan-m/ecc:bun-runtime",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "bun-runtime",
+        "author": "affaan-m",
+        "description": "Bun as runtime, package manager, bundler, and test runner. When to choose Bun vs Node, migration notes, and Vercel support.",
+        "content_language": "en",
+        "github_url": "https://github.com/affaan-m/ECC/tree/main/skills/bun-runtime",
+        "skillsmp_url": "https://skillsmp.com/creators/affaan-m/ecc/skills-bun-runtime",
+        "repo_stars": 239888,
+        "catalog_updated_at": "2026-06-11T12:12:21+00:00",
+        "source_key": "affaan-m/ecc:skills/bun-runtime",
+        "family_key": "affaan-m/ecc:bun-runtime",
+        "aliases": [
+          {
+            "language": "en",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/.cursor/skills/bun-runtime"
+          },
+          {
+            "language": "ja",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/ja-JP/skills/bun-runtime"
+          },
+          {
+            "language": "zh",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/zh-CN/skills/bun-runtime"
+          },
+          {
+            "language": "en",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/.cursor/skills/bun-runtime"
+          },
+          {
+            "language": "ja",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/ja-JP/skills/bun-runtime"
+          },
+          {
+            "language": "zh",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/zh-CN/skills/bun-runtime"
+          },
+          {
+            "language": "en",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/.agents/skills/bun-runtime"
+          }
+        ],
+        "query": "Vercel custom domain Cloudflare DNS deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "affaan-m/ecc:deployment-patterns",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment",
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "deployment-patterns",
+        "author": "affaan-m",
+        "description": "Kubernetes、Docker、Vercel、クラウドプロバイダーにおけるデプロイメントパターンと戦略。ブルーグリーン、カナリア、ローリングデプロイメント、ゼロダウンタイムアップグレード。",
+        "content_language": "ja",
+        "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/ja-JP/skills/deployment-patterns",
+        "skillsmp_url": "https://skillsmp.com/creators/affaan-m/ecc/docs-ja-jp-skills-deployment-patterns",
+        "repo_stars": 239888,
+        "catalog_updated_at": "2026-05-17T06:31:40+00:00",
+        "source_key": "affaan-m/ecc:docs/ja-jp/skills/deployment-patterns",
+        "family_key": "affaan-m/ecc:deployment-patterns",
+        "aliases": [],
+        "query": "Vercel custom domain Cloudflare DNS deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "affaan-m/ecc:network-config-validation",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "network-config-validation",
+        "author": "affaan-m",
+        "description": "Pre-deployment checks for router and switch configuration, including dangerous commands, duplicate addresses, subnet overlaps, stale references, management-plane risk, and IOS-style security hygiene. Use when reviewing a router or switch configuration before deployment.",
+        "content_language": "en",
+        "github_url": "https://github.com/affaan-m/ECC/tree/main/skills/network-config-validation",
+        "skillsmp_url": "https://skillsmp.com/creators/affaan-m/ecc/skills-network-config-validation",
+        "repo_stars": 239888,
+        "catalog_updated_at": "2026-08-12T03:58:14+00:00",
+        "source_key": "affaan-m/ecc:skills/network-config-validation",
+        "family_key": "affaan-m/ecc:network-config-validation",
+        "aliases": [],
+        "query": "deployment skill formal domain AGENTS.md"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "affaan-m/ecc:project-guidelines-example",
+      "queries": [
+        "deployment skill formal domain AGENTS.md"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "project-guidelines-example",
+        "author": "affaan-m",
+        "description": "Project-specific skill template covering architecture, patterns, testing, and deployment guidance.",
+        "content_language": "ja",
+        "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/ja-JP/skills/project-guidelines-example",
+        "skillsmp_url": "https://skillsmp.com/creators/affaan-m/ecc/docs-ja-jp-skills-project-guidelines-example",
+        "repo_stars": 239888,
+        "catalog_updated_at": "2026-08-11T23:36:48+00:00",
+        "source_key": "affaan-m/ecc:docs/ja-jp/skills/project-guidelines-example",
+        "family_key": "affaan-m/ecc:project-guidelines-example",
+        "aliases": [
+          {
+            "language": "zh",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/zh-TW/skills/project-guidelines-example"
+          },
+          {
+            "language": "zh",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/zh-TW/skills/project-guidelines-example"
+          }
+        ],
+        "query": "deployment skill formal domain AGENTS.md"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "affaan-m/ecc:react-performance",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "react-performance",
+        "author": "affaan-m",
+        "description": "React and Next.js performance optimization patterns adapted from Vercel Engineering's React Best Practices (https://github.com/vercel-labs/agent-skills). Organizes 70+ rules across 8 priority categories — waterfalls, bundle size, server-side, client fetching, re-render, rendering, JS micro-perf, advanced. Use when writing, reviewing, or refactoring React/Next.js code for performance.",
+        "content_language": "en",
+        "github_url": "https://github.com/affaan-m/ECC/tree/main/skills/react-performance",
+        "skillsmp_url": "https://skillsmp.com/creators/affaan-m/ecc/skills-react-performance",
+        "repo_stars": 239888,
+        "catalog_updated_at": "2026-06-11T12:12:21+00:00",
+        "source_key": "affaan-m/ecc:skills/react-performance",
+        "family_key": "affaan-m/ecc:react-performance",
+        "aliases": [],
+        "query": "Vercel custom domain Cloudflare DNS deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nousresearch/hermes-agent:cloudflare-temporary-deploy",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "cloudflare-temporary-deploy",
+        "author": "NousResearch",
+        "description": "Deploy a Worker live, no account, via wrangler --temporary.",
+        "content_language": "en",
+        "github_url": "https://github.com/NousResearch/hermes-agent/tree/main/optional-skills/web-development/cloudflare-temporary-deploy",
+        "skillsmp_url": "https://skillsmp.com/creators/nousresearch/hermes-agent/optional-skills-web-development-cloudflare-temporary-deploy",
+        "repo_stars": 229950,
+        "catalog_updated_at": "2026-08-12T09:43:28+00:00",
+        "source_key": "nousresearch/hermes-agent:optional-skills/web-development/cloudflare-temporary-deploy",
+        "family_key": "nousresearch/hermes-agent:cloudflare-temporary-deploy",
+        "aliases": [],
+        "query": "Cloudflare Pages custom domain deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nousresearch/hermes-agent:popular-web-designs",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "popular-web-designs",
+        "author": "NousResearch",
+        "description": "54 real design systems (Stripe, Linear, Vercel) as HTML/CSS.",
+        "content_language": "en",
+        "github_url": "https://github.com/NousResearch/hermes-agent/tree/main/skills/creative/popular-web-designs",
+        "skillsmp_url": "https://skillsmp.com/creators/nousresearch/hermes-agent/skills-creative-popular-web-designs",
+        "repo_stars": 229950,
+        "catalog_updated_at": "2026-05-08T21:27:40+00:00",
+        "source_key": "nousresearch/hermes-agent:skills/creative/popular-web-designs",
+        "family_key": "nousresearch/hermes-agent:popular-web-designs",
+        "aliases": [],
+        "query": "Vercel custom domain Cloudflare DNS deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nousresearch/hermes-agent:scrapling",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "scrapling",
+        "author": "NousResearch",
+        "description": "Scrape sites with stealth browsing and Cloudflare bypass.",
+        "content_language": "en",
+        "github_url": "https://github.com/NousResearch/hermes-agent/tree/main/optional-skills/research/scrapling",
+        "skillsmp_url": "https://skillsmp.com/creators/nousresearch/hermes-agent/optional-skills-research-scrapling",
+        "repo_stars": 229950,
+        "catalog_updated_at": "2026-07-24T04:07:16+00:00",
+        "source_key": "nousresearch/hermes-agent:optional-skills/research/scrapling",
+        "family_key": "nousresearch/hermes-agent:scrapling",
+        "aliases": [],
+        "query": "Cloudflare Pages custom domain deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "anomalyco/opencode:agents-sdk",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "agents-sdk",
+        "author": "anomalyco",
+        "description": "Build AI agents on Cloudflare Workers using the Agents SDK. Load when creating stateful agents, durable workflows, real-time WebSocket apps, scheduled tasks, MCP servers, or chat applications. Covers Agent class, state management, callable RPC, Workflows integration, and React hooks.",
+        "content_language": "en",
+        "github_url": "https://github.com/anomalyco/opencode/tree/dev/packages/opencode/test/fixture/skills/agents-sdk",
+        "skillsmp_url": "https://skillsmp.com/creators/anomalyco/opencode/packages-opencode-test-fixture-skills-agents-sdk",
+        "repo_stars": 196907,
+        "catalog_updated_at": "2026-02-19T20:12:16+00:00",
+        "source_key": "anomalyco/opencode:packages/opencode/test/fixture/skills/agents-sdk",
+        "family_key": "anomalyco/opencode:agents-sdk",
+        "aliases": [],
+        "query": "Cloudflare Pages custom domain deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "anomalyco/opencode:cloudflare",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "cloudflare",
+        "author": "anomalyco",
+        "description": "Comprehensive Cloudflare platform skill covering Workers, Pages, storage (KV, D1, R2), AI (Workers AI, Vectorize, Agents SDK), networking (Tunnel, Spectrum), security (WAF, DDoS), and infrastructure-as-code (Terraform, Pulumi). Use for any Cloudflare development task.",
+        "content_language": "en",
+        "github_url": "https://github.com/anomalyco/opencode/tree/dev/packages/opencode/test/fixture/skills/cloudflare",
+        "skillsmp_url": "https://skillsmp.com/creators/anomalyco/opencode/packages-opencode-test-fixture-skills-cloudflare",
+        "repo_stars": 196907,
+        "catalog_updated_at": "2026-02-19T20:12:16+00:00",
+        "source_key": "anomalyco/opencode:packages/opencode/test/fixture/skills/cloudflare",
+        "family_key": "anomalyco/opencode:cloudflare",
+        "aliases": [],
+        "query": "Cloudflare Pages custom domain deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "significant-gravitas/autogpt:vercel-react-best-practices",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "vercel-react-best-practices",
+        "author": "Significant-Gravitas",
+        "description": "React and Next.js performance optimization guidelines from Vercel Engineering. This skill should be used when writing, reviewing, or refactoring React/Next.js code to ensure optimal performance patterns. Triggers on tasks involving React components, Next.js pages, data fetching, bundle optimization, or performance improvements.",
+        "content_language": "en",
+        "github_url": "https://github.com/Significant-Gravitas/AutoGPT/tree/master/.claude/skills/vercel-react-best-practices",
+        "skillsmp_url": "https://skillsmp.com/creators/significant-gravitas/autogpt/claude-skills-vercel-react-best-practices",
+        "repo_stars": 186582,
+        "catalog_updated_at": "2026-01-16T16:40:58+00:00",
+        "source_key": "significant-gravitas/autogpt:.claude/skills/vercel-react-best-practices",
+        "family_key": "significant-gravitas/autogpt:vercel-react-best-practices",
+        "aliases": [],
+        "query": "Vercel custom domain Cloudflare DNS deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "vercel/next.js:authoring-skills",
+      "queries": [
+        "Vercel custom domain Cloudflare DNS deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "authoring-skills",
+        "author": "vercel",
+        "description": "How to create and maintain agent skills in .agents/skills/. Use when creating a new SKILL.md, writing skill descriptions, choosing frontmatter fields, or deciding what content belongs in a skill vs AGENTS.md. Covers the supported spec fields, description writing, naming conventions, and the relationship between always-loaded AGENTS.md and on-demand skills.",
+        "content_language": "en",
+        "github_url": "https://github.com/vercel/next.js/tree/canary/.agents/skills/authoring-skills",
+        "skillsmp_url": "https://skillsmp.com/creators/vercel/next.js/agents-skills-authoring-skills",
+        "repo_stars": 141757,
+        "catalog_updated_at": "2026-05-14T20:29:35+00:00",
+        "source_key": "vercel/next.js:.agents/skills/authoring-skills",
+        "family_key": "vercel/next.js:authoring-skills",
+        "aliases": [],
+        "query": "Vercel custom domain Cloudflare DNS deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "koala73/worldmonitor:monitor-internet-outages",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "monitor-internet-outages",
+        "author": "koala73",
+        "description": "Retrieve detected internet outages (Cloudflare Radar) with country, cause, severity, and time bounds. Use when the user asks whether a country's internet is down, throttled, or experiencing a shutdown.",
+        "content_language": "en",
+        "github_url": "https://github.com/koala73/worldmonitor/tree/main/public/.well-known/agent-skills/monitor-internet-outages",
+        "skillsmp_url": "https://skillsmp.com/creators/koala73/worldmonitor/public-well-known-agent-skills-monitor-internet-outages",
+        "repo_stars": 81490,
+        "catalog_updated_at": "2026-07-05T15:00:39+00:00",
+        "source_key": "koala73/worldmonitor:public/.well-known/agent-skills/monitor-internet-outages",
+        "family_key": "koala73/worldmonitor:monitor-internet-outages",
+        "aliases": [],
+        "query": "Cloudflare Pages custom domain deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "d4vinci/scrapling:scrapling-official",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "scrapling-official",
+        "author": "D4Vinci",
+        "description": "Scrape web pages using Scrapling with anti-bot bypass (like Cloudflare Turnstile), stealth headless browsing, spiders framework, adaptive scraping, and JavaScript rendering. Use when asked to scrape, crawl, or extract data from websites; web_fetch fails; the site has anti-bot protections; write Python code to scrape/crawl; or write spiders.",
+        "content_language": "en",
+        "github_url": "https://github.com/D4Vinci/Scrapling/tree/main/agent-skill/Scrapling-Skill",
+        "skillsmp_url": "https://skillsmp.com/creators/d4vinci/scrapling/agent-skill-scrapling-skill",
+        "repo_stars": 73790,
+        "catalog_updated_at": "2026-08-10T21:58:50+00:00",
+        "source_key": "d4vinci/scrapling:agent-skill/scrapling-skill",
+        "family_key": "d4vinci/scrapling:scrapling-official",
+        "aliases": [],
+        "query": "Cloudflare Pages custom domain deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "code-yeongyu/oh-my-openagent:ultimate-browsing",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "ultimate-browsing",
+        "author": "code-yeongyu",
+        "description": "Escalation skill for blocked or hard-to-reach web access — load it when a normal browse/fetch is blocked (WAF, 403, Cloudflare, JS-only render, login-gated, or a platform a generic fetcher cannot read). Tiered router: TIER 1 insane-search (headless extraction + WAF bypass via curl_cffi TLS impersonation, yt-dlp, Jina Reader, public APIs, Playwright real-Chrome fallback); TIER 1.5 agent-reach (platform-native readers for Chinese and social platforms: Xiaohongshu, Douyin, Weibo, Bilibili, V2EX, WeChat, plus Twitter/Reddit/LinkedIn/GitHub); TIER 2 Chrome stealth (CloakBrowser stealth Chromium + agent-browser CDP for clicks, forms, screenshots, video, cookie login). Triggers: blocked site, bypass bot detection, cloudflare/WAF bypass, scrape, stealth browser, import cookies, fill form, screenshot, play youtube, xiaohongshu, douyin, weibo, bilibili, v2ex, wechat article, podcast transcript. NOT for simple searches (use web-search) or plain fetches (use webfetch).",
+        "content_language": "en",
+        "github_url": "https://github.com/code-yeongyu/oh-my-openagent/tree/dev/packages/shared-skills/skills/ultimate-browsing",
+        "skillsmp_url": "https://skillsmp.com/creators/code-yeongyu/oh-my-openagent/packages-shared-skills-skills-ultimate-browsing",
+        "repo_stars": 67812,
+        "catalog_updated_at": "2026-08-10T02:07:05+00:00",
+        "source_key": "code-yeongyu/oh-my-openagent:packages/shared-skills/skills/ultimate-browsing",
+        "family_key": "code-yeongyu/oh-my-openagent:ultimate-browsing",
+        "aliases": [],
+        "query": "Cloudflare Pages custom domain deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "remotion-dev/remotion:upload-r2",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "upload-r2",
+        "author": "remotion-dev",
+        "description": "Upload large Remotion repository assets to the Cloudflare R2 bucket behind remotion.media and replace local public/ assets with hosted URLs. Use when a file is too large for Git or when a PR should avoid committing media binaries by hosting them on remotion.media.",
+        "content_language": "en",
+        "github_url": "https://github.com/remotion-dev/remotion/tree/main/.agents/skills/upload-r2",
+        "skillsmp_url": "https://skillsmp.com/creators/remotion-dev/remotion/agents-skills-upload-r2",
+        "repo_stars": 56239,
+        "catalog_updated_at": "2026-06-22T07:48:26+00:00",
+        "source_key": "remotion-dev/remotion:.agents/skills/upload-r2",
+        "family_key": "remotion-dev/remotion:upload-r2",
+        "aliases": [],
+        "query": "Cloudflare Pages custom domain deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "logseq/logseq:logseq-server-usage-stats",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "logseq-server-usage-stats",
+        "author": "logseq",
+        "description": "Collect, interpret, and troubleshoot db-sync server usage stats (total users/graphs, active users/graphs in N days, created-today metrics) using the `deps/db-sync` scripts and D1 schema. Use when requests involve `show-usage-stats`, server usage reporting, active-entity counting, or Cloudflare D1 cost impact of usage tracking.",
+        "content_language": "en",
+        "github_url": "https://github.com/logseq/logseq/tree/master/.agents/skills/logseq-server-usage-stats",
+        "skillsmp_url": "https://skillsmp.com/creators/logseq/logseq/agents-skills-logseq-server-usage-stats",
+        "repo_stars": 44428,
+        "catalog_updated_at": "2026-05-04T00:18:39+00:00",
+        "source_key": "logseq/logseq:.agents/skills/logseq-server-usage-stats",
+        "family_key": "logseq/logseq:logseq-server-usage-stats",
+        "aliases": [],
+        "query": "Cloudflare Pages custom domain deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "trpc/trpc:adapter-fetch",
+      "queries": [
+        "Cloudflare Pages custom domain deployment"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "adapter-fetch",
+        "author": "trpc",
+        "description": "Deploy tRPC on WinterCG-compliant edge runtimes with fetchRequestHandler() from @trpc/server/adapters/fetch. Supports Cloudflare Workers, Deno Deploy, Vercel Edge Runtime, Astro, Remix, SolidStart. FetchCreateContextFnOptions provides req (Request) and resHeaders (Headers) for context creation. The endpoint option must match the URL path prefix where the handler is mounted.",
+        "content_language": "en",
+        "github_url": "https://github.com/trpc/trpc/tree/main/packages/server/skills/adapter-fetch",
+        "skillsmp_url": "https://skillsmp.com/creators/trpc/trpc/packages-server-skills-adapter-fetch",
+        "repo_stars": 40516,
+        "catalog_updated_at": "2026-03-28T10:58:55+00:00",
+        "source_key": "trpc/trpc:packages/server/skills/adapter-fetch",
+        "family_key": "trpc/trpc:adapter-fetch",
+        "aliases": [],
+        "query": "Cloudflare Pages custom domain deployment"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    }
+  ],
+  "missing_evidence": [],
+  "next_steps": [
+    "shortlist by job relevance and role coverage, not combined popularity",
+    "open canonical GitHub source and inspect SKILL.md before adoption",
+    "verify license, maintenance, permissions, security, duplication, and rating evidence",
+    "write keep/adapt/reject/invent synthesis before authoring"
+  ]
+}

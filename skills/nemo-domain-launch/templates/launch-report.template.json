@@ -1,0 +1,199 @@
+{
+  "schema_version": "2.0",
+  "scope": {
+    "project_dir": "/absolute/path/to/project",
+    "deployment_mode": "static_pages",
+    "formal_domain_before": {
+      "status": "unresolved",
+      "evidence": null
+    },
+    "build_command": "project-native build command",
+    "output_dir": "/absolute/path/to/project/dist",
+    "production_origin": "https://example.com",
+    "domain": "example.com",
+    "pages_project": "example-static-site",
+    "vercel_project": null,
+    "production_branch": "main",
+    "registrar": "spaceship",
+    "source_revision": "unresolved"
+  },
+  "actions": {
+    "pages_deploy": {
+      "target": "cloudflare/pages/example-static-site/main",
+      "authorization": {
+        "status": "requested",
+        "evidence": null
+      },
+      "before": null,
+      "execution": {
+        "status": "pending",
+        "evidence": null
+      },
+      "readback": {
+        "status": "missing_evidence",
+        "evidence": null
+      },
+      "rollback": "Redeploy the last known-good Pages artifact without changing DNS."
+    },
+    "vercel_deploy": {
+      "target": "not-applicable-in-static_pages",
+      "authorization": {
+        "status": "not_required",
+        "evidence": "deployment_mode=static_pages"
+      },
+      "before": null,
+      "execution": {
+        "status": "not_required",
+        "evidence": "deployment_mode=static_pages"
+      },
+      "readback": {
+        "status": "not_required",
+        "evidence": "deployment_mode=static_pages"
+      },
+      "rollback": "Not applicable in static_pages mode."
+    },
+    "custom_domain_binding": {
+      "target": "cloudflare-pages/example-static-site/example.com",
+      "authorization": {
+        "status": "requested",
+        "evidence": null
+      },
+      "before": null,
+      "execution": {
+        "status": "pending",
+        "evidence": null
+      },
+      "readback": {
+        "status": "missing_evidence",
+        "evidence": null
+      },
+      "rollback": "Remove only the exact new hosting-provider binding after DNS safety checks."
+    },
+    "dns_record_change": {
+      "target": "cloudflare-zone/example.com/exact-record-id",
+      "authorization": {
+        "status": "requested",
+        "evidence": null
+      },
+      "before": null,
+      "execution": {
+        "status": "pending",
+        "evidence": null
+      },
+      "readback": {
+        "status": "missing_evidence",
+        "evidence": null
+      },
+      "rollback": "Restore the exact record from dns_records_before."
+    },
+    "nameserver_change": {
+      "target": "spaceship/example.com/nameservers",
+      "authorization": {
+        "status": "requested",
+        "evidence": null
+      },
+      "before": null,
+      "execution": {
+        "status": "pending",
+        "evidence": null
+      },
+      "readback": {
+        "status": "missing_evidence",
+        "evidence": null
+      },
+      "rollback": "Restore the recorded previous nameservers only when the DS state is compatible."
+    },
+    "dnssec_change": {
+      "target": "spaceship/example.com/parent-ds",
+      "authorization": {
+        "status": "requested",
+        "evidence": null
+      },
+      "before": null,
+      "execution": {
+        "status": "pending",
+        "evidence": null
+      },
+      "readback": {
+        "status": "missing_evidence",
+        "evidence": null
+      },
+      "rollback": "Remove the new DS before reverting nameservers; never disable signing first."
+    },
+    "agents_md_writeback": {
+      "target": "/absolute/path/to/project/AGENTS.md",
+      "authorization": {
+        "status": "requested",
+        "evidence": null
+      },
+      "before": null,
+      "execution": {
+        "status": "pending",
+        "evidence": null
+      },
+      "readback": {
+        "status": "missing_evidence",
+        "evidence": null
+      },
+      "rollback": "Remove only the nemo-domain-launch managed block; preserve all other AGENTS.md content."
+    }
+  },
+  "rollback": {
+    "last_safe_checkpoint": "scope_locked",
+    "dns_records_before": [],
+    "nameservers_before": [],
+    "parent_ds_before": [],
+    "last_known_good_deployments": {
+      "pages": null,
+      "vercel": null
+    }
+  },
+  "observations": {
+    "provider": {
+      "pages_deployment": "missing_evidence",
+      "vercel_deployment": "not_required",
+      "cloudflare_zone": "missing_evidence",
+      "custom_domain": "missing_evidence",
+      "certificate": "missing_evidence",
+      "hosting_dns": "missing_evidence",
+      "cloudflare_dnssec": "missing_evidence"
+    },
+    "public_dns": {
+      "resolvers": [],
+      "cloudflare_nameservers": false,
+      "hosting_records_match": false,
+      "verification_records_dns_only": "not_required",
+      "ds_present": false,
+      "dnssec_ad_resolvers": []
+    },
+    "public_http": {
+      "hosting_default_url": "missing_evidence",
+      "root": "missing_evidence",
+      "representative_path": "missing_evidence",
+      "canonical": "missing_evidence",
+      "robots": "missing_evidence",
+      "sitemap": "missing_evidence",
+      "tls": "missing_evidence"
+    },
+    "agents_md": {
+      "status": "missing_evidence",
+      "path": null,
+      "managed_block": null
+    },
+    "local_cache": {
+      "status": "not_observed",
+      "notes": []
+    }
+  },
+  "claims": {
+    "domain_ready": false,
+    "launch_complete": false,
+    "dnssec_complete": false
+  },
+  "missing_evidence": [
+    "formal-domain absence evidence",
+    "exact provider execution and readback",
+    "public DNS observations from at least two resolvers",
+    "public HTTPS and content readback"
+  ]
+}

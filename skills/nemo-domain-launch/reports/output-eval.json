@@ -1,0 +1,27 @@
+{
+  "schema_version": "2.0",
+  "generated_at": "2026-08-14",
+  "ok": true,
+  "evidence_kind": "recorded_fixture",
+  "source": "evals/output_cases.json plus offline contract tests",
+  "summary": {
+    "case_count": 10,
+    "behavior_contract_recorded": 10,
+    "offline_unit_tests_passed": 43,
+    "provider_backed_cases": 0,
+    "human_blind_reviews": 0
+  },
+  "validated_mechanisms": [
+    "formal-domain presence blocks the first-domain mutation workflow",
+    "exactly one hosting route may execute and the inactive route must be coherently not_required",
+    "production-origin preflight rejects stale static origins and missing representative routes",
+    "Vercel DNS values are treated as live project data rather than hardcoded constants",
+    "launch reports reject execution without exact authorization and secret-like fields",
+    "domain_ready and DNSSEC claims require mode-specific provider and public evidence",
+    "public verification requires distinct public resolver consensus and successful DNSSEC validation when requested",
+    "HTTPS verification rejects downgrade redirects and malformed observations without crashing",
+    "optional SaaS SEO checks allow absence but still reject a wrong canonical",
+    "AGENTS.md writeback is post-domain-ready, project-root-only, idempotent, and conflict/symlink safe"
+  ],
+  "evidence_boundary": "Recorded fixtures and deterministic unit tests validate contract behavior only. Provider-backed comparison and human blind review remain missing evidence."
+}

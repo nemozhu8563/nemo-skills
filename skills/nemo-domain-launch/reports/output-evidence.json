@@ -1,0 +1,14 @@
+{
+  "schema_version": "2.0",
+  "generated_at": "2026-08-14",
+  "ok": true,
+  "evidence_kind": "recorded_fixture",
+  "source": "evals/output_cases.json, templates/launch-report.template.json, and tests/test_*.py",
+  "provider_backed": false,
+  "human_blind_review": false,
+  "missing_evidence": [
+    "provider-backed comparison",
+    "human blind review"
+  ],
+  "claim_boundary": "This file does not prove a real Cloudflare, Vercel, or Spaceship mutation; a public domain launch; or an AGENTS.md writeback in a user's target project."
+}

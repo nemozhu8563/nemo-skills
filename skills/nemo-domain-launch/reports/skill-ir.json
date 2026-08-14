@@ -1,0 +1,220 @@
+{
+  "schema_version": "2.0.0-qiaomu-lite",
+  "generated_at": "2026-08-14",
+  "package": {
+    "name": "nemo-domain-launch",
+    "version": "0.2.0",
+    "owner": "Nemo",
+    "maturity_tier": "governed",
+    "lifecycle_stage": "local",
+    "upstream_inspiration": [
+      "genericService/claude-skills:cloudflare-pages",
+      "bm629/agent-skills:cloudflare-pages-ops",
+      "makerjackie/jackie-skills-starter:cloudflare-dns",
+      "render-oss/skills:render-static-sites",
+      "lovstudio/skills:deploy-to-vercel",
+      "nemo-skills:game-site-launch"
+    ],
+    "upstream_sync": {}
+  },
+  "intent": {
+    "description": "Governed first-domain launch for a project with no formal production domain, or only a provider URL such as pages.dev or vercel.app. Use when Nemo asks to deploy or bind a Spaceship domain through Cloudflare DNS using exactly one route: static_pages for Cloudflare Pages, or saas_vercel for Vercel-hosted SaaS/SSR. Deploys the selected provider target, verifies Cloudflare authoritative DNS, TLS and public routes, then idempotently writes the verified formal domain to project-root AGENTS.md. Do not trigger when the project already has a formal production domain, for domain purchase only, Vercel-only hosting without Cloudflare DNS, GitHub Pages, Git push, GSC/GA/ads, wildcard Vercel domains, arbitrary DNS deletion, credential extraction, or generic deployment advice.",
+    "job_to_be_done": "Give a project that does not yet have a formal production domain one of two governed launch routes: Spaceship to Cloudflare DNS and Cloudflare Pages for a static site, or Spaceship to Cloudflare DNS and Vercel for a SaaS application; prove the public domain works, then record it idempotently in the project-root AGENTS.md.",
+    "target_users": [
+      "Nemo",
+      "static-site maintainer",
+      "SaaS release operator"
+    ],
+    "inputs": [
+      "project directory and evidence that no formal production domain is configured",
+      "deployment mode: static_pages or saas_vercel",
+      "project-native build and verification commands",
+      "mode-specific Pages or Vercel project target",
+      "Spaceship domain, Cloudflare zone, and exact authorized mutations",
+      "production HTTPS origin and representative public paths"
+    ],
+    "outputs": [
+      "formal-domain absence and deployment-mode decision evidence",
+      "Pages or Vercel deployment evidence with the other route marked not_required",
+      "Cloudflare DNS and Spaceship mutation ledger with rollback snapshots",
+      "public DNS, TLS, route, and mode-appropriate content verification",
+      "idempotent project-root AGENTS.md production-domain record",
+      "claim-safe launch report"
+    ],
+    "exclusions": [
+      "domain purchase or registrar transfer",
+      "projects that already have a formal production domain",
+      "Vercel-only deployment without Spaceship and Cloudflare authoritative DNS",
+      "Vercel wildcard domains while Cloudflare remains authoritative DNS",
+      "Git push, GSC, GA, ads, or game-site pipeline state",
+      "credential collection or persistence",
+      "arbitrary DNS deletion"
+    ],
+    "creator_defaults": {}
+  },
+  "triggers": {
+    "should_trigger": [
+      "这个静态站还没有正式域名，把 Spaceship 域名经 Cloudflare Pages 上线。",
+      "项目只有 pages.dev 默认地址，绑定正式域名并完成 Cloudflare DNS 验证。",
+      "这个 SaaS 只有 vercel.app 地址，把 Spaceship 域名接到 Cloudflare DNS 和 Vercel。",
+      "当前项目没有 production domain，先判断走 static_pages 还是 saas_vercel，再部署上线。",
+      "站点尚无正式域名，完成部署和 TLS 公网验证后把地址写进 AGENTS.md。",
+      "没有正式域名，切 Cloudflare nameservers 前先快照 Spaceship DNS 和旧 DS。",
+      "这个首域名上线需要迁移 DNSSEC，并用两个公共 resolver 验证父区 DS。",
+      "静态站还没有正式域名，先用 production origin 检查 dist 再部署到 Pages。",
+      "SaaS 没有 custom domain；从 Vercel 项目读取精确 DNS 值，写到 Cloudflare 并验证 HTTPS。",
+      "No production domain exists. Launch this static build through Spaceship, Cloudflare DNS, and Cloudflare Pages.",
+      "This SaaS only has a vercel.app URL. Bind its Spaceship domain through Cloudflare DNS and Vercel.",
+      "The project has no custom domain; deploy it, prove public DNS and TLS, then write the domain to AGENTS.md."
+    ],
+    "should_not_trigger": [
+      "在 Spaceship 只买域名，暂时不要部署。",
+      "项目已有正式域名，只做一次普通生产部署。",
+      "Cloudflare Pages 已配置正式域名，现在只修证书 pending。",
+      "Deploy this application to Vercel only, without Cloudflare DNS.",
+      "把静态站只发布到 GitHub Pages。",
+      "把仓库 push 到 GitHub，不需要上线。",
+      "给 Cloudflare Durable Object 写一个计数器。",
+      "用 container service 部署后端 API。",
+      "只做 GSC 提交、GA 和广告配置。",
+      "规划一个游戏站从选题到增长的完整流水线。",
+      "解释 DNSSEC 的工作原理，不要改任何域名。",
+      "给 Vercel 项目配置 wildcard domain，并保持 Cloudflare nameservers。"
+    ],
+    "near_neighbor": [
+      "审计 Cloudflare 账号的费用和套餐。",
+      "把动态 Next.js SSR 应用迁移到容器平台。",
+      "给已有正式域名的网站写 robots.txt 和 sitemap.xml。",
+      "检查本机浏览器为什么缓存了旧域名解析。",
+      "配置 Cloudflare Email Routing，不涉及站点部署。",
+      "把已有正式域名从一个 DNS provider 迁移到另一个。"
+    ]
+  },
+  "workflow": {
+    "router_rules": [],
+    "compact_workflow": [
+      "**建立事实基线。** 记录 Git revision/dirty state、现有 provider 默认 URL、正式域名缺失证据、Cloudflare zone/DNS、公共 NS/DS 和 Spaceship 当前设置。创建脱敏 launch report，保存每个动作的授权、执行、回读和 rollback snapshot。",
+      "**运行项目原生验证。** 两种 mode 都先跑现有 build/check/test。`static_pages` 必须以最终 `production_origin` 重建输出，再运行 `scripts/preflight.py` 检查首页、代表性内页、canonical、robots 和 sitemap；不得部署旧产物。`saas_vercel` 按项目现有 Vercel 配置验证 build、env 名称和代表性流程，不读取或记录 secret value。",
+      "**验证身份和精确目标。** 复用已验证的 Cloudflare Wrangler OAuth/API 环境和 Vercel CLI/dashboard 会话，只读确认 account、project、zone 和 domain target。OAuth callback、token、Cookie、验证码、环境变量值和浏览器存储不得进入聊天、命令回显、报告或 fixture。",
+      "**执行唯一 hosting route。** `static_pages` 部署已验证的静态目录，记录 deployment ID、environment、source revision、终态和 `pages.dev` HTTPS 回读。`saas_vercel` 发布或复用精确 production deployment，记录 deployment ID/URL、READY 终态、source revision 和 `vercel.app` HTTPS 回读；优先复用同一已验证 artifact，不用重建掩盖问题。",
+      "**准备 Cloudflare authoritative DNS。** 创建或读取精确 zone，取得该 zone 实际分配的两台 nameserver；快照 Cloudflare 导入记录、Spaceship DNS、当前 NS 和父区 DS。Pages/Vercel binding、DNS record、NS 和 DNSSEC 是独立动作。",
+      "**绑定正式域名。** `static_pages` 必须先在 Pages 项目添加 custom domain，再依 provider 结果处理 DNS；只手工建 CNAME 可能产生 522。`saas_vercel` 必须先在目标 Vercel 项目添加 domain，再逐项复制该项目当前 Domain Settings 返回的 A/CNAME/TXT/verification 值到 Cloudflare；不得硬编码通用 target。Vercel 承载记录与第三方验证记录在验收阶段保持 DNS-only；启用 Cloudflare proxy 是上线后的独立 mutation。",
+      "**最小化切换。** 只删除“按 ID、类型、名称、内容精确匹配，已确认是停放记录，且确实阻塞目标”的记录，并保留可恢复快照。MX、TXT、CAA、邮件和验证记录默认保留。先正确处理旧 DNSSEC，再在 Spaceship 切到 Cloudflare 实际 nameservers，等待 zone Active。",
+      "**完成 DNSSEC（如在范围内）。** 普通迁移先移除旧 DS，等待父区 DS TTL 到期且公开查询为空，再切 NS。Cloudflare zone Active 后启用 signing，读取新 DS，再写入 Spaceship。至少两个验证递归解析器返回 `ad` 才能声明完成。未请求时整组动作写一致的 `not_required`。",
+      "**证明 `domain_ready`。** 回读 hosting provider 的 deployment/domain/certificate，运行 `scripts/verify_public.py` 检查 Cloudflare NS、目标 DNS、正式 HTTPS、TLS、根路径与代表性路径；按 mode 检查 SEO 文件。最后用 `scripts/validate_launch_report.py --require-domain-ready` 校验证据。",
+      "**写回并证明 `launch_complete`。** 仅在 `domain_ready=true` 后运行 `scripts/update_agents_domain.py`。它保留已有内容，缺文件时创建，只维护一个 `nemo-domain-launch` block，重复运行不追加；写后立即回读并更新 report。再用 `--require-launch-complete` 验证。"
+    ],
+    "gate_ladder": [
+      "`scope_locked`：项目、mode、origin、domain、provider targets、registrar 和授权动作明确。",
+      "`first_domain_eligible`：`formal_domain_before` 为 `absent` 或 `provider_default_only`，且有证据。",
+      "`local_verified`：项目原生 build/check 通过；静态 mode 的正式 origin 产物预检通过。",
+      "`hosting_deployed`：唯一 hosting action 终态和 provider 默认 URL 回读通过；另一 action 为一致 `not_required`。",
+      "`zone_staged`：Cloudflare zone、目标 NS、DNS/DS 快照和 rollback 已记录。",
+      "`nameservers_cut_over`：父区公开 NS 与 Cloudflare 分配值一致，旧 DS 已按路径处理。",
+      "`custom_domain_active`：Pages 或 Vercel binding、hosting DNS、certificate 和正式域 HTTPS 均通过。",
+      "`dnssec_active`：请求时要求 Cloudflare signing、父区 DS 和两个 resolver 的 `ad`；否则为 `not_required`。",
+      "`domain_ready`：mode 对应 provider、公共 DNS、TLS、根路径和代表性路径满足契约，`missing_evidence` 为空。",
+      "`agents_md_recorded`：项目根 `AGENTS.md` 的受管块精确回读成功。",
+      "`launch_complete`：必须同时满足 `domain_ready` 与 `agents_md_recorded`。"
+    ],
+    "output_contract": [
+      "`scope`：项目、mode、正式域名缺失证据、build/output、origin、Pages/Vercel project、domain、registrar、source revision。",
+      "`actions`：七个动作分别记录 authorization、execution、readback、before 和 rollback；非当前 hosting route 为一致 `not_required`。",
+      "`observations.provider`：Pages/Vercel deployment、Cloudflare zone、custom domain、certificate、hosting DNS、DNSSEC 分开记录。",
+      "`observations.public_dns`：至少两个 resolver 的 NS、DS、A/AAAA/CNAME、hosting target 一致性与 DNSSEC `ad`。",
+      "`observations.public_http`：provider 默认 URL、正式根路径、代表性路径、TLS，以及 mode 适用的 canonical/robots/sitemap。",
+      "`observations.agents_md`：只记录状态、项目根路径和 managed block 名。",
+      "`claims`：`domain_ready`、`launch_complete`、`dnssec_complete` 都必须由 validator 证明。",
+      "`rollback`：DNS snapshot、旧 NS/DS、Pages/Vercel 上一个可用 deployment、最后安全检查点。"
+    ]
+  },
+  "resources": {
+    "references": [
+      "references/evidence-and-rollback.md",
+      "references/official-sources.md",
+      "references/registrar-adapters.md",
+      "references/runbook.md"
+    ],
+    "scripts": [
+      "scripts/preflight.py",
+      "scripts/update_agents_domain.py",
+      "scripts/validate_launch_report.py",
+      "scripts/verify_public.py"
+    ],
+    "evals": [
+      "evals/output_cases.json",
+      "evals/trigger_cases.json"
+    ],
+    "reports": [
+      "reports/creation-handoff.md",
+      "reports/output-eval.json",
+      "reports/output-evidence.json",
+      "reports/prior-art-candidates.json",
+      "reports/prior-art-research.md",
+      "reports/release-check.json",
+      "reports/skill-ir.json",
+      "reports/trigger-eval.json"
+    ]
+  },
+  "portability": {
+    "canonical_format": "agent-skills",
+    "adapter_targets": [
+      "openai",
+      "claude",
+      "generic",
+      "agent-skills-compatible"
+    ],
+    "activation": {
+      "mode": "manual",
+      "paths": []
+    },
+    "execution": {
+      "context": "inline",
+      "shell": "python3 plus project-native commands, current Wrangler or Vercel CLI, and read-only DNS/HTTP tools"
+    },
+    "trust": {
+      "source_tier": "local governed package; mutable Cloudflare, Vercel, and Spaceship facts require current official or live-provider evidence",
+      "remote_inline_execution": "forbid",
+      "public_claims": "provider-and-public-readback-bound",
+      "credential_policy": "secret values never enter prompts, reports, fixtures, command output, AGENTS.md, or shell persistence"
+    },
+    "permissions": {
+      "network": "only exact Cloudflare, Vercel, Spaceship, public DNS resolver, and site resources in the locked scope",
+      "file_write": "project-native build artifacts, an explicit launch report, and the managed production-domain block in project-root AGENTS.md after domain_ready",
+      "subprocess": "project-native build/check, current Wrangler or Vercel CLI, package scripts, dig/curl/openssl, and bundled validators",
+      "live_mutation": "only exact user-authorized mode-specific deploy, custom-domain, DNS-record, nameserver, DNSSEC, and final AGENTS.md writeback actions",
+      "interactive": "allowed for OAuth, registrar, 2FA, or dashboard steps; never inspect browser storage or copy callbacks"
+    },
+    "degradation": {
+      "formal_domain_unresolved": "continue read-only discovery; do not mutate until absence or provider-default-only status is proven",
+      "formal_domain_present": "do not activate this launch workflow; route maintenance or migration elsewhere",
+      "no_cloudflare_write_access": "produce local verification, inventory, mutation plan, rollback snapshot, and missing-evidence report",
+      "no_vercel_access": "in saas_vercel mode stop before deployment/domain binding and preserve read-only evidence",
+      "no_registrar_access": "keep hosting deployment evidence and stop before nameserver or DS mutation",
+      "no_browser": "prefer CLI/API and emit a precise handoff for provider-only steps",
+      "no_dig": "use at least two named public DNS APIs; local resolver output alone is insufficient"
+    }
+  },
+  "gates": {
+    "governed": [
+      "formal_domain_before is proven absent or provider_default_only",
+      "exactly one deployment mode is selected and the other hosting action is coherently not_required",
+      "Cloudflare Pages custom domain is bound before relying on its DNS record",
+      "Vercel DNS values come from the current project Domain Settings and remain DNS-only during acceptance",
+      "provider status, public DNS, public HTTPS, and local cache are separate evidence channels",
+      "DNS changes have exact before snapshots and rollback actions",
+      "old DS is removed and expired before ordinary nameserver migration",
+      "new DNSSEC requires Cloudflare signing, parent DS, and two validating resolver AD results",
+      "token, OAuth code, callback URL, Cookie, password, private key, and browser storage are prohibited",
+      "AGENTS.md writeback occurs only after domain_ready and is read back idempotently",
+      "launch_complete requires both domain_ready and AGENTS.md writeback",
+      "provider-backed or human-review evidence is labeled missing until actually recorded"
+    ]
+  },
+  "evidence_boundary": {
+    "generated_reports_are_evidence": true,
+    "planned_work_is_evidence": false,
+    "missing_external_or_human_evidence_label": "missing evidence",
+    "public_claim_policy": "claim only what local validation, install proof, human review, or provider-backed evidence actually supports"
+  }
+}

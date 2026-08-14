@@ -1,0 +1,408 @@
+{
+  "ok": true,
+  "threshold": 0.34,
+  "description_concepts": [
+    "formal_domain_gap",
+    "launch_action",
+    "route",
+    "saas_vercel",
+    "static_pages",
+    "verification",
+    "writeback"
+  ],
+  "missing_description_concepts": [],
+  "summary": {
+    "total": 30,
+    "passed": 30,
+    "false_positive": 0,
+    "false_negative": 0,
+    "pass_rate": 1.0
+  },
+  "failures": [],
+  "results": {
+    "should_trigger": [
+      {
+        "prompt": "这个静态站还没有正式域名，把 Spaceship 域名经 Cloudflare Pages 上线。",
+        "family": "cn_static_full_launch",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.8,
+        "matched_concepts": [
+          "formal_domain_gap",
+          "launch_action",
+          "route",
+          "static_pages"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "项目只有 pages.dev 默认地址，绑定正式域名并完成 Cloudflare DNS 验证。",
+        "family": "cn_static_provider_default",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 1.0,
+        "matched_concepts": [
+          "formal_domain_gap",
+          "launch_action",
+          "route",
+          "static_pages",
+          "verification"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "这个 SaaS 只有 vercel.app 地址，把 Spaceship 域名接到 Cloudflare DNS 和 Vercel。",
+        "family": "cn_saas_full_launch",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.8,
+        "matched_concepts": [
+          "formal_domain_gap",
+          "launch_action",
+          "route",
+          "saas_vercel"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "当前项目没有 production domain，先判断走 static_pages 还是 saas_vercel，再部署上线。",
+        "family": "cn_mode_routing",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.8,
+        "matched_concepts": [
+          "launch_action",
+          "route",
+          "saas_vercel",
+          "static_pages"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "站点尚无正式域名，完成部署和 TLS 公网验证后把地址写进 AGENTS.md。",
+        "family": "cn_writeback",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.8,
+        "matched_concepts": [
+          "formal_domain_gap",
+          "launch_action",
+          "verification",
+          "writeback"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "没有正式域名，切 Cloudflare nameservers 前先快照 Spaceship DNS 和旧 DS。",
+        "family": "cn_ns_cutover",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.4,
+        "matched_concepts": [
+          "formal_domain_gap",
+          "route"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "这个首域名上线需要迁移 DNSSEC，并用两个公共 resolver 验证父区 DS。",
+        "family": "cn_dnssec",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.4,
+        "matched_concepts": [
+          "launch_action",
+          "verification"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "静态站还没有正式域名，先用 production origin 检查 dist 再部署到 Pages。",
+        "family": "cn_static_preflight",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.6,
+        "matched_concepts": [
+          "formal_domain_gap",
+          "launch_action",
+          "static_pages"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "SaaS 没有 custom domain；从 Vercel 项目读取精确 DNS 值，写到 Cloudflare 并验证 HTTPS。",
+        "family": "cn_vercel_dns",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.6,
+        "matched_concepts": [
+          "route",
+          "saas_vercel",
+          "verification"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "No production domain exists. Launch this static build through Spaceship, Cloudflare DNS, and Cloudflare Pages.",
+        "family": "en_static_full_launch",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.8,
+        "matched_concepts": [
+          "formal_domain_gap",
+          "launch_action",
+          "route",
+          "static_pages"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "This SaaS only has a vercel.app URL. Bind its Spaceship domain through Cloudflare DNS and Vercel.",
+        "family": "en_saas_full_launch",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.6,
+        "matched_concepts": [
+          "launch_action",
+          "route",
+          "saas_vercel"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "The project has no custom domain; deploy it, prove public DNS and TLS, then write the domain to AGENTS.md.",
+        "family": "en_writeback",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.8,
+        "matched_concepts": [
+          "formal_domain_gap",
+          "launch_action",
+          "verification",
+          "writeback"
+        ],
+        "negative_pattern": null
+      }
+    ],
+    "should_not_trigger": [
+      {
+        "prompt": "在 Spaceship 只买域名，暂时不要部署。",
+        "family": "domain_purchase",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.4,
+        "matched_concepts": [
+          "launch_action",
+          "route"
+        ],
+        "negative_pattern": "只买域名"
+      },
+      {
+        "prompt": "项目已有正式域名，只做一次普通生产部署。",
+        "family": "existing_domain_deploy",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.2,
+        "matched_concepts": [
+          "launch_action"
+        ],
+        "negative_pattern": "已有正式域名"
+      },
+      {
+        "prompt": "Cloudflare Pages 已配置正式域名，现在只修证书 pending。",
+        "family": "existing_domain_certificate",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.4,
+        "matched_concepts": [
+          "route",
+          "verification"
+        ],
+        "negative_pattern": "已配置正式域名"
+      },
+      {
+        "prompt": "Deploy this application to Vercel only, without Cloudflare DNS.",
+        "family": "vercel_only",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.4,
+        "matched_concepts": [
+          "launch_action",
+          "route"
+        ],
+        "negative_pattern": "vercel only"
+      },
+      {
+        "prompt": "把静态站只发布到 GitHub Pages。",
+        "family": "github_pages",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.4,
+        "matched_concepts": [
+          "launch_action",
+          "static_pages"
+        ],
+        "negative_pattern": "github pages"
+      },
+      {
+        "prompt": "把仓库 push 到 GitHub，不需要上线。",
+        "family": "git_push",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.2,
+        "matched_concepts": [
+          "launch_action"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "给 Cloudflare Durable Object 写一个计数器。",
+        "family": "durable_object",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": "durable object"
+      },
+      {
+        "prompt": "用 container service 部署后端 API。",
+        "family": "container_backend",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.2,
+        "matched_concepts": [
+          "launch_action"
+        ],
+        "negative_pattern": "container service"
+      },
+      {
+        "prompt": "只做 GSC 提交、GA 和广告配置。",
+        "family": "growth_tools",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": "只做 gsc"
+      },
+      {
+        "prompt": "规划一个游戏站从选题到增长的完整流水线。",
+        "family": "game_site_orchestration",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "解释 DNSSEC 的工作原理，不要改任何域名。",
+        "family": "dnssec_explanation",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "给 Vercel 项目配置 wildcard domain，并保持 Cloudflare nameservers。",
+        "family": "vercel_wildcard",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.2,
+        "matched_concepts": [
+          "route"
+        ],
+        "negative_pattern": "wildcard domain"
+      }
+    ],
+    "near_neighbor": [
+      {
+        "prompt": "审计 Cloudflare 账号的费用和套餐。",
+        "family": "cloudflare_billing",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "把动态 Next.js SSR 应用迁移到容器平台。",
+        "family": "ssr_container",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.2,
+        "matched_concepts": [
+          "saas_vercel"
+        ],
+        "negative_pattern": "容器平台"
+      },
+      {
+        "prompt": "给已有正式域名的网站写 robots.txt 和 sitemap.xml。",
+        "family": "seo_files",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": "已有正式域名"
+      },
+      {
+        "prompt": "检查本机浏览器为什么缓存了旧域名解析。",
+        "family": "local_cache_only",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "配置 Cloudflare Email Routing，不涉及站点部署。",
+        "family": "email_routing",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.2,
+        "matched_concepts": [
+          "launch_action"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "把已有正式域名从一个 DNS provider 迁移到另一个。",
+        "family": "existing_domain_migration",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": "已有正式域名"
+      }
+    ]
+  }
+}

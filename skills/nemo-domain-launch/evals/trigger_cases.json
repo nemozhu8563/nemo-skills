@@ -1,0 +1,243 @@
+{
+  "recommended_threshold": 0.34,
+  "description_required_concepts": [
+    "formal_domain_gap",
+    "route",
+    "launch_action"
+  ],
+  "positive_concepts": {
+    "formal_domain_gap": [
+      "no formal production domain",
+      "no production domain",
+      "no custom domain",
+      "only pages.dev",
+      "only vercel.app",
+      "provider default url",
+      "没有正式域名",
+      "还没有正式域名",
+      "尚无正式域名",
+      "只有 pages.dev",
+      "只有 vercel.app",
+      "默认地址"
+    ],
+    "route": [
+      "spaceship",
+      "cloudflare dns",
+      "cloudflare pages",
+      "vercel",
+      "static_pages",
+      "saas_vercel",
+      "注册商",
+      "权威 dns"
+    ],
+    "launch_action": [
+      "deploy",
+      "deployment",
+      "publish",
+      "launch",
+      "bind",
+      "上线",
+      "部署",
+      "发布",
+      "绑定",
+      "接到"
+    ],
+    "static_pages": [
+      "static site",
+      "static build",
+      "static_pages",
+      "pages.dev",
+      "静态站",
+      "静态网站",
+      "静态构建"
+    ],
+    "saas_vercel": [
+      "saas",
+      "next.js",
+      "ssr",
+      "vercel.app",
+      "saas_vercel",
+      "动态应用"
+    ],
+    "dns": [
+      "dns record",
+      "nameserver",
+      "nameservers",
+      "cloudflare zone",
+      "dnssec",
+      "ds record",
+      "dns 记录",
+      "域名解析",
+      "权威服务器",
+      "父区 ds"
+    ],
+    "verification": [
+      "verify",
+      "prove",
+      "public dns",
+      "https",
+      "tls",
+      "certificate",
+      "验证",
+      "回读",
+      "公网",
+      "证书"
+    ],
+    "writeback": [
+      "agents.md",
+      "write back",
+      "record the domain",
+      "写回",
+      "写进",
+      "记录域名"
+    ]
+  },
+  "negative_patterns": [
+    "already has a production domain",
+    "existing production domain",
+    "已有正式域名",
+    "已经有正式域名",
+    "已配置正式域名",
+    "vercel only",
+    "without cloudflare dns",
+    "github pages",
+    "wildcard domain",
+    "通配符域名",
+    "只买域名",
+    "不要部署",
+    "不改 dns",
+    "只做 gsc",
+    "只做 ga",
+    "只做广告",
+    "只修证书",
+    "container service",
+    "容器平台",
+    "durable object"
+  ],
+  "should_trigger": [
+    {
+      "text": "这个静态站还没有正式域名，把 Spaceship 域名经 Cloudflare Pages 上线。",
+      "family": "cn_static_full_launch"
+    },
+    {
+      "text": "项目只有 pages.dev 默认地址，绑定正式域名并完成 Cloudflare DNS 验证。",
+      "family": "cn_static_provider_default"
+    },
+    {
+      "text": "这个 SaaS 只有 vercel.app 地址，把 Spaceship 域名接到 Cloudflare DNS 和 Vercel。",
+      "family": "cn_saas_full_launch"
+    },
+    {
+      "text": "当前项目没有 production domain，先判断走 static_pages 还是 saas_vercel，再部署上线。",
+      "family": "cn_mode_routing"
+    },
+    {
+      "text": "站点尚无正式域名，完成部署和 TLS 公网验证后把地址写进 AGENTS.md。",
+      "family": "cn_writeback"
+    },
+    {
+      "text": "没有正式域名，切 Cloudflare nameservers 前先快照 Spaceship DNS 和旧 DS。",
+      "family": "cn_ns_cutover"
+    },
+    {
+      "text": "这个首域名上线需要迁移 DNSSEC，并用两个公共 resolver 验证父区 DS。",
+      "family": "cn_dnssec"
+    },
+    {
+      "text": "静态站还没有正式域名，先用 production origin 检查 dist 再部署到 Pages。",
+      "family": "cn_static_preflight"
+    },
+    {
+      "text": "SaaS 没有 custom domain；从 Vercel 项目读取精确 DNS 值，写到 Cloudflare 并验证 HTTPS。",
+      "family": "cn_vercel_dns"
+    },
+    {
+      "text": "No production domain exists. Launch this static build through Spaceship, Cloudflare DNS, and Cloudflare Pages.",
+      "family": "en_static_full_launch"
+    },
+    {
+      "text": "This SaaS only has a vercel.app URL. Bind its Spaceship domain through Cloudflare DNS and Vercel.",
+      "family": "en_saas_full_launch"
+    },
+    {
+      "text": "The project has no custom domain; deploy it, prove public DNS and TLS, then write the domain to AGENTS.md.",
+      "family": "en_writeback"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "在 Spaceship 只买域名，暂时不要部署。",
+      "family": "domain_purchase"
+    },
+    {
+      "text": "项目已有正式域名，只做一次普通生产部署。",
+      "family": "existing_domain_deploy"
+    },
+    {
+      "text": "Cloudflare Pages 已配置正式域名，现在只修证书 pending。",
+      "family": "existing_domain_certificate"
+    },
+    {
+      "text": "Deploy this application to Vercel only, without Cloudflare DNS.",
+      "family": "vercel_only"
+    },
+    {
+      "text": "把静态站只发布到 GitHub Pages。",
+      "family": "github_pages"
+    },
+    {
+      "text": "把仓库 push 到 GitHub，不需要上线。",
+      "family": "git_push"
+    },
+    {
+      "text": "给 Cloudflare Durable Object 写一个计数器。",
+      "family": "durable_object"
+    },
+    {
+      "text": "用 container service 部署后端 API。",
+      "family": "container_backend"
+    },
+    {
+      "text": "只做 GSC 提交、GA 和广告配置。",
+      "family": "growth_tools"
+    },
+    {
+      "text": "规划一个游戏站从选题到增长的完整流水线。",
+      "family": "game_site_orchestration"
+    },
+    {
+      "text": "解释 DNSSEC 的工作原理，不要改任何域名。",
+      "family": "dnssec_explanation"
+    },
+    {
+      "text": "给 Vercel 项目配置 wildcard domain，并保持 Cloudflare nameservers。",
+      "family": "vercel_wildcard"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "审计 Cloudflare 账号的费用和套餐。",
+      "family": "cloudflare_billing"
+    },
+    {
+      "text": "把动态 Next.js SSR 应用迁移到容器平台。",
+      "family": "ssr_container"
+    },
+    {
+      "text": "给已有正式域名的网站写 robots.txt 和 sitemap.xml。",
+      "family": "seo_files"
+    },
+    {
+      "text": "检查本机浏览器为什么缓存了旧域名解析。",
+      "family": "local_cache_only"
+    },
+    {
+      "text": "配置 Cloudflare Email Routing，不涉及站点部署。",
+      "family": "email_routing"
+    },
+    {
+      "text": "把已有正式域名从一个 DNS provider 迁移到另一个。",
+      "family": "existing_domain_migration"
+    }
+  ]
+}

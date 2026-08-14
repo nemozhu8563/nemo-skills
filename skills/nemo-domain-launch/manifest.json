@@ -1,0 +1,103 @@
+{
+  "name": "nemo-domain-launch",
+  "version": "0.2.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-14",
+  "status": "active",
+  "publication_status": "local_only",
+  "maturity_tier": "governed",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "medium",
+  "review_cadence": "quarterly-or-on-cloudflare-vercel-registrar-change",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "intent": {
+    "job_to_be_done": "Give a project that does not yet have a formal production domain one of two governed launch routes: Spaceship to Cloudflare DNS and Cloudflare Pages for a static site, or Spaceship to Cloudflare DNS and Vercel for a SaaS application; prove the public domain works, then record it idempotently in the project-root AGENTS.md.",
+    "target_users": [
+      "Nemo",
+      "static-site maintainer",
+      "SaaS release operator"
+    ],
+    "inputs": [
+      "project directory and evidence that no formal production domain is configured",
+      "deployment mode: static_pages or saas_vercel",
+      "project-native build and verification commands",
+      "mode-specific Pages or Vercel project target",
+      "Spaceship domain, Cloudflare zone, and exact authorized mutations",
+      "production HTTPS origin and representative public paths"
+    ],
+    "outputs": [
+      "formal-domain absence and deployment-mode decision evidence",
+      "Pages or Vercel deployment evidence with the other route marked not_required",
+      "Cloudflare DNS and Spaceship mutation ledger with rollback snapshots",
+      "public DNS, TLS, route, and mode-appropriate content verification",
+      "idempotent project-root AGENTS.md production-domain record",
+      "claim-safe launch report"
+    ],
+    "exclusions": [
+      "domain purchase or registrar transfer",
+      "projects that already have a formal production domain",
+      "Vercel-only deployment without Spaceship and Cloudflare authoritative DNS",
+      "Vercel wildcard domains while Cloudflare remains authoritative DNS",
+      "Git push, GSC, GA, ads, or game-site pipeline state",
+      "credential collection or persistence",
+      "arbitrary DNS deletion"
+    ]
+  },
+  "dependencies": [
+    {
+      "skill": "cloudflare:cloudflare",
+      "required": true,
+      "purpose": "current Cloudflare Pages, DNS, nameserver, and DNSSEC routing"
+    },
+    {
+      "skill": "vercel:deployments-cicd",
+      "required": false,
+      "purpose": "current Vercel deployment behavior for saas_vercel mode"
+    },
+    {
+      "skill": "web-access:web-access",
+      "required": false,
+      "purpose": "Spaceship or provider dashboard interaction when CLI/API is insufficient"
+    }
+  ],
+  "upstream_inspiration": [
+    "genericService/claude-skills:cloudflare-pages",
+    "bm629/agent-skills:cloudflare-pages-ops",
+    "makerjackie/jackie-skills-starter:cloudflare-dns",
+    "render-oss/skills:render-static-sites",
+    "lovstudio/skills:deploy-to-vercel",
+    "nemo-skills:game-site-launch"
+  ],
+  "nemo_identity": {
+    "github": "https://github.com/nemozhu8563/"
+  },
+  "release_gates": [
+    "official_source_review",
+    "formal_domain_absence",
+    "deployment_mode_routing",
+    "project_native_preflight",
+    "exact_external_authorization",
+    "credential_non_disclosure",
+    "dns_before_snapshot",
+    "parking_record_exact_match",
+    "vercel_live_dns_values",
+    "dnssec_migration_order",
+    "provider_readback",
+    "multi_resolver_public_dns_readback",
+    "https_content_and_tls_readback",
+    "agents_md_writeback",
+    "rollback_boundary",
+    "public_claim_guard",
+    "trigger_eval",
+    "output_behavior_cases",
+    "package_validation",
+    "root_entrypoint_isolation",
+    "secret_scan",
+    "offline_contract_tests"
+  ]
+}

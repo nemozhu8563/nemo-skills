@@ -1,0 +1,55 @@
+interface:
+  display_name: "Nemo Domain Launch"
+  short_description: "Launch a domainless static or SaaS project through Spaceship and Cloudflare"
+  default_prompt: "Use $nemo-domain-launch only if this project has no formal production domain. Select exactly one route: static_pages (Spaceship → Cloudflare DNS → Cloudflare Pages) or saas_vercel (Spaceship → Cloudflare DNS → Vercel). Preserve DNS/NS/DS rollback evidence, prove provider state plus public DNS/TLS/HTTP, then idempotently record the verified domain in the project-root AGENTS.md."
+  examples:
+    - "这个静态项目还没有正式域名，用 Spaceship 域名经 Cloudflare Pages 上线"
+    - "这个 SaaS 只有 vercel.app 地址，把 Spaceship 域名接到 Cloudflare DNS 和 Vercel"
+    - "项目没有 production domain，判断该走 static_pages 还是 saas_vercel 并完成上线"
+    - "域名公网验证成功后，把正式地址写进项目根 AGENTS.md"
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "python3 plus project-native commands, current Wrangler or Vercel CLI, and read-only DNS/HTTP tools"
+  trust:
+    source_tier: "local governed package; mutable Cloudflare, Vercel, and Spaceship facts require current official or live-provider evidence"
+    remote_inline_execution: "forbid"
+    public_claims: "provider-and-public-readback-bound"
+    credential_policy: "secret values never enter prompts, reports, fixtures, command output, AGENTS.md, or shell persistence"
+  permissions:
+    network: "only exact Cloudflare, Vercel, Spaceship, public DNS resolver, and site resources in the locked scope"
+    file_write: "project-native build artifacts, an explicit launch report, and the managed production-domain block in project-root AGENTS.md after domain_ready"
+    subprocess: "project-native build/check, current Wrangler or Vercel CLI, package scripts, dig/curl/openssl, and bundled validators"
+    live_mutation: "only exact user-authorized mode-specific deploy, custom-domain, DNS-record, nameserver, DNSSEC, and final AGENTS.md writeback actions"
+    interactive: "allowed for OAuth, registrar, 2FA, or dashboard steps; never inspect browser storage or copy callbacks"
+  degradation:
+    formal_domain_unresolved: "continue read-only discovery; do not mutate until absence or provider-default-only status is proven"
+    formal_domain_present: "do not activate this launch workflow; route maintenance or migration elsewhere"
+    no_cloudflare_write_access: "produce local verification, inventory, mutation plan, rollback snapshot, and missing-evidence report"
+    no_vercel_access: "in saas_vercel mode stop before deployment/domain binding and preserve read-only evidence"
+    no_registrar_access: "keep hosting deployment evidence and stop before nameserver or DS mutation"
+    no_browser: "prefer CLI/API and emit a precise handoff for provider-only steps"
+    no_dig: "use at least two named public DNS APIs; local resolver output alone is insufficient"
+gates:
+  governed:
+    - "formal_domain_before is proven absent or provider_default_only"
+    - "exactly one deployment mode is selected and the other hosting action is coherently not_required"
+    - "Cloudflare Pages custom domain is bound before relying on its DNS record"
+    - "Vercel DNS values come from the current project Domain Settings and remain DNS-only during acceptance"
+    - "provider status, public DNS, public HTTPS, and local cache are separate evidence channels"
+    - "DNS changes have exact before snapshots and rollback actions"
+    - "old DS is removed and expired before ordinary nameserver migration"
+    - "new DNSSEC requires Cloudflare signing, parent DS, and two validating resolver AD results"
+    - "token, OAuth code, callback URL, Cookie, password, private key, and browser storage are prohibited"
+    - "AGENTS.md writeback occurs only after domain_ready and is read back idempotently"
+    - "launch_complete requires both domain_ready and AGENTS.md writeback"
+    - "provider-backed or human-review evidence is labeled missing until actually recorded"

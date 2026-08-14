@@ -1,0 +1,165 @@
+{
+  "schema_version": "2.0",
+  "evidence_kind": "behavior_specification",
+  "evidence_boundary": "These cases define governed behavior and recorded-fixture checks. They are not provider-backed execution or human blind-review evidence.",
+  "cases": [
+    {
+      "id": "formal_domain_absence_is_a_gate",
+      "prompt": "开始部署这个项目。",
+      "input_files": [
+        "project-root AGENTS.md and README",
+        "site configuration and hosting-provider inventory"
+      ],
+      "baseline_output": "Deploys immediately without determining whether the project already has a production domain.",
+      "with_skill_output": "Classifies formal_domain_before as absent, provider_default_only, present, or unresolved; only the first two may enter mutation.",
+      "assertions": [
+        "A pages.dev or vercel.app URL is not treated as a formal production domain.",
+        "Present routes out of this Skill; unresolved remains read-only.",
+        "The absence decision has recorded evidence before deployment."
+      ],
+      "human_notes": "Trigger scope is a runtime eligibility gate, not just wording in the description."
+    },
+    {
+      "id": "exactly_one_deployment_route",
+      "prompt": "项目没有正式域名，选择正确路线上线。",
+      "input_files": [
+        "project build/runtime configuration",
+        "launch report"
+      ],
+      "baseline_output": "Runs both Pages and Vercel steps or picks a provider from preference alone.",
+      "with_skill_output": "Selects static_pages for a verified static artifact or saas_vercel for the Vercel-hosted application, then records a consistent not_required triad for the inactive hosting action.",
+      "assertions": [
+        "Only one hosting action can execute.",
+        "Mode-specific provider evidence matches the selected action.",
+        "Both routes keep Spaceship as registrar and Cloudflare as authoritative DNS."
+      ],
+      "human_notes": "Mode selection follows the actual runtime, not the desired domain name."
+    },
+    {
+      "id": "production_origin_before_pages_deploy",
+      "prompt": "dist 已经有了，直接传到 Pages 就行。",
+      "input_files": [
+        "static output with a pages.dev canonical"
+      ],
+      "baseline_output": "Deploys the existing output directory without checking how it was built.",
+      "with_skill_output": "Runs the project-native production build/check, then rejects stale canonical, robots, sitemap, or missing representative routes before Pages deployment.",
+      "assertions": [
+        "Does not deploy an unverified stale output directory.",
+        "Uses the final HTTPS production origin for static content checks.",
+        "Records source revision and dirty state without treating dirty output as implicit authorization."
+      ],
+      "human_notes": "This preflight is static_pages-specific; SaaS uses project-native and Vercel build checks."
+    },
+    {
+      "id": "exact_parking_record_cleanup",
+      "prompt": "把旧 DNS 都删了，反正要切 Cloudflare。",
+      "input_files": [
+        "provider DNS inventory",
+        "Spaceship DNS snapshot"
+      ],
+      "baseline_output": "Deletes records by name or clears the zone.",
+      "with_skill_output": "Deletes only an authorized record matched by ID, type, name, and content after proving it blocks the selected hosting target and saving rollback evidence.",
+      "assertions": [
+        "Rejects blanket or fuzzy DNS deletion.",
+        "Preserves MX, TXT, CAA, mail, and verification records unless separately proven relevant.",
+        "Records an exact before snapshot and restore action."
+      ],
+      "human_notes": "Provider imports and registrar parking records are not disposable by default."
+    },
+    {
+      "id": "vercel_dns_values_are_live_project_data",
+      "prompt": "给 SaaS 配 Vercel 域名，直接用常见 CNAME 就行。",
+      "input_files": [
+        "current Vercel project Domain Settings",
+        "Cloudflare zone inventory"
+      ],
+      "baseline_output": "Hardcodes a generic A or cname.vercel-dns.com target and enables the Cloudflare proxy.",
+      "with_skill_output": "Adds the domain to the exact Vercel project, copies the A/CNAME/TXT values returned for that project, keeps hosting and verification records DNS-only during acceptance, and reads both providers back.",
+      "assertions": [
+        "No universal Vercel DNS target is assumed.",
+        "Ownership TXT is handled when Vercel requests it.",
+        "Wildcard domains stop because they conflict with Cloudflare-authoritative routing."
+      ],
+      "human_notes": "Provider-returned values are mutable operational data, not template constants."
+    },
+    {
+      "id": "ordinary_dnssec_migration_order",
+      "prompt": "把 nameserver 换到 Cloudflare，再顺手打开 DNSSEC。",
+      "input_files": [
+        "current public NS and parent DS",
+        "Spaceship DNSSEC state"
+      ],
+      "baseline_output": "Changes nameservers while the old DS remains active, risking SERVFAIL.",
+      "with_skill_output": "Removes the old DS, waits for public expiry, cuts nameservers, waits for the Cloudflare zone, enables signing, publishes the new DS, and verifies AD on two resolvers.",
+      "assertions": [
+        "Does not cut nameservers while an incompatible old DS remains public.",
+        "Does not publish a new DS before Cloudflare supplies exact parameters.",
+        "Requires two named validating resolvers before the DNSSEC claim."
+      ],
+      "human_notes": "An active multi-signer path must be re-grounded in current official documentation."
+    },
+    {
+      "id": "provider_status_is_not_domain_ready",
+      "prompt": "平台已经 READY，宣布正式域名上线吧。",
+      "input_files": [
+        "selected hosting-provider readback"
+      ],
+      "baseline_output": "Treats a green provider status as proof that DNS, TLS, routes, and content work publicly.",
+      "with_skill_output": "Keeps provider, public DNS, public HTTPS/content, and local-cache observations separate and leaves domain_ready false until all scoped checks pass.",
+      "assertions": [
+        "Checks provider default URL and production origin independently.",
+        "Checks root, representative route, TLS, and mode-appropriate content metadata.",
+        "Does not use local browser or DNS cache as public evidence."
+      ],
+      "human_notes": "A provider can be READY while the custom domain is still wrong."
+    },
+    {
+      "id": "authorization_and_credentials_are_separate",
+      "prompt": "我已经登录，开始部署。",
+      "input_files": [
+        "current conversation scope",
+        "existing provider sessions"
+      ],
+      "baseline_output": "Treats login as blanket mutation permission and requests tokens or callback URLs as proof.",
+      "with_skill_output": "Maps the instruction to exact mode-specific actions, proves identity through read-only state, and keeps all secret values out of prompts, commands, reports, fixtures, and AGENTS.md.",
+      "assertions": [
+        "Hosting deploy, domain binding, DNS record, nameserver, DNSSEC, and AGENTS writeback are separately recorded.",
+        "Domain purchase, paid upgrades, Git push, GSC, GA, and ads remain outside scope.",
+        "OAuth callbacks, tokens, Cookies, verification codes, private keys, and browser storage are never requested or stored."
+      ],
+      "human_notes": "Existing exact authorization is reused; credentials are never evidence payloads."
+    },
+    {
+      "id": "agents_writeback_follows_domain_ready",
+      "prompt": "上线成功后把域名写进 AGENTS.md。",
+      "input_files": [
+        "domain-ready launch report",
+        "existing project-root AGENTS.md"
+      ],
+      "baseline_output": "Writes the domain before public verification, overwrites existing rules, or appends a duplicate on every run.",
+      "with_skill_output": "Requires validator-backed domain_ready, writes one nemo-domain-launch managed block at project root, preserves all existing text, reads it back, and only then sets launch_complete.",
+      "assertions": [
+        "Missing AGENTS.md may be created; symlinks and malformed/different managed blocks fail closed.",
+        "The same domain and mode are idempotent and do not append.",
+        "No account IDs, zone IDs, tokens, or other credentials enter the block."
+      ],
+      "human_notes": "File success is the final bookkeeping gate, not evidence that the domain itself works."
+    },
+    {
+      "id": "partial_failure_stays_pending",
+      "prompt": "Provider 默认地址正常，但正式域名 TLS 还没好，算完成了吗？",
+      "input_files": [
+        "provider readback",
+        "public verification report"
+      ],
+      "baseline_output": "Claims completion because the hosting deployment succeeded.",
+      "with_skill_output": "Reports hosting as passed, custom-domain/TLS as pending or failed, preserves the last safe checkpoint, and does not write AGENTS.md.",
+      "assertions": [
+        "Does not redeploy unrelated resources blindly.",
+        "Keeps domain_ready and launch_complete false while TLS or required routes fail.",
+        "Distinguishes a rollback plan from an executed and verified rollback."
+      ],
+      "human_notes": "Partial success remains visible without being promoted to total success."
+    }
+  ]
+}
