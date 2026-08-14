@@ -1,0 +1,87 @@
+{
+  "recommended_threshold": 0.5,
+  "description_required_concepts": [
+    "evidence",
+    "coverage",
+    "claims",
+    "freshness"
+  ],
+  "positive_concepts": {
+    "evidence": [
+      "evidence pack",
+      "evidence-pack.json",
+      "证据包",
+      "素材收集"
+    ],
+    "coverage": [
+      "two sources",
+      "双来源",
+      "来源覆盖",
+      "source lineage"
+    ],
+    "claims": [
+      "claim-level",
+      "claim 核验",
+      "兑换码来源",
+      "numeric value"
+    ],
+    "freshness": [
+      "current trusted evidence",
+      "当前可信证据",
+      "current_as_of",
+      "官方链接验证"
+    ]
+  },
+  "negative_patterns": [
+    "不要使用这个 skill",
+    "跳过门禁",
+    "直接默认通过",
+    "只解释"
+  ],
+  "should_trigger": [
+    {
+      "text": "为页面矩阵建立 evidence-pack.json，每页至少双来源",
+      "family": "positive_1"
+    },
+    {
+      "text": "在 evidence-pack.json 中做兑换码、数值和官方链接的 claim 核验",
+      "family": "positive_2"
+    },
+    {
+      "text": "把素材整理成 source lineage 和 current_as_of 可审计记录",
+      "family": "positive_3"
+    },
+    {
+      "text": "Build an evidence pack with claim-level current trusted evidence for the game site",
+      "family": "positive_4"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "复制竞品攻略全文当成我们的内容",
+      "family": "negative_1"
+    },
+    {
+      "text": "只做 SERP 页面规划和功能契约",
+      "family": "negative_2"
+    },
+    {
+      "text": "没有来源也先把兑换码写上去",
+      "family": "negative_3"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "为已锁候选写 page-matrix.json",
+      "family": "neighbor_1"
+    },
+    {
+      "text": "根据证据包实现页面和内容清单",
+      "family": "neighbor_2"
+    },
+    {
+      "text": "检查本地构建、资产和视觉验收",
+      "family": "neighbor_3"
+    }
+  ]
+}

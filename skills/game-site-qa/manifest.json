@@ -1,0 +1,55 @@
+{
+  "name": "game-site-qa",
+  "version": "0.1.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-07",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "dependencies": [
+    {
+      "skill": "game-site-pipeline",
+      "version": ">=0.2.0",
+      "required": true
+    }
+  ],
+  "intent": {
+    "job_to_be_done": "把“页面写完了”变成有命令、证据、人工审核和回滚方案的本地可发布事实，并严格停在外部动作之前。",
+    "target_users": [
+      "Nemo",
+      "game-site operator"
+    ],
+    "inputs": [
+      "初次建站为 `build_ready`；扩页模式由 `$game-page-expander` 在 `grow` 中调用"
+    ],
+    "outputs": [
+      "真实内容哈希和审核记录",
+      "七类本地检查及证据",
+      "canonical/旧域名/回滚记录完整的 launch-report.json",
+      "local_verified/deploy_ready gate 或 expansion validation 结果"
+    ],
+    "exclusions": [
+      "用一次 build 通过替代链接、资产、视觉和内容检查",
+      "把 not_applicable 当作无理由跳过",
+      "把本地 localhost 或 provider preview 当作公共线上成功"
+    ]
+  },
+  "release_gates": [
+    "central_pipeline_dependency",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "trigger_eval",
+    "export_skill_ir",
+    "suite_contract_tests",
+    "action_boundary",
+    "missing_evidence_guard"
+  ]
+}

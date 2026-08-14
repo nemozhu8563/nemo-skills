@@ -1,0 +1,55 @@
+{
+  "name": "game-site-builder",
+  "version": "0.1.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-07",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "dependencies": [
+    {
+      "skill": "game-site-pipeline",
+      "version": ">=0.2.0",
+      "required": true
+    }
+  ],
+  "intent": {
+    "job_to_be_done": "把页面矩阵和证据包变成真实可运行页面，同时保留逐页来源、claim、路径、状态和哈希的机器映射。",
+    "target_users": [
+      "Nemo",
+      "game-site operator"
+    ],
+    "inputs": [
+      "初次建站为 `researched`；扩页模式仅由 `$game-page-expander` 在 `grow` 中调用"
+    ],
+    "outputs": [
+      "契约内的真实页面和必要组件",
+      "逐页来源与 claim 映射完整的 content-manifest.json",
+      "最小实现检查结果",
+      "build_ready gate 或 expansion validation 结果"
+    ],
+    "exclusions": [
+      "为了未来复用重构整个站点",
+      "生成矩阵之外的薄页或语言版本",
+      "把模型自检称为人工内容审核或发布验收"
+    ]
+  },
+  "release_gates": [
+    "central_pipeline_dependency",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "trigger_eval",
+    "export_skill_ir",
+    "suite_contract_tests",
+    "action_boundary",
+    "missing_evidence_guard"
+  ]
+}
