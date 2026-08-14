@@ -4,7 +4,12 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
+import { fileURLToPath } from 'node:url';
 
+import {
+  auditTallArticleImages,
+  formatTallImageError,
+} from './image-preflight.js';
 import { parseMarkdown } from './md-to-html.js';
 import {
   CHROME_CANDIDATES_BASIC,
@@ -77,6 +82,49 @@ interface ArticleOptions {
   submit?: boolean;
   profileDir?: string;
   chromePath?: string;
+  allowTallImages?: boolean;
+}
+
+export interface ArticleBodySelectionCoverage {
+  editorLength: number;
+  selectedLength: number;
+  startsInside: boolean;
+  endsInside: boolean;
+  collapsed: boolean;
+  blockCount: number;
+  selectedBlockCount: number;
+  imageCount: number;
+  selectedImageCount: number;
+  textBlockCount: number;
+  startsWithFirstTextBlock: boolean;
+  endsWithLastTextBlock: boolean;
+}
+
+export function selectionCoversArticleBody(coverage: ArticleBodySelectionCoverage): boolean {
+  if (!coverage.startsInside || !coverage.endsInside || coverage.collapsed) return false;
+
+  const hasStructuralNodes = coverage.blockCount > 0 || coverage.imageCount > 0;
+  if (!hasStructuralNodes) {
+    return coverage.selectedLength >= Math.max(0, coverage.editorLength - 20);
+  }
+
+  return coverage.selectedBlockCount === coverage.blockCount
+    && coverage.selectedImageCount === coverage.imageCount
+    && (
+      coverage.textBlockCount === 0
+      || (coverage.startsWithFirstTextBlock && coverage.endsWithLastTextBlock)
+    );
+}
+
+export function sortImagesForStableInsertion<T extends { blockIndex: number; placeholder: string }>(images: readonly T[]): T[] {
+  const placeholderNumber = (placeholder: string): number => {
+    return Number(placeholder.match(/IMAGE_PLACEHOLDER_(\d+)/)?.[1] ?? 0);
+  };
+
+  return [...images].sort((a, b) => {
+    return b.blockIndex - a.blockIndex
+      || placeholderNumber(b.placeholder) - placeholderNumber(a.placeholder);
+  });
 }
 
 export async function publishArticle(options: ArticleOptions): Promise<void> {
@@ -97,6 +145,14 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
   console.log(`[x-article] Title: ${parsed.title}`);
   console.log(`[x-article] Cover: ${parsed.coverImage ?? 'none'}`);
   console.log(`[x-article] Content images: ${parsed.contentImages.length}`);
+
+  const tallImageIssues = await auditTallArticleImages(parsed.contentImages);
+  if (tallImageIssues.length > 0) {
+    if (!options.allowTallImages) {
+      throw new Error(formatTallImageError(tallImageIssues));
+    }
+    console.warn(`[x-article] Tall image preflight bypassed for ${tallImageIssues.length} image(s).`);
+  }
 
   // Save HTML to temp file
   const htmlPath = path.join(os.tmpdir(), 'x-article-content.html');
@@ -410,64 +466,291 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       await waitForFileChooserAndSetFile(filePath);
     };
 
-    const removePlaceholderText = async (placeholder: string): Promise<boolean> => {
-      const selected = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
-        expression: `(() => {
-          const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
-          const input = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
-          if (!editor || !input) return false;
+    const selectEditorStandaloneTextWithRealInput = async (text: string, maxRetries = 3): Promise<boolean> => {
+      const clickAt = async (x: number, y: number): Promise<void> => {
+        await cdp!.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y }, { sessionId });
+        await cdp!.send('Input.dispatchMouseEvent', {
+          type: 'mousePressed',
+          x,
+          y,
+          button: 'left',
+          clickCount: 1,
+        }, { sessionId });
+        await cdp!.send('Input.dispatchMouseEvent', {
+          type: 'mouseReleased',
+          x,
+          y,
+          button: 'left',
+          clickCount: 1,
+        }, { sessionId });
+      };
 
-          const placeholder = ${JSON.stringify(placeholder)};
-          const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null, false);
-          let node;
+      const dispatchSelectionKey = async (
+        key: string,
+        code: string,
+        windowsVirtualKeyCode: number,
+        modifiers: number,
+        command: string,
+      ): Promise<void> => {
+        await cdp!.send('Input.dispatchKeyEvent', {
+          type: 'rawKeyDown',
+          key,
+          code,
+          windowsVirtualKeyCode,
+          modifiers,
+          commands: [command],
+        }, { sessionId });
+        await cdp!.send('Input.dispatchKeyEvent', {
+          type: 'keyUp',
+          key,
+          code,
+          windowsVirtualKeyCode,
+          modifiers,
+        }, { sessionId });
+      };
 
-          while ((node = walker.nextNode())) {
-            const text = node.textContent || '';
-            const idx = text.indexOf(placeholder);
-            if (idx === -1) continue;
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        const location = await cdp!.send<{ result: { value: {
+          found: boolean;
+          x: number;
+          y: number;
+          blockText: string;
+        } } }>('Runtime.evaluate', {
+          expression: `(() => {
+            const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+            if (!editor) return { found: false, x: 0, y: 0, blockText: '' };
+            const normalize = (value) => (value || '').trim().replace(/\\s+/g, ' ');
+            const targetText = ${JSON.stringify(text)};
+            const block = Array.from(editor.querySelectorAll('[data-block="true"]'))
+              .find((candidate) => normalize(candidate.innerText || candidate.textContent) === targetText);
+            if (!block) return { found: false, x: 0, y: 0, blockText: '' };
 
+            block.scrollIntoView({ behavior: 'instant', block: 'center' });
             const range = document.createRange();
-            range.setStart(node, idx);
-            range.setEnd(node, idx + placeholder.length);
+            range.selectNodeContents(block);
+            const rects = Array.from(range.getClientRects()).filter((rect) => rect.width > 0 && rect.height > 0);
+            const rect = rects[0] || block.getBoundingClientRect();
+            return {
+              found: rect.width > 0 && rect.height > 0,
+              x: Math.min(window.innerWidth - 2, Math.max(2, rect.left + Math.min(30, rect.width / 3))),
+              y: Math.min(window.innerHeight - 2, Math.max(2, rect.top + rect.height / 2)),
+              blockText: normalize(block.innerText || block.textContent),
+            };
+          })()`,
+          returnByValue: true,
+        }, { sessionId });
 
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
+        const point = location.result.value;
+        if (!point.found || point.blockText !== text) {
+          if (attempt < maxRetries) await sleep(400);
+          continue;
+        }
 
-            input.focus({ preventScroll: true });
-            return (sel.toString() || '').trim() === placeholder;
-          }
+        await clickAt(point.x, point.y);
+        await sleep(150);
 
-          return false;
-        })()`,
-        returnByValue: true,
-      }, { sessionId });
+        if (process.platform === 'darwin') {
+          await dispatchSelectionKey('ArrowLeft', 'ArrowLeft', 37, 4, 'MoveToBeginningOfLine');
+          await dispatchSelectionKey('ArrowRight', 'ArrowRight', 39, 4 | 8, 'MoveToEndOfLineAndModifySelection');
+        } else {
+          await dispatchSelectionKey('Home', 'Home', 36, 0, 'MoveToBeginningOfLine');
+          await dispatchSelectionKey('End', 'End', 35, 8, 'MoveToEndOfLineAndModifySelection');
+        }
+        await sleep(250);
 
-      if (!selected.result.value) return false;
+        const selection = await cdp!.send<{ result: { value: {
+          selectedText: string;
+          startsInside: boolean;
+          endsInside: boolean;
+        } } }>('Runtime.evaluate', {
+          expression: `(() => {
+            const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
+            const selection = window.getSelection();
+            const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+            return {
+              selectedText: (selection?.toString() || '').trim(),
+              startsInside: !!editor && !!range && (range.startContainer === editor || editor.contains(range.startContainer)),
+              endsInside: !!editor && !!range && (range.endContainer === editor || editor.contains(range.endContainer)),
+            };
+          })()`,
+          returnByValue: true,
+        }, { sessionId });
+
+        if (
+          selection.result.value.selectedText === text
+          && selection.result.value.startsInside
+          && selection.result.value.endsInside
+        ) {
+          return true;
+        }
+
+        if (attempt < maxRetries) await sleep(400);
+      }
+
+      return false;
+    };
+
+    const removePlaceholderText = async (placeholder: string): Promise<boolean> => {
+      const selected = await selectEditorStandaloneTextWithRealInput(placeholder, 3);
+      if (!selected) return false;
 
       await cdp!.send('Input.dispatchKeyEvent', {
-        type: 'keyDown',
-        key: 'Delete',
-        code: 'Delete',
-        windowsVirtualKeyCode: 46,
+        type: 'rawKeyDown',
+        key: 'Backspace',
+        code: 'Backspace',
+        windowsVirtualKeyCode: 8,
       }, { sessionId });
       await cdp!.send('Input.dispatchKeyEvent', {
         type: 'keyUp',
-        key: 'Delete',
-        code: 'Delete',
-        windowsVirtualKeyCode: 46,
+        key: 'Backspace',
+        code: 'Backspace',
+        windowsVirtualKeyCode: 8,
       }, { sessionId });
-      await sleep(500);
 
-      const check = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+      const deadline = Date.now() + 7_000;
+      let absentSince = 0;
+      while (Date.now() < deadline) {
+        const check = await cdp!.send<{ result: { value: boolean } }>('Runtime.evaluate', {
+          expression: `(() => {
+            const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+            return !!editor && (editor.innerText || '').includes(${JSON.stringify(placeholder)});
+          })()`,
+          returnByValue: true,
+        }, { sessionId });
+
+        if (check.result.value) {
+          absentSince = 0;
+        } else if (absentSince === 0) {
+          absentSince = Date.now();
+        } else if (Date.now() - absentSince >= 3_000) {
+          return true;
+        }
+        await sleep(250);
+      }
+
+      return false;
+    };
+
+    interface PlaceholderAnchor {
+      placeholder: string;
+      previousKey: string;
+      previousText: string;
+      nextKey: string;
+      nextText: string;
+      imageCountBetween: number;
+    }
+
+    const getPlaceholderAnchor = async (placeholder: string): Promise<PlaceholderAnchor> => {
+      const result = await cdp!.send<{ result: { value: PlaceholderAnchor & { found: boolean } } }>('Runtime.evaluate', {
         expression: `(() => {
           const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
-          return !!editor && !(editor.innerText || '').includes(${JSON.stringify(placeholder)});
+          const empty = {
+            found: false,
+            placeholder: ${JSON.stringify(placeholder)},
+            previousKey: '', previousText: '', nextKey: '', nextText: '', imageCountBetween: 0,
+          };
+          if (!editor) return empty;
+          const normalize = (value) => (value || '').trim().replace(/\\s+/g, ' ');
+          const isPlaceholder = (value) => /\\[\\[IMAGE_PLACEHOLDER_\\d+\\]\\]/.test(value);
+          const blocks = Array.from(editor.querySelectorAll('[data-block="true"]'));
+          const targetIndex = blocks.findIndex((block) => normalize(block.innerText || block.textContent) === ${JSON.stringify(placeholder)});
+          if (targetIndex === -1) return empty;
+
+          let previousIndex = -1;
+          for (let index = targetIndex - 1; index >= 0; index--) {
+            const text = normalize(blocks[index].innerText || blocks[index].textContent);
+            const containsImage = !!blocks[index].querySelector('img');
+            if (text && !isPlaceholder(text) && !containsImage) { previousIndex = index; break; }
+          }
+          let nextIndex = -1;
+          for (let index = targetIndex + 1; index < blocks.length; index++) {
+            const text = normalize(blocks[index].innerText || blocks[index].textContent);
+            const containsImage = !!blocks[index].querySelector('img');
+            if (text && !isPlaceholder(text) && !containsImage) { nextIndex = index; break; }
+          }
+          if (previousIndex === -1 && nextIndex === -1) return empty;
+
+          const previous = previousIndex >= 0 ? blocks[previousIndex] : null;
+          const next = nextIndex >= 0 ? blocks[nextIndex] : null;
+          const start = previousIndex >= 0 ? previousIndex + 1 : 0;
+          const end = nextIndex >= 0 ? nextIndex : blocks.length;
+          const imageCountBetween = blocks.slice(start, end)
+            .reduce((count, block) => count + block.querySelectorAll('img').length, 0);
+          return {
+            found: true,
+            placeholder: ${JSON.stringify(placeholder)},
+            previousKey: previous?.getAttribute('data-offset-key') || '',
+            previousText: normalize(previous?.innerText || previous?.textContent),
+            nextKey: next?.getAttribute('data-offset-key') || '',
+            nextText: normalize(next?.innerText || next?.textContent),
+            imageCountBetween,
+          };
         })()`,
         returnByValue: true,
       }, { sessionId });
-      return check.result.value;
+
+      if (!result.result.value.found) {
+        throw new Error(`Could not resolve surrounding text anchors for ${placeholder}.`);
+      }
+      const value = result.result.value;
+      return {
+        placeholder: value.placeholder,
+        previousKey: value.previousKey,
+        previousText: value.previousText,
+        nextKey: value.nextKey,
+        nextText: value.nextText,
+        imageCountBetween: value.imageCountBetween,
+      };
     };
+
+    const verifyImageAtAnchor = async (
+      anchor: PlaceholderAnchor,
+      rootSelector = EDITOR_CONTENT_SELECTOR,
+    ): Promise<{ verified: boolean; imageCountBetween: number; previousIndex: number; nextIndex: number }> => {
+      const result = await cdp!.send<{ result: { value: {
+        verified: boolean;
+        imageCountBetween: number;
+        previousIndex: number;
+        nextIndex: number;
+      } } }>('Runtime.evaluate', {
+        expression: `(() => {
+          const root = document.querySelector(${JSON.stringify(rootSelector)});
+          if (!root) return { verified: false, imageCountBetween: 0, previousIndex: -1, nextIndex: -1 };
+          const normalize = (value) => (value || '').trim().replace(/\\s+/g, ' ');
+          const blocks = Array.from(root.querySelectorAll('[data-block="true"]'));
+          const findAnchor = (key, text, startIndex) => {
+            if (!key && !text) return -1;
+            if (key) {
+              const keyedIndex = blocks.findIndex((block, index) => index >= startIndex && block.getAttribute('data-offset-key') === key);
+              if (keyedIndex !== -1) return keyedIndex;
+            }
+            return blocks.findIndex((block, index) => index >= startIndex && normalize(block.innerText || block.textContent) === text);
+          };
+
+          const previousIndex = findAnchor(${JSON.stringify(anchor.previousKey)}, ${JSON.stringify(anchor.previousText)}, 0);
+          const nextStart = previousIndex >= 0 ? previousIndex + 1 : 0;
+          const nextIndex = findAnchor(${JSON.stringify(anchor.nextKey)}, ${JSON.stringify(anchor.nextText)}, nextStart);
+          const previousFound = !${JSON.stringify(Boolean(anchor.previousText))} || previousIndex >= 0;
+          const nextFound = !${JSON.stringify(Boolean(anchor.nextText))} || nextIndex >= 0;
+          const ordered = previousIndex < 0 || nextIndex < 0 || previousIndex < nextIndex;
+          const start = previousIndex >= 0 ? previousIndex + 1 : 0;
+          const end = nextIndex >= 0 ? nextIndex : blocks.length;
+          const imageCountBetween = ordered
+            ? blocks.slice(start, end).reduce((count, block) => count + block.querySelectorAll('img').length, 0)
+            : 0;
+          return {
+            verified: previousFound && nextFound && ordered && imageCountBetween > ${anchor.imageCountBetween},
+            imageCountBetween,
+            previousIndex,
+            nextIndex,
+          };
+        })()`,
+        returnByValue: true,
+      }, { sessionId });
+      return result.result.value;
+    };
+
+    const verifiedPlacements: Array<{ imageName: string; anchor: PlaceholderAnchor }> = [];
 
     if (!isEditMode) {
       console.log('[x-article] Looking for article create button...');
@@ -690,37 +973,51 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
         }, { sessionId });
         await sleep(200);
 
-        const selectionCheck = await cdp.send<{ result: { value: {
-          editorLength: number;
-          selectedLength: number;
-          startsInside: boolean;
-          endsInside: boolean;
-        } } }>('Runtime.evaluate', {
+        const selectionCheck = await cdp.send<{ result: { value: ArticleBodySelectionCoverage } }>('Runtime.evaluate', {
           expression: `(() => {
             const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
             const content = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
+            const root = content || editor;
             const selection = window.getSelection();
             const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+            const selectedText = (selection?.toString() || '').trim();
+            const blocks = root ? Array.from(root.querySelectorAll('[data-block="true"]')) : [];
+            const images = root ? Array.from(root.querySelectorAll('img')) : [];
+            const intersects = (node) => {
+              if (!range) return false;
+              try { return range.intersectsNode(node); } catch { return false; }
+            };
+            const textBlocks = blocks
+              .map((block) => ({ block, text: (block.innerText || block.textContent || '').trim() }))
+              .filter(({ text }) => text.length > 0);
+            const firstText = textBlocks[0]?.text || '';
+            const lastText = textBlocks[textBlocks.length - 1]?.text || '';
             return {
-              editorLength: ((content || editor)?.innerText || '').trim().length,
-              selectedLength: (selection?.toString() || '').trim().length,
+              editorLength: (root?.innerText || '').trim().length,
+              selectedLength: selectedText.length,
               startsInside: !!editor && !!range && (range.startContainer === editor || editor.contains(range.startContainer)),
               endsInside: !!editor && !!range && (range.endContainer === editor || editor.contains(range.endContainer)),
+              collapsed: range?.collapsed ?? true,
+              blockCount: blocks.length,
+              selectedBlockCount: blocks.filter(intersects).length,
+              imageCount: images.length,
+              selectedImageCount: images.filter(intersects).length,
+              textBlockCount: textBlocks.length,
+              startsWithFirstTextBlock: firstText.length > 0 && selectedText.startsWith(firstText),
+              endsWithLastTextBlock: lastText.length > 0 && selectedText.endsWith(lastText),
             };
           })()`,
           returnByValue: true,
         }, { sessionId });
 
         const selected = selectionCheck.result.value;
-        const coversBody = selected.startsInside
-          && selected.endsInside
-          && selected.selectedLength >= Math.max(0, selected.editorLength - 20);
+        const coversBody = selectionCoversArticleBody(selected);
 
         if (!coversBody) {
-          throw new Error(`Refusing to clear draft because SelectAll did not cover the article body safely: selected=${selected.selectedLength}, editor=${selected.editorLength}, startsInside=${selected.startsInside}, endsInside=${selected.endsInside}`);
+          throw new Error(`Refusing to clear draft because SelectAll did not cover the article body safely: selected=${selected.selectedLength}, editor=${selected.editorLength}, blocks=${selected.selectedBlockCount}/${selected.blockCount}, images=${selected.selectedImageCount}/${selected.imageCount}, startsInside=${selected.startsInside}, endsInside=${selected.endsInside}, firstText=${selected.startsWithFirstTextBlock}, lastText=${selected.endsWithLastTextBlock}`);
         }
 
-        console.log(`[x-article] Existing body selected safely (${selected.selectedLength}/${selected.editorLength} chars)`);
+        console.log(`[x-article] Existing body selected safely (${selected.selectedBlockCount}/${selected.blockCount} blocks, ${selected.selectedImageCount}/${selected.imageCount} images, ${selected.selectedLength}/${selected.editorLength} chars)`);
       }
 
       await cdp.send('Input.dispatchKeyEvent', {
@@ -841,157 +1138,35 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
         }
       }
 
-      // Process images in sequential order (1, 2, 3, ...)
-      const sortedImages = [...parsed.contentImages].sort((a, b) => a.blockIndex - b.blockIndex);
+      const sortedImages = sortImagesForStableInsertion(parsed.contentImages);
 
       for (let i = 0; i < sortedImages.length; i++) {
         const img = sortedImages[i]!;
         console.log(`[x-article] [${i + 1}/${sortedImages.length}] Inserting image at placeholder: ${img.placeholder}`);
 
-        // Helper to select placeholder with retry
-        const selectPlaceholder = async (maxRetries = 3): Promise<boolean> => {
-          const keyboardFindPlaceholder = async (): Promise<string> => {
-            const modifier = process.platform === 'darwin' ? 4 : 2; // Meta on macOS, Ctrl elsewhere
-            await cdp!.send('Input.dispatchKeyEvent', {
-              type: 'keyDown',
-              key: 'f',
-              code: 'KeyF',
-              windowsVirtualKeyCode: 70,
-              modifiers: modifier,
-            }, { sessionId });
-            await cdp!.send('Input.dispatchKeyEvent', {
-              type: 'keyUp',
-              key: 'f',
-              code: 'KeyF',
-              windowsVirtualKeyCode: 70,
-              modifiers: modifier,
-            }, { sessionId });
-            await sleep(200);
-            await cdp!.send('Input.insertText', { text: img.placeholder }, { sessionId });
-            await sleep(300);
-            await cdp!.send('Input.dispatchKeyEvent', {
-              type: 'keyDown',
-              key: 'Escape',
-              code: 'Escape',
-              windowsVirtualKeyCode: 27,
-            }, { sessionId });
-            await cdp!.send('Input.dispatchKeyEvent', {
-              type: 'keyUp',
-              key: 'Escape',
-              code: 'Escape',
-              windowsVirtualKeyCode: 27,
-            }, { sessionId });
-            await sleep(200);
-            const selectionCheck = await cdp!.send<{ result: { value: string } }>('Runtime.evaluate', {
-              expression: `window.getSelection()?.toString() || ''`,
-              returnByValue: true,
-            }, { sessionId });
-            return selectionCheck.result.value.trim();
-          };
+        const anchor = await getPlaceholderAnchor(img.placeholder);
+        console.log(
+          `[x-article] Anchor locked: "${anchor.previousText.slice(0, 48)}" -> "${anchor.nextText.slice(0, 48)}"`,
+        );
 
-          for (let attempt = 1; attempt <= maxRetries; attempt++) {
-            // Find, scroll to, and select the placeholder text in the editor.
-            // Draft.js may split visible text across multiple text nodes, so
-            // build a combined text buffer and map the match back to node offsets.
-            await cdp!.send('Runtime.evaluate', {
-              expression: `(() => {
-                const editor = document.querySelector(${JSON.stringify(EDITOR_CONTENT_SELECTOR)});
-                const input = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
-                if (!editor) return false;
-                if (input) input.focus({ preventScroll: true });
-
-                const placeholder = ${JSON.stringify(img.placeholder)};
-                const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null, false);
-                const parts = [];
-                let node;
-                let combined = '';
-
-                while ((node = walker.nextNode())) {
-                  const text = node.textContent || '';
-                  parts.push({ node, start: combined.length, end: combined.length + text.length });
-                  combined += text;
-                }
-
-                const idx = combined.indexOf(placeholder);
-                if (idx === -1) return false;
-                const endIdx = idx + placeholder.length;
-                const startPart = parts.find((part) => part.start <= idx && idx <= part.end);
-                const endPart = parts.find((part) => part.start <= endIdx && endIdx <= part.end);
-                if (!startPart || !endPart) return false;
-
-                const parentElement = startPart.node.parentElement;
-                if (parentElement) {
-                  parentElement.scrollIntoView({ behavior: 'instant', block: 'center' });
-                }
-                if (input) input.focus({ preventScroll: true });
-
-                const range = document.createRange();
-                range.setStart(startPart.node, idx - startPart.start);
-                range.setEnd(endPart.node, endIdx - endPart.start);
-                const sel = window.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(range);
-                if (input) input.dispatchEvent(new Event('selectionchange', { bubbles: true }));
-
-                if ((sel.toString() || '').trim() !== placeholder) {
-                  sel.removeAllRanges();
-                  if (window.find && window.find(placeholder)) {
-                    return (window.getSelection()?.toString() || '').trim() === placeholder;
-                  }
-                }
-
-                return (sel.toString() || '').trim() === placeholder;
-              })()`,
-            }, { sessionId });
-
-            // Keep this short; Draft.js can clear script-created selection after focus churn.
-            await sleep(100);
-
-            // Verify selection matches the placeholder
-            const selectionCheck = await cdp!.send<{ result: { value: string } }>('Runtime.evaluate', {
-              expression: `window.getSelection()?.toString() || ''`,
-              returnByValue: true,
-            }, { sessionId });
-
-            const selectedText = selectionCheck.result.value.trim();
-            if (selectedText === img.placeholder) {
-              console.log(`[x-article] Selection verified: "${selectedText}"`);
-              return true;
-            }
-
-            const findSelectedText = await keyboardFindPlaceholder();
-            if (findSelectedText === img.placeholder) {
-              console.log(`[x-article] Browser find selection verified: "${findSelectedText}"`);
-              return true;
-            }
-
-            if (attempt < maxRetries) {
-              console.log(`[x-article] Selection attempt ${attempt} got "${selectedText || findSelectedText}", retrying...`);
-              await sleep(500);
-            } else {
-              console.warn(`[x-article] Selection failed after ${maxRetries} attempts, got: "${selectedText || findSelectedText}"`);
-            }
-          }
-          return false;
-        };
-
-        // Try to select the placeholder
-        const selected = await selectPlaceholder(3);
+        const selected = await selectEditorStandaloneTextWithRealInput(img.placeholder, 3);
         if (!selected) {
-          throw new Error(`Could not select ${img.placeholder}. Not continuing because preview would retain an image placeholder.`);
+          throw new Error(`Could not select ${img.placeholder} with real editor input. Not continuing because image placement would be unsafe.`);
         }
+        console.log(`[x-article] Real input selection verified: "${img.placeholder}"`);
 
         console.log(`[x-article] Uploading inline image: ${path.basename(img.localPath)}`);
 
         // Retry logic for image insertion
         let imageAppeared = false;
+        let imageWasInserted = false;
         const maxRetries = 3;
 
         for (let retry = 0; retry < maxRetries && !imageAppeared; retry++) {
           if (retry > 0) {
             console.log(`[x-article] Retry upload ${retry + 1}/${maxRetries} for image: ${path.basename(img.localPath)}`);
             // Re-select placeholder for retry
-            const reselected = await selectPlaceholder(3);
+            const reselected = await selectEditorStandaloneTextWithRealInput(img.placeholder, 3);
             if (!reselected) {
               throw new Error(`Could not re-select ${img.placeholder} for retry. Not opening preview because this image was not verified.`);
             }
@@ -1003,15 +1178,6 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
             console.warn(`[x-article] Placeholder disappeared before upload; retrying selection to avoid corrupting image positions.`);
             continue;
           }
-
-          // Focus editor to keep the selected placeholder as the upload target.
-          await cdp.send('Runtime.evaluate', {
-            expression: `(() => {
-              const editor = document.querySelector(${JSON.stringify(EDITOR_INPUT_SELECTOR)});
-              if (editor) editor.focus();
-            })()`,
-          }, { sessionId });
-          await sleep(300);
 
           console.log(`[x-article] Opening inline image upload...`);
           try {
@@ -1034,12 +1200,14 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
             const imageCheck = await getEditorImageState(img.placeholder);
 
             if (imageCheck.imageCount > beforeUpload.imageCount && !imageCheck.hasPlaceholder) {
+              imageWasInserted = true;
               imageAppeared = true;
               console.log(`[x-article] Image appeared in editor after ${Date.now() - appearStartTime}ms`);
               break;
             }
 
             if (imageCheck.imageCount > beforeUpload.imageCount && imageCheck.hasPlaceholder) {
+              imageWasInserted = true;
               console.warn(`[x-article] Image appeared but ${img.placeholder} remained. Removing placeholder text now...`);
               const removed = await removePlaceholderText(img.placeholder);
               if (!removed) {
@@ -1055,6 +1223,10 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
                 break;
               }
             }
+          }
+
+          if (imageWasInserted && !imageAppeared) {
+            throw new Error(`Image ${path.basename(img.localPath)} was inserted, but ${img.placeholder} could not be removed stably. Refusing to upload a duplicate.`);
           }
 
           if (!imageAppeared) {
@@ -1091,6 +1263,13 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
           throw new Error(`Image ${path.basename(img.localPath)} did not pass editor verification after ${maxRetries} upload attempts. Not opening preview.`);
         }
 
+        const positionCheck = await verifyImageAtAnchor(anchor);
+        if (!positionCheck.verified) {
+          throw new Error(`Image ${path.basename(img.localPath)} was uploaded but not placed between its locked text anchors (previous=${positionCheck.previousIndex}, next=${positionCheck.nextIndex}, imagesBetween=${positionCheck.imageCountBetween}). Not opening preview.`);
+        }
+        verifiedPlacements.push({ imageName: path.basename(img.localPath), anchor });
+        console.log(`[x-article] Position verified for ${path.basename(img.localPath)} (${positionCheck.imageCountBetween} image block(s) between anchors)`);
+
         // Now wait for upload to complete
         console.log(`[x-article] Waiting for upload to complete...`);
         let uploadComplete = false;
@@ -1126,7 +1305,13 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
         await sleep(1500);
       }
 
-      console.log('[x-article] All images processed.');
+      for (const placement of verifiedPlacements) {
+        const finalPosition = await verifyImageAtAnchor(placement.anchor);
+        if (!finalPosition.verified) {
+          throw new Error(`Final editor verification lost the locked position for ${placement.imageName}. Not opening preview.`);
+        }
+      }
+      console.log(`[x-article] All images processed and ${verifiedPlacements.length} positions re-verified.`);
     }
 
     console.log('[x-article] Verifying editor before preview...');
@@ -1218,6 +1403,14 @@ export async function publishArticle(options: ArticleOptions): Promise<void> {
       throw new Error('Preview does not contain the expected article title.');
     }
 
+    for (const placement of verifiedPlacements) {
+      const previewPosition = await verifyImageAtAnchor(placement.anchor, '[data-testid="articleEntityView"]');
+      if (!previewPosition.verified) {
+        throw new Error(`Preview verification lost the locked position for ${placement.imageName} (previous=${previewPosition.previousIndex}, next=${previewPosition.nextIndex}, imagesBetween=${previewPosition.imageCountBetween}).`);
+      }
+    }
+    console.log(`[x-article] Preview position verification: ${verifiedPlacements.length}/${parsed.contentImages.length} images matched their locked text anchors`);
+
     // X Articles should stop at preview. The final publish click is intentionally
     // manual so the account owner can make the last audience/reply decision.
     if (submit) {
@@ -1245,6 +1438,7 @@ Options:
   --title <title>     Override title
   --cover <image>     Override cover image
   --edit-url <url>    Replace the body of an existing X Article draft; keeps its current cover
+  --allow-tall-images  Keep intentionally tall inline images that exceed the mobile-safe ratio
   --submit            Ignored for X Articles; final publish is manual
   --profile <dir>     Chrome profile directory
   --help              Show this help
@@ -1275,6 +1469,7 @@ async function main(): Promise<void> {
   let editUrl: string | undefined;
   let submit = false;
   let profileDir: string | undefined;
+  let allowTallImages = false;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i]!;
@@ -1286,6 +1481,8 @@ async function main(): Promise<void> {
       editUrl = args[++i];
     } else if (arg === '--submit') {
       submit = true;
+    } else if (arg === '--allow-tall-images') {
+      allowTallImages = true;
     } else if (arg === '--profile' && args[i + 1]) {
       profileDir = args[++i];
     } else if (!arg.startsWith('-')) {
@@ -1303,10 +1500,21 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  await publishArticle({ markdownPath, title, coverImage, editUrl, submit, profileDir });
+  await publishArticle({ markdownPath, title, coverImage, editUrl, submit, profileDir, allowTallImages });
 }
 
-await main().catch((err) => {
-  console.error(`Error: ${err instanceof Error ? err.message : String(err)}`);
-  process.exit(1);
-});
+function normalizeRuntimePath(filePath: string): string {
+  const resolved = path.resolve(filePath);
+  return process.platform === 'win32' ? resolved.toLowerCase() : resolved;
+}
+
+function isDirectCliExecution(): boolean {
+  return normalizeRuntimePath(process.argv[1] ?? '') === normalizeRuntimePath(fileURLToPath(import.meta.url));
+}
+
+if (isDirectCliExecution()) {
+  await main().catch((err) => {
+    console.error(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    process.exit(1);
+  });
+}

@@ -78,8 +78,11 @@ Exact prompt or configuration text stays selectable and keeps its line breaks.
 1. **Cover Image**: `--cover`, then `assets/<article filename>/cover.png`, then frontmatter, then first image
 2. **Remote Images**: Automatically downloaded to temp directory
 3. **Placeholders**: Images in content use `[[IMAGE_PLACEHOLDER_N]]` format
-4. **Insertion**: Placeholders are found, selected, and replaced with actual images through the X Article toolbar media upload
-5. **Retry gate**: Each inline image is uploaded up to 3 times until the editor image count increases and the matching placeholder disappears
+4. **Cover deduplication**: If the selected cover resolves to the same file as the first inline image, that first embed is removed from the body
+5. **Insertion**: Images are processed from the end of the article; standalone placeholders are selected with real pointer/keyboard input before using the X Article toolbar media upload
+6. **Retry gate**: Each inline image is uploaded up to 3 times until the editor image count increases and the matching placeholder disappears stably
+7. **Position gate**: Every image must increase the image count between its locked previous/next text-only anchors in both the editor and final preview; image blocks and caption controls are skipped when resolving anchors
+8. **Mobile ratio gate**: Inline images taller than 1:1.8 are rejected before Chrome opens; split combined screenshots into logical steps or explicitly use `--allow-tall-images`
 
 For Obsidian articles, the preferred cover convention is:
 
@@ -165,13 +168,14 @@ This replaces the old separate `nemo-post-to-x` package-only flow. Keep `baoyu-p
 6. **Fill Title**: Type title into title field
 7. **Paste Content**: Copy HTML to clipboard, paste into editor
 8. **Insert Images**: For each placeholder (reverse order):
-   - Find placeholder text in editor
-   - Select the placeholder
+   - Lock the nearest previous/next text blocks and current image count between them
+   - Select the standalone placeholder using real pointer/keyboard input so Draft.js receives the selection
    - Open Insert -> Media and upload the image file
    - Retry upload up to 3 times if the editor does not show a new image
-   - If X inserts the image but leaves the placeholder text behind, delete only that placeholder immediately
-9. **Verify**: Confirm no image placeholders remain and the expected images are in the editor
-10. **Preview**: Open preview and leave Chrome there
+   - If X inserts the image but leaves the placeholder text behind, delete only that placeholder and require the deletion to remain stable
+   - Require a new image block between the locked text anchors before continuing
+9. **Verify**: Recheck every locked image position and confirm no image placeholders remain
+10. **Preview**: Open preview, recheck all locked positions, and leave Chrome there
 11. **Publish**: Manual only; the account owner clicks the final X Publish button
 
 ## Example Session
@@ -196,7 +200,9 @@ Claude:
 - **No create button**: Ensure X Premium subscription is active
 - **Cover upload fails**: Check file path and format (PNG, JPEG)
 - **Images not inserting**: Verify placeholders exist in pasted content; the script retries each inline upload up to 3 times before failing closed.
-- **Images inserted but placeholders remain**: The script treats this as an insertion cleanup failure, removes the specific placeholder only after the image appears, and refuses to open preview if any `IMAGE_PLACEHOLDER` text remains.
+- **Images inserted but placeholders remain**: The script uses real keyboard selection to remove the specific placeholder only after the image appears, waits for Draft.js rerenders, and refuses to upload a duplicate or open preview if cleanup is unstable.
+- **Image count is correct but positions are wrong**: The script now locks surrounding text anchors before each upload and verifies them again in the editor and preview. An anchor mismatch stops before handoff.
+- **Tall screenshot is blurry or awkward on mobile**: Split vertically combined screenshots at the natural page/step boundaries. The default preflight blocks body images taller than 1:1.8 before Chrome opens; use `--allow-tall-images` only for intentionally tall artwork.
 - **Content not pasting**: Check HTML clipboard: `npx -y bun ${SKILL_DIR}/scripts/copy-to-clipboard.ts html --file /tmp/test.html`
 - **Clipboard script not found in Chinese/OneDrive paths**: Ensure `x-utils.ts` uses `fileURLToPath(import.meta.url)` for script directory resolution on macOS and Windows.
 - **Nested Bun command fails on Windows**: Ensure helper script calls use `npx.cmd`; macOS/Linux should continue to use `npx`.

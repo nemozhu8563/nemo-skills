@@ -394,7 +394,7 @@ export async function parseMarkdown(
   // Extract cover image. Obsidian article folders conventionally keep the X/WeChat
   // cover at assets/<article filename>/cover.png; use that before frontmatter so
   // the first inline screenshot stays in the article body.
-  let coverImagePath = options?.coverImage
+  const coverImagePath = options?.coverImage
     ?? findDefaultObsidianCover(markdownPath, vaultRoot)
     ?? frontmatter.cover_image
     ?? frontmatter.coverImage
@@ -432,17 +432,34 @@ export async function parseMarkdown(
   const contentImages: ImageInfo[] = [];
   let isFirstImage = true;
   let coverPlaceholder: string | null = null;
+  let resolvedCoverImage = coverImagePath
+    ? await resolveImagePath(coverImagePath, baseDir, tempDir, vaultRoot)
+    : null;
 
   for (let i = 0; i < images.length; i++) {
     const img = images[i]!;
     const localPath = await resolveImagePath(img.src, baseDir, tempDir, vaultRoot);
 
     // First image becomes cover if no cover specified
-    if (isFirstImage && !coverImagePath) {
-      coverImagePath = localPath;
+    if (isFirstImage && !resolvedCoverImage) {
+      resolvedCoverImage = localPath;
       coverPlaceholder = `[[IMAGE_PLACEHOLDER_${i + 1}]]`;
       isFirstImage = false;
       // Don't add to contentImages, it's the cover
+      continue;
+    }
+
+    // If an explicit/default/frontmatter cover is also the first embedded
+    // image, keep it as the cover only. Without this deduplication, passing
+    // --cover for an Obsidian note whose first embed is that same file creates
+    // an extra body placeholder for the cover.
+    if (
+      isFirstImage
+      && resolvedCoverImage
+      && normalizeRuntimePath(localPath) === normalizeRuntimePath(resolvedCoverImage)
+    ) {
+      coverPlaceholder = `[[IMAGE_PLACEHOLDER_${i + 1}]]`;
+      isFirstImage = false;
       continue;
     }
 
@@ -461,12 +478,6 @@ export async function parseMarkdown(
   if (coverPlaceholder) {
     // Remove the placeholder and its containing <p> tag
     finalHtml = finalHtml.replace(new RegExp(`<p>${coverPlaceholder.replace(/[[\]]/g, '\\$&')}</p>\\n?`, 'g'), '');
-  }
-
-  // Resolve cover image path
-  let resolvedCoverImage: string | null = null;
-  if (coverImagePath) {
-    resolvedCoverImage = await resolveImagePath(coverImagePath, baseDir, tempDir, vaultRoot);
   }
 
   return {

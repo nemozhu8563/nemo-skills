@@ -186,6 +186,7 @@ The package writes `manifest.json`, `article.html`, `article.txt`, and `operator
 | `--cover <path>` | Cover image path |
 | `--title <text>` | Override article title |
 | `--edit-url <url>` | Replace an existing draft body while keeping its current cover |
+| `--allow-tall-images` | Bypass the mobile readability preflight for intentionally tall inline artwork |
 | `--submit` | Ignored for X Articles; final publish is manual after preview |
 
 **Frontmatter** (optional):
@@ -205,6 +206,8 @@ If no `--cover` is provided, X Articles first checks:
 ```
 
 When that file exists, it is used as the cover and the first inline screenshot remains in the article body.
+
+If the selected cover (from `--cover`, the default cover path, or frontmatter) resolves to the same file as the first inline image, that first embed is treated as the cover and removed from the body to prevent a duplicate cover placeholder.
 
 **Markdown Syntax**:
 
@@ -232,6 +235,12 @@ max_concurrent_threads_per_session = 7
 - Supports redirects (301/302) with 30s timeout
 - Downloaded files are cached using MD5 hash of URL
 
+**Tall image preflight**:
+
+- Before Chrome opens, inline raster images taller than a 1:1.8 width-to-height ratio are rejected by default.
+- Split vertically combined screenshots at their natural step boundaries so each UI screen stays readable on mobile.
+- Use `--allow-tall-images` only for intentionally tall artwork that has already been checked in X preview.
+
 ---
 
 ## Notes
@@ -239,7 +248,8 @@ max_concurrent_threads_per_session = 7
 - First run requires manual login (session is saved)
 - X Articles stop at preview by design; the account owner clicks final Publish manually
 - `x-article-package.ts` replaces the retired `nemo-post-to-x` flow; use this skill as the single X publishing entrypoint
-- X Articles treat image placeholders as a hard safety gate: each inline image is uploaded up to 3 times until the editor image count increases and the matching placeholder disappears; before preview, global `IMAGE_PLACEHOLDER` count must be zero
+- X Articles treat image placeholders as a hard safety gate: images are inserted from the end of the article, each placeholder is selected through real pointer/keyboard input, and each uploaded image must increase the image count between its locked surrounding text-only anchors. Image blocks and their edit/caption controls are never used as anchors. Placeholder deletion must remain stable, all positions are rechecked in the editor and preview, and the global `IMAGE_PLACEHOLDER` count must be zero before handoff.
+- X Articles stop before opening Chrome when an inline screenshot exceeds the mobile-safe 1:1.8 ratio, unless `--allow-tall-images` is explicitly provided.
 - Regular-post browser windows are closed after operation; preview mode keeps the launched browser open for 30 seconds first
 - Supports macOS, Linux, and Windows
 
