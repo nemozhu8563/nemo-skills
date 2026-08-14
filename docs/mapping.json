@@ -255,6 +255,13 @@
       "status": "delete"
     },
     {
+      "id": "personal-finance-import",
+      "type": "skill_dir",
+      "source": "skills/personal-finance-import",
+      "destination": ".agents/skills/personal-finance-import",
+      "status": "migrate_now"
+    },
+    {
       "id": "publish-article",
       "type": "skill_dir",
       "source": "skills/publish-article",

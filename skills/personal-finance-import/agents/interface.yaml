@@ -1,0 +1,41 @@
+interface:
+  display_name: "Personal Finance Import"
+  short_description: "将支付宝或微信支付导出规范化并导入飞书账单明细"
+  default_prompt: "Use $personal-finance-import to prepare and, only after my explicit approval, import this payment export into the Feishu Base ledger."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    openai: "native"
+    claude: "native"
+    generic: "neutral-source"
+name: personal-finance-import
+version: 0.1.0
+mode: scaffold
+inputs:
+  - Alipay CSV or WeChat Pay XLSX export
+  - provider name and optional user mapping overrides
+  - current Feishu Base fields and records for dedupe
+outputs:
+  - Feishu batch-create payload
+  - import summary and preview
+  - post-write count and sample verification
+side_effects:
+  default: none
+  write_allowed_only_when: user explicitly asks to import, write, or continue after preview
+privacy:
+  command_env: [LARK_CLI_NO_PROXY=1]
+  rule: exported financial data stays local except the explicit Feishu write.
