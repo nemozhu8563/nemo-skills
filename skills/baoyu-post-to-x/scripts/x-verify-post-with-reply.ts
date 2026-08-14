@@ -1,7 +1,8 @@
 import process from 'node:process';
 
 import { openReadonlyXPage, waitForXRenderedContent } from './x-readonly.js';
-import { replyAppearsOnPostPage, type RenderedReply } from './x-reply.js';
+import { repoSlugFromReplyText, replyAppearsOnPostPage, type RenderedReply } from './x-reply.js';
+import { sleep } from './x-utils.js';
 
 interface VerifyOptions {
   healthCheck: boolean;
@@ -17,6 +18,11 @@ interface VerifyOptions {
 
 interface RenderedArticle extends RenderedReply {
   statusUrls: string[];
+}
+
+export interface ThreadClassification {
+  mainPostFound: boolean;
+  replyFound: boolean;
 }
 
 export interface VerifyResult {
@@ -64,7 +70,7 @@ export function classifyThread(
   articles: RenderedArticle[],
   tweetUrl: string,
   expectedReplyText?: string,
-): { mainPostFound: boolean; replyFound: boolean } {
+): ThreadClassification {
   const normalizedTweetUrl = normalizeTweetUrl(tweetUrl);
   if (!normalizedTweetUrl) return { mainPostFound: false, replyFound: false };
   const statusId = normalizedTweetUrl.match(/\/status\/(\d+)/)?.[1];
@@ -75,6 +81,14 @@ export function classifyThread(
     mainPostFound: true,
     replyFound: articles.some((article, index) => index !== mainIndex && replyAppearsOnPostPage(article, expectedReplyText)),
   };
+}
+
+export function replyVerificationPending(
+  result: ThreadClassification,
+  expectedReplyText?: string,
+): boolean {
+  if (!result.mainPostFound) return true;
+  return Boolean(expectedReplyText) && !result.replyFound;
 }
 
 function parseArgs(args: string[]): VerifyOptions {
@@ -113,6 +127,11 @@ async function readArticles(page: Awaited<ReturnType<typeof openReadonlyXPage>>)
   return page.evaluate<RenderedArticle[]>(`(() => Array.from(document.querySelectorAll('article[data-testid="tweet"], article')).map((article) => ({
     text: article.innerText || article.textContent || '',
     links: Array.from(article.querySelectorAll('a[href]')).map((link) => link.href || link.getAttribute('href') || ''),
+    linkMetadata: Array.from(article.querySelectorAll('a[href]')).flatMap((link) => [
+      link.getAttribute('title') || '',
+      link.getAttribute('aria-label') || '',
+      link.getAttribute('data-expanded-url') || '',
+    ]).filter(Boolean),
     statusUrls: Array.from(article.querySelectorAll('a[href*="/status/"]'))
       .map((link) => link.href || link.getAttribute('href') || '')
       .map((href) => {
@@ -125,6 +144,44 @@ async function readArticles(page: Awaited<ReturnType<typeof openReadonlyXPage>>)
   })))()`);
 }
 
+async function waitForReplyVerification(
+  page: Awaited<ReturnType<typeof openReadonlyXPage>>,
+  tweetUrl: string,
+  expectedReplyText: string | undefined,
+  timeoutMs: number,
+): Promise<ThreadClassification> {
+  const startedAt = Date.now();
+  let reloaded = false;
+  const resolvedShortUrls = new Map<string, string | undefined>();
+
+  while (true) {
+    const articles = await readArticles(page);
+    const result = classifyThread(articles, tweetUrl, expectedReplyText);
+    if (replyVerificationPending(result, expectedReplyText)
+      && result.mainPostFound
+      && await replyCardMatchesExpectedRepo(page, articles, expectedReplyText, resolvedShortUrls)) {
+      return { mainPostFound: true, replyFound: true };
+    }
+    if (!replyVerificationPending(result, expectedReplyText)) return result;
+
+    const elapsedMs = Date.now() - startedAt;
+    if (elapsedMs >= timeoutMs) return result;
+
+    if (!reloaded && elapsedMs >= timeoutMs / 2) {
+      reloaded = true;
+      await page.cdp.send('Page.reload', { ignoreCache: true }, { sessionId: page.sessionId });
+      await sleep(2_000);
+      continue;
+    }
+
+    const scrollExpression = result.mainPostFound
+      ? 'window.scrollBy({ top: 900, behavior: "instant" })'
+      : 'window.scrollTo({ top: 0, behavior: "instant" })';
+    await page.evaluate(scrollExpression);
+    await sleep(Math.min(750, Math.max(1, timeoutMs - elapsedMs)));
+  }
+}
+
 function stateResult(
   state: 'login_required' | 'rate_limited' | 'timeout',
   page: Awaited<ReturnType<typeof openReadonlyXPage>>,
@@ -135,6 +192,72 @@ function stateResult(
     reusedSession: page.reusedSession,
     launchedChrome: page.launchedChrome,
   };
+}
+
+export function githubUrlMatchesRepo(value: string, repoSlug: string): boolean {
+  try {
+    const url = new URL(value);
+    const expectedPath = `/${repoSlug.toLowerCase()}`;
+    return /^(?:www\.)?github\.com$/i.test(url.hostname)
+      && (url.pathname.toLowerCase() === expectedPath || url.pathname.toLowerCase().startsWith(`${expectedPath}/`));
+  } catch {
+    return false;
+  }
+}
+
+async function resolveShortUrl(
+  page: Awaited<ReturnType<typeof openReadonlyXPage>>,
+  shortUrl: string,
+): Promise<string | undefined> {
+  const { targetId } = await page.cdp.send<{ targetId: string }>('Target.createTarget', { url: 'about:blank' });
+  let sessionId: string | undefined;
+  try {
+    ({ sessionId } = await page.cdp.send<{ sessionId: string }>(
+      'Target.attachToTarget',
+      { targetId, flatten: true },
+    ));
+    await page.cdp.send('Page.enable', {}, { sessionId });
+    await page.cdp.send('Page.navigate', { url: shortUrl }, { sessionId });
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      await sleep(250);
+      const location = await page.cdp.send<{ result: { value?: string } }>('Runtime.evaluate', {
+        expression: 'location.href',
+        returnByValue: true,
+      }, { sessionId });
+      const value = location.result.value;
+      if (value && !/^https?:\/\/t\.co\//i.test(value)) return value;
+    }
+  } finally {
+    if (sessionId) {
+      try { await page.cdp.send('Target.detachFromTarget', { sessionId }); } catch {}
+    }
+    try { await page.cdp.send('Target.closeTarget', { targetId }); } catch {}
+  }
+  return undefined;
+}
+
+async function replyCardMatchesExpectedRepo(
+  page: Awaited<ReturnType<typeof openReadonlyXPage>>,
+  articles: RenderedArticle[],
+  expectedReplyText: string | undefined,
+  resolvedShortUrls: Map<string, string | undefined>,
+): Promise<boolean> {
+  if (!expectedReplyText) return false;
+  const repoSlug = repoSlugFromReplyText(expectedReplyText);
+  const urlStart = expectedReplyText.search(/https?:\/\//i);
+  const label = normalizeText(urlStart >= 0 ? expectedReplyText.slice(0, urlStart) : expectedReplyText);
+  if (!repoSlug || !label) return false;
+
+  for (const article of articles) {
+    if (!normalizeText(article.text).includes(label)) continue;
+    for (const link of article.links) {
+      if (githubUrlMatchesRepo(link, repoSlug)) return true;
+      if (!/^https:\/\/t\.co\//i.test(link)) continue;
+      if (!resolvedShortUrls.has(link)) resolvedShortUrls.set(link, await resolveShortUrl(page, link));
+      if (githubUrlMatchesRepo(resolvedShortUrls.get(link) ?? '', repoSlug)) return true;
+    }
+  }
+  return false;
 }
 
 export async function verifyPostWithReply(options: VerifyOptions): Promise<VerifyResult> {
@@ -188,8 +311,9 @@ export async function verifyPostWithReply(options: VerifyOptions): Promise<Verif
       if (rendered.state !== 'ready') return stateResult(rendered.state, page);
     }
 
-    const result = classifyThread(await readArticles(page), mainPostUrl, expectedReply(options));
-    const replyRequired = Boolean(expectedReply(options));
+    const expectedReplyText = expectedReply(options);
+    const result = await waitForReplyVerification(page, mainPostUrl, expectedReplyText, options.timeoutMs);
+    const replyRequired = Boolean(expectedReplyText);
     const ok = result.mainPostFound && (!replyRequired || result.replyFound);
     return {
       ok,

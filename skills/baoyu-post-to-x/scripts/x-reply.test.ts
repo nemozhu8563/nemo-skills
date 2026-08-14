@@ -23,6 +23,14 @@ describe('reply confirmation', () => {
     }, expected)).toBe(true);
   });
 
+  test('accepts a card whose expanded destination is exposed as link metadata', () => {
+    expect(replyAppearsOnPostPage({
+      text: '项目地址：',
+      links: ['https://t.co/example'],
+      linkMetadata: ['https://github.com/shareAI-lab/learn-claude-code'],
+    }, expected)).toBe(true);
+  });
+
   test('does not accept a different GitHub card or an unrelated label', () => {
     expect(replyAppearsOnPostPage({
       text: '项目地址：\nshareAI-lab/another-repo',

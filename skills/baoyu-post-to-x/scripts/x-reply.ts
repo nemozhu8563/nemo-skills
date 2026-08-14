@@ -50,6 +50,7 @@ type TargetInfo = { targetId: string; url: string; type: string };
 export interface RenderedReply {
   text: string;
   links: string[];
+  linkMetadata?: string[];
 }
 
 function normalized(value: string): string {
@@ -72,7 +73,8 @@ export function replyAppearsOnPostPage(reply: RenderedReply, expectedText: strin
   if (!label || !repoSlug || !candidateText.includes(label)) return false;
 
   return candidateText.includes(repoSlug)
-    || reply.links.some((link) => normalized(link).includes(`github.com/${repoSlug}`));
+    || [...reply.links, ...(reply.linkMetadata ?? [])]
+      .some((link) => normalized(link).includes(`github.com/${repoSlug}`));
 }
 
 async function getPageTargets(cdp: CdpConnection): Promise<TargetInfo[]> {
@@ -177,6 +179,11 @@ async function readThreadSnapshot(
         replies: articles.map((article) => ({
           text: article.innerText || '',
           links: Array.from(article.querySelectorAll('a[href]')).map((link) => link.href || ''),
+          linkMetadata: Array.from(article.querySelectorAll('a[href]')).flatMap((link) => [
+            link.getAttribute('title') || '',
+            link.getAttribute('aria-label') || '',
+            link.getAttribute('data-expanded-url') || '',
+          ]).filter(Boolean),
         })),
       };
     })()`,

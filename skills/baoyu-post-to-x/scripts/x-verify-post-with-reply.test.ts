@@ -1,6 +1,12 @@
 import { describe, expect, test } from 'bun:test';
 
-import { classifyThread, findMainPostUrl, normalizeTweetUrl } from './x-verify-post-with-reply.js';
+import {
+  classifyThread,
+  findMainPostUrl,
+  githubUrlMatchesRepo,
+  normalizeTweetUrl,
+  replyVerificationPending,
+} from './x-verify-post-with-reply.js';
 import { TIMELINE_EXTRACTION_EXPRESSION } from './x-timeline-dom.js';
 
 describe('read-only X post verification', () => {
@@ -50,5 +56,33 @@ describe('read-only X post verification', () => {
       mainPostFound: true,
       replyFound: false,
     });
+  });
+
+  test('keeps polling after the main post renders before its reply', () => {
+    const expectedReply = '项目地址：https://github.com/acme/project';
+    expect(replyVerificationPending({ mainPostFound: false, replyFound: false }, expectedReply)).toBe(true);
+    const mainOnly = classifyThread([{
+      text: 'Main post',
+      links: ['https://x.com/nemoisme/status/123'],
+      statusUrls: ['https://x.com/nemoisme/status/123'],
+    }], 'https://x.com/nemoisme/status/123', expectedReply);
+    expect(replyVerificationPending(mainOnly, expectedReply)).toBe(true);
+
+    const verified = classifyThread([{
+      text: 'Main post',
+      links: ['https://x.com/nemoisme/status/123'],
+      statusUrls: ['https://x.com/nemoisme/status/123'],
+    }, {
+      text: '项目地址：acme/project',
+      links: ['https://github.com/acme/project'],
+      statusUrls: ['https://x.com/nemoisme/status/124'],
+    }], 'https://x.com/nemoisme/status/123', expectedReply);
+    expect(replyVerificationPending(verified, expectedReply)).toBe(false);
+  });
+
+  test('requires a short-link destination to match the exact GitHub repository path', () => {
+    expect(githubUrlMatchesRepo('https://github.com/acme/project', 'acme/project')).toBe(true);
+    expect(githubUrlMatchesRepo('https://github.com/acme/project/issues', 'acme/project')).toBe(true);
+    expect(githubUrlMatchesRepo('https://github.com/acme/project-extra', 'acme/project')).toBe(false);
   });
 });
