@@ -1,0 +1,14 @@
+{
+  "dataStreams": [
+    {
+      "name": "properties/987654/dataStreams/111222",
+      "type": "WEB_DATA_STREAM",
+      "displayName": "Example",
+      "webStreamData": {
+        "measurementId": "G-EXAMPLE123",
+        "defaultUri": "https://example.com"
+      },
+      "createTime": "2026-08-20T00:00:00Z"
+    }
+  ]
+}

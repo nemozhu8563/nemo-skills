@@ -1,0 +1,241 @@
+{
+  "schema_version": "2.0.0-qiaomu-lite",
+  "generated_at": "2026-08-20",
+  "package": {
+    "name": "nemo-site-telemetry",
+    "version": "0.3.0",
+    "owner": "Nemo",
+    "maturity_tier": "governed",
+    "lifecycle_stage": "local",
+    "upstream_inspiration": null,
+    "upstream_sync": {}
+  },
+  "intent": {
+    "description": "Govern first-time or resumed website telemetry onboarding across Google Analytics 4 (GA4), Microsoft Clarity, and Google Search Console (GSC) for game, SaaS, content, documentation, and other sites. Use to add, configure, launch, verify, troubleshoot, or finish telemetry, DNS ownership, sitemap submission/status/manual readback, or bounded Search Analytics API verification, including “接入 GA4 和 Clarity”, “提交 GSC”, “看下 sitemap 是否已提交”, and “验证 Search Analytics 只读查询”. Enforce production-only instrumentation, consent-aware setup, exact-resource idempotency, intent-aware mutation, provider readback, and separate setup, transport, search-performance, crawling, and indexing evidence. Exclude routine analytics/SEO reporting, ranking or keyword research, legal advice, ad conversion setup, Google Indexing API, and game-pipeline day-7/day-14 orchestration.",
+    "job_to_be_done": "Complete, resume, or verify production-safe GA4, Microsoft Clarity, and Google Search Console onboarding for any website, including intent-aware sitemap submission and bounded Search Analytics readback, while keeping setup, transport, provider, search-performance, crawling, and indexing evidence separate.",
+    "target_users": [
+      "Nemo operator launching game, SaaS, content, documentation, or other websites"
+    ],
+    "inputs": [
+      "canonical production origin and preview origins",
+      "site repository and deployment context",
+      "requested GA4, Clarity, and/or GSC components",
+      "authenticated provider contexts when external setup is authorized",
+      "existing consent/CMP decision",
+      "authoritative DNS and sitemap context when GSC is requested",
+      "optional exact Google Cloud/quota project and existing ADC context when google_api mode is selected"
+    ],
+    "outputs": [
+      "read-only first-use readiness check with local, site, identity, login, permission, and blocker states",
+      "user-visible Google API bootstrap and per-component configuration plan with exact identity, capabilities, desired resources, existing matches, external writes, readback, and rollback",
+      "production and preview isolation preflight",
+      "GA4 setup, production request, Realtime, and DebugView states",
+      "Clarity setup, tag, collect request, and recording states",
+      "GSC property, DNS, ownership, sitemap operation/action, provider status, and indexing states",
+      "bounded read-only GSC Search Analytics rows with exact query identity and completeness caveats",
+      "optional credential-free Google API capability, plan/apply/readback, and evidence-source states",
+      "credential-free recovery checkpoint"
+    ],
+    "exclusions": [
+      "routine analytics reporting and session analysis",
+      "SEO ranking, keyword, and content opportunity analysis",
+      "legal or regulatory advice",
+      "advertising conversion setup",
+      "Google Indexing API",
+      "game-pipeline-specific day-7/day-14 orchestration"
+    ],
+    "creator_defaults": {}
+  },
+  "triggers": {
+    "should_trigger": [
+      "给这个 SaaS 站接入 GA4 和 Clarity，只在正式域名采集",
+      "把这个游戏 wiki 的 GA4、Clarity 和 GSC 一起上线",
+      "这个内容站只需要接入 Google Analytics 4，并确认 Realtime 收到数据",
+      "给网站安装 Microsoft Clarity，检查 collect 请求和录屏是否可见",
+      "把 example.com 提交到 GSC，完成 DNS 验证并提交 sitemap",
+      "看下 sitemap 在 GSC 中有没有提交，只查状态，不要提交",
+      "我刚刚手动提交了 sitemap，帮我从 Search Console 回读状态",
+      "验证这个 GSC property 的 Search Analytics 只读查询是否可用，查最近 28 天 query 行，不要提交或改配置",
+      "第一次给这个站接入 GA4、Clarity 和 GSC，先跑完整 readiness 检查，再把每一项配置方案写进结果",
+      "继续刚才中断的统计接入，别重复创建 GA property、Clarity project 或 GSC property",
+      "排查为什么正式环境没有 GA4 数据，但 preview 不能发送统计请求",
+      "Onboard this SaaS website to GA4, Microsoft Clarity, and Google Search Console with production-only tracking.",
+      "Resume the Clarity and Search Console setup without duplicating resources.",
+      "Verify that GA4 sends production events and that Realtime receives them.",
+      "Check whether the sitemap is already submitted in Google Search Console without submitting it."
+    ],
+    "should_not_trigger": [
+      "只分析 GA4 最近 30 天的访问量和转化漏斗，不要修改配置",
+      "看一下 Clarity 录屏，分析用户为什么退出",
+      "分析 GSC 哪些关键词排名下降了",
+      "给我关于欧盟 Cookie 合规的法律意见",
+      "配置 Google Ads 转化和再营销受众",
+      "运行 game-site-pipeline 的 day-7 telemetry snapshot 并决定 grow/hold/retire",
+      "Only analyze GA4 reports and do not change the site.",
+      "Use the Google Indexing API to request indexing for one URL."
+    ],
+    "near_neighbor": [
+      "生成一个 XML sitemap 文件",
+      "审计 robots.txt、canonical 和结构化数据",
+      "把现有 gtag 迁移到 Google Tag Manager",
+      "解释 GA4 和 Clarity 有什么区别",
+      "设计一个 Cookie banner，但不要接入任何统计服务"
+    ]
+  },
+  "workflow": {
+    "router_rules": [
+      "用户要求为网站接入、配置、上线、恢复、验证或排查 GA4、Clarity、GSC 中任意一个或多个组件时触发；不要求三者每次全部执行。",
+      "游戏站、SaaS、内容站、文档站都属于本 Skill；实现与命名不得限定为游戏业务。",
+      "“继续”“恢复”“搞好为止”若上下文指向 telemetry，应先恢复现有 property、stream、project、DNS 记录、sitemap、浏览器 tab 和部署状态，不重复创建。",
+      "“统计 + 搜索控制台”在同一次执行中分别处理 GA4、Clarity、GSC，仍输出独立状态。",
+      "查询 sitemap 状态或回读用户刚手动提交的结果属于 GSC 验证；默认只读，不代表提交或重提授权。",
+      "明确验证 GSC Search Analytics API 可用性，或在 onboarding/verification 中读取一个精确 property 的受控日期窗口时触发；只允许固定只读参数，不开放任意报表 JSON、filters 或 hourly 查询。",
+      "只查看访问量、漏斗、录屏、点击、曝光、CTR、排名、关键词或内容机会时不触发；那是分析任务。",
+      "明确要求 `game-site-pipeline` 的 telemetry stage、day-7/day-14 snapshot、`grow/hold/retire` 决策时不触发；那是游戏站中央状态机的专用阶段。",
+      "不把 GA4 Measurement ID、Clarity Project ID 当作秘密；它们会进入前端。登录 cookie、OAuth token、DNS token 和 GSC verification value 仍不得保存或回显。"
+    ],
+    "compact_workflow": [
+      "从对话、仓库、部署、浏览器和 provider 恢复 production origin、站点类型、目标账号/组织、现有资源、sitemap 与已完成步骤。",
+      "首次使用或新站点的第一项可观察动作必须是只读 `readiness_check`，先于任何登录、配置、代码修改或外部写入；按 [Workflow](references/workflow.md) 检查本地、站点、资源、consent、sitemap、CLI/ADC 与所需浏览器/provider 会话。",
+      "把检查和 blocker 写入输出；未知项用 `not_checked`/`missing_evidence`，不猜测或自动发起 OAuth/login。",
+      "将请求拆成 `ga4`、`clarity`、`gsc`；未请求项为 `not_requested`。外部写入前，必须把每个组件的精确目标、匹配、动作、写入、回读和回滚写入用户可见 `configuration_plan`。",
+      "所有资源先查后写：精确匹配则复用或恢复；写操作超时后先 read-after-write，不能盲目重发。",
+      "对 GSC sitemap 先解析操作模式：状态查询用 `status_only`，用户已手动提交用 `manual_readback`，明确提交或 GSC 接入授权用 `submit_once`，提交后中断用 `recovery_readback`；所有模式都必须先精确读回，再决定报告、提交或重试。",
+      "按 [GA4](references/ga4.md)、[Clarity](references/clarity.md) 与 [GSC](references/gsc.md) 执行，并使用 [Workflow](references/workflow.md) 的证据顺序。",
+      "对生产构建和非生产构建分别验证。生产端必须命中预期脚本/请求；local、preview、分支域名和错误 hostname 必须没有生产 telemetry 请求。",
+      "从 provider 读回实际状态：GA4 Realtime 或 DebugView、Clarity collect + Recordings/Dashboard、GSC ownership + Sitemaps。传播期或新站无数据时原样报告。",
+      "失败或中断时保存不含凭据的 `recovery_checkpoint`；下次从现状继续，不重建资源。"
+    ],
+    "gate_ladder": [
+      "`G0–G2 Scope/Authorization/Readiness`：目标不确定时仅只读；“接入”授权精确常规资源，“查看/手动提交后检查”只授权回读；删除、邀请、切换账号/zone、长期授权、计费与政策发布另行授权。站点、canonical、sitemap、consent 必须满足组件。",
+      "`G3–G4 Idempotency/Code proof`：property、stream、project、TXT、sitemap 先查后写；生产构建只含预期 telemetry，非生产为零，部署 HTML 与配置一致。",
+      "`G5–G6 Transport/Provider proof`：精确生产请求不等于 provider 已处理；GA4、Clarity、GSC 必须分别从自身 UI/API 回读。",
+      "`G7 Claim guard`：请求、Realtime、recording、sitemap processing、crawl 与 index 严格分开。"
+    ],
+    "output_contract": [
+      "`readiness_check` 与 `configuration_plan` 必须进入用户可见输出，不能只作为内部推理；首次 readiness 未完成时不得开始配置或外部写入，配置方案中的未知值必须保留为 blocker。",
+      "`configuration_plan` 在执行过程中按 provider readback 更新；它描述将做什么，不是已经做过的证据，不能替代下面的实际状态键。",
+      "`ga4.production_request` 只证明浏览器发送/尝试发送请求；`ga4.realtime` 或 `debugview` 才是接收侧证据。",
+      "`clarity.tag_loaded`、`clarity.production_request` 与 `clarity.recording` 是三个状态；`www.clarity.ms/collect` 请求不能代替 Dashboard/Recordings 回读。",
+      "`gsc.sitemap=submitted` 不等于下载、抓取或索引；没有独立 GSC 证据时 `gsc.indexing=unknown`。",
+      "`gsc.sitemap` 的证据记录必须附带 `sitemap_operation_mode`、`sitemap_action_taken`、GSC 原始状态和 `checked_at`；按钮点击、请求发出或用户口述提交都不能替代 Sitemaps list/get 回读。",
+      "`gsc.search_analytics` 只表示精确 property 与日期窗口的受控只读查询；返回的是 top aggregated rows，不是完整导出、稳定快照、sitemap/crawl/indexing 证据，也不把本 Skill 变成排名或内容机会分析流程。",
+      "`ga4.readback_surface` 与 `gsc.readback_surface` 使用 `api|browser|mixed|not_checked`；API 与浏览器资源身份冲突时必须 `blocked`，不能选择更方便的一边继续。",
+      "GA4 Realtime API 只能更新 `ga4.realtime`，不能替代 `ga4.production_request` 或 `ga4.debugview`；GSC URL Inspection 是读取，不是 Google Indexing API 或请求收录。",
+      "GSC DNS 必须由 provider 与两个独立公共解析器分别回读；只看到控制台保存成功不能写 `gsc.public_dns=verified`。",
+      "每项写明 `checked_at`、证据来源和实际 provider 原始状态；报告不包含公开 ID 以外的凭据或 verification value。"
+    ]
+  },
+  "resources": {
+    "references": [
+      "references/clarity.md",
+      "references/ga4.md",
+      "references/google-api.md",
+      "references/governance.md",
+      "references/gsc.md",
+      "references/official-sources.md",
+      "references/workflow.md"
+    ],
+    "scripts": [
+      "scripts/google_api/__init__.py",
+      "scripts/google_api/auth.py",
+      "scripts/google_api/ga4.py",
+      "scripts/google_api/gsc.py",
+      "scripts/google_api/http.py",
+      "scripts/google_api/output.py",
+      "scripts/google_api/plans.py",
+      "scripts/google_api_adapter.py"
+    ],
+    "evals": [
+      "evals/output_cases.json",
+      "evals/trigger_cases.json"
+    ],
+    "reports": [
+      "reports/creation-handoff.md",
+      "reports/install-check.json",
+      "reports/output-evidence.json",
+      "reports/prior-art-research.md",
+      "reports/release-check.json",
+      "reports/skill-ir.json",
+      "reports/trigger-eval.json"
+    ]
+  },
+  "portability": {
+    "canonical_format": "agent-skills",
+    "adapter_targets": [
+      "openai",
+      "claude",
+      "generic",
+      "agent-skills-compatible"
+    ],
+    "activation": {
+      "mode": "manual-or-description-trigger",
+      "paths": []
+    },
+    "execution": {
+      "context": "inline",
+      "shell": "bash",
+      "provider_modes": [
+        "browser",
+        "google_api",
+        "mixed"
+      ],
+      "python": ">=3.11",
+      "optional_tools": [
+        "gcloud with ADC print-access-token and services commands"
+      ]
+    },
+    "trust": {
+      "source_tier": "local",
+      "remote_inline_execution": "forbid",
+      "generated_public_claims": "evidence-bound"
+    },
+    "permissions": {
+      "network": "Read the public production and preview site, GA4, Clarity, GSC, authoritative/public DNS, and fixed official Google API endpoints; mutate only exact requested onboarding resources within explicit authorization",
+      "file_write": "Site code/config, credential-free evidence reports, and single-use 0600 plans inside 0700 task temp directories; no cookies, OAuth tokens, credential paths, passwords, provider tokens, or GSC verification values",
+      "subprocess": "Project-native build/test tooling, python3 adapter, and fixed gcloud auth application-default print-access-token/services list/services enable commands; no shell interpolation or unreviewed third-party installer",
+      "interactive": "Only for missing target identity, consent decision, account/zone mismatch, destructive or externally expanded actions, and host-enforced approval"
+    },
+    "degradation": {
+      "openai": "Prefer host Chrome control for logged-in provider readback; use project-native CLI for code and builds",
+      "claude": "Use an authenticated browser control plane and provider-native readback",
+      "generic": "Complete local implementation and public preflight; use google_api only when Python/gcloud/ADC capability is verified, otherwise keep provider evidence missing and return a precise browser/manual checkpoint",
+      "agent-skills-compatible": "Canonical workflow with evidence-bound completion"
+    }
+  },
+  "gates": {
+    "scaffold": [
+      "Cross-site GA4, Clarity, and GSC onboarding triggers with analysis exclusions",
+      "Provider-neutral setup and recovery workflow"
+    ],
+    "production": [
+      "Read-only first-use readiness check before configuration or external writes",
+      "User-visible per-component configuration plan with target, matches, write, readback, and rollback",
+      "Exact production origin and preview isolation",
+      "Existing resources checked before mutation",
+      "Production-positive and preview-negative build/runtime checks",
+      "Independent GA4, Clarity, and GSC provider readback"
+    ],
+    "library": [
+      "Portable output contract, official-source evidence, and recovery checkpoint",
+      "No runtime dependency on nemo-gsc-submit or game-site-specific pipeline state"
+    ],
+    "governed": [
+      "Explicit authorization and destructive-action boundary",
+      "Consent decision and credential non-disclosure boundary",
+      "Rollback preserves GSC ownership and unrelated telemetry",
+      "Request, provider processing, recording, crawling, and indexing claim guard",
+      "Read-only sitemap checks and manual-submission readback never imply submit or re-submit",
+      "Search Analytics uses gsc-read, fixed query parameters, bounded retries, and incomplete-export claim guards",
+      "Google API bootstrap is isolated from normal readback",
+      "All API writes require single-use plan/apply/readback with exact target and authorization fingerprints",
+      "Ambiguous GA4 create is never automatically replayed"
+    ]
+  },
+  "evidence_boundary": {
+    "generated_reports_are_evidence": true,
+    "planned_work_is_evidence": false,
+    "missing_external_or_human_evidence_label": "missing evidence",
+    "public_claim_policy": "claim only what local validation, install proof, human review, or provider-backed evidence actually supports"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "name": "nemo-site-telemetry",
+  "version": "0.3.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-20",
+  "status": "active",
+  "maturity_tier": "governed",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "dependencies": [],
+  "intent": {
+    "job_to_be_done": "Complete, resume, or verify production-safe GA4, Microsoft Clarity, and Google Search Console onboarding for any website, including intent-aware sitemap submission and bounded Search Analytics readback, while keeping setup, transport, provider, search-performance, crawling, and indexing evidence separate.",
+    "target_users": [
+      "Nemo operator launching game, SaaS, content, documentation, or other websites"
+    ],
+    "inputs": [
+      "canonical production origin and preview origins",
+      "site repository and deployment context",
+      "requested GA4, Clarity, and/or GSC components",
+      "authenticated provider contexts when external setup is authorized",
+      "existing consent/CMP decision",
+      "authoritative DNS and sitemap context when GSC is requested",
+      "optional exact Google Cloud/quota project and existing ADC context when google_api mode is selected"
+    ],
+    "outputs": [
+      "read-only first-use readiness check with local, site, identity, login, permission, and blocker states",
+      "user-visible Google API bootstrap and per-component configuration plan with exact identity, capabilities, desired resources, existing matches, external writes, readback, and rollback",
+      "production and preview isolation preflight",
+      "GA4 setup, production request, Realtime, and DebugView states",
+      "Clarity setup, tag, collect request, and recording states",
+      "GSC property, DNS, ownership, sitemap operation/action, provider status, and indexing states",
+      "bounded read-only GSC Search Analytics rows with exact query identity and completeness caveats",
+      "optional credential-free Google API capability, plan/apply/readback, and evidence-source states",
+      "credential-free recovery checkpoint"
+    ],
+    "exclusions": [
+      "routine analytics reporting and session analysis",
+      "SEO ranking, keyword, and content opportunity analysis",
+      "legal or regulatory advice",
+      "advertising conversion setup",
+      "Google Indexing API",
+      "game-pipeline-specific day-7/day-14 orchestration"
+    ]
+  },
+  "release_gates": {
+    "package_validation": true,
+    "single_root_entrypoint": true,
+    "trigger_eval": true,
+    "output_contract_eval": true,
+    "first_use_readiness_gate": true,
+    "user_visible_configuration_plan": true,
+    "contract_tests": true,
+    "skill_ir": true,
+    "secret_scan": true,
+    "permission_boundary": true,
+    "trust_boundary": true,
+    "rollback_boundary": true,
+    "explicit_external_authorization": true,
+    "provider_readback": true,
+    "sitemap_intent_matrix": true,
+    "gsc_search_analytics_read_only": true,
+    "public_claim_guard": true,
+    "provider_modes_browser_google_api_mixed": true,
+    "python_standard_library_adapter": ">=3.11",
+    "optional_gcloud_requirement": "ADC short-lived token and explicit API bootstrap only",
+    "google_api_contract_tests": true,
+    "single_use_plan_apply_readback": true,
+    "ambiguous_create_no_auto_replay": true,
+    "runtime_dependency_on_nemo_gsc_submit": false,
+    "provider_or_human_output_evidence": "provider-backed for the bounded GSC Search Analytics read primitive verified on 2026-08-20; GA4, Clarity, sitemap mutation, bootstrap writes, complete cross-provider onboarding, and blind human review remain missing evidence"
+  }
+}

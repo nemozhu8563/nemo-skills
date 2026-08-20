@@ -1,0 +1,5 @@
+{
+  "metricHeaders": [{"name": "activeUsers", "type": "TYPE_INTEGER"}],
+  "rows": [{"metricValues": [{"value": "1"}]}],
+  "rowCount": 1
+}

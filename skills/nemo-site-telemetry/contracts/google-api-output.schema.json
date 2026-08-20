@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nemozhu8563.github.io/nemo-site-telemetry/google-api-output.schema.json",
+  "title": "Nemo Site Telemetry Google API Adapter Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "adapter_version",
+    "command",
+    "status",
+    "checked_at",
+    "google_api",
+    "target",
+    "evidence",
+    "result",
+    "plan",
+    "error"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "adapter_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "command": {"type": "string", "pattern": "^(adapter|bootstrap|auth|gsc|ga4)\\.[a-z0-9-]+$"},
+    "status": {
+      "enum": ["completed", "verified", "noop", "required", "blocked", "pending", "failed"]
+    },
+    "checked_at": {"type": "string", "format": "date-time"},
+    "google_api": {"$ref": "#/$defs/google_api"},
+    "target": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/target"}]},
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "result": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/result"}]},
+    "plan": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/plan"}]},
+    "error": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/error"}]}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"enum": ["completed", "verified", "noop"]}}},
+      "then": {"properties": {"error": {"type": "null"}}}
+    },
+    {
+      "if": {"properties": {"status": {"enum": ["required", "blocked", "pending", "failed"]}}},
+      "then": {"properties": {"error": {"$ref": "#/$defs/error"}}}
+    }
+  ],
+  "$defs": {
+    "google_api": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider_mode",
+        "adapter_version",
+        "auth_mode",
+        "api_project",
+        "quota_project_status",
+        "account_subject",
+        "capability_status",
+        "scope_status",
+        "resource_access",
+        "bootstrap_status",
+        "steady_state",
+        "api_readback",
+        "checked_at"
+      ],
+      "properties": {
+        "provider_mode": {"enum": ["browser", "google_api", "mixed", "none"]},
+        "adapter_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "auth_mode": {"enum": ["adc_user", "adc_service_account", "impersonation", "none", "unknown"]},
+        "api_project": {"enum": ["matched", "unknown", "mismatch"]},
+        "quota_project_status": {"enum": ["matched", "missing", "denied", "unknown", "not_applicable"]},
+        "account_subject": {"enum": ["matched", "unknown", "mismatch"]},
+        "capability_status": {"enum": ["available", "unavailable", "unknown"]},
+        "scope_status": {"enum": ["matched", "insufficient", "unknown"]},
+        "resource_access": {"enum": ["matched", "insufficient", "unknown"]},
+        "bootstrap_status": {"enum": ["required", "in_progress", "completed", "blocked", "not_needed"]},
+        "steady_state": {"enum": ["zero_click", "reauth_required", "blocked", "not_applicable"]},
+        "api_readback": {"enum": ["verified", "pending", "failed", "not_attempted"]},
+        "checked_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource_type", "target_fingerprint"],
+      "properties": {
+        "resource_type": {"type": "string"},
+        "resource_name": {"type": "string"},
+        "canonical_origin": {"type": "string"},
+        "site_url": {"type": "string"},
+        "sitemap_url": {"type": "string"},
+        "target_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["surface", "provider_method", "observed_at", "status", "summary"],
+      "properties": {
+        "surface": {"enum": ["api", "browser"]},
+        "provider_method": {"type": "string"},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "status": {"enum": ["observed", "verified", "pending", "failed"]},
+        "summary": {"type": "string", "maxLength": 512}
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "bootstrap_status",
+            "auth_probe",
+            "sites",
+            "site",
+            "sitemaps",
+            "sitemap",
+            "inspection",
+            "search_analytics",
+            "account_summaries",
+            "property",
+            "web_streams",
+            "realtime",
+            "write_outcome"
+          ]
+        },
+        "count": {"type": "integer", "minimum": 0},
+        "items": {"type": "array", "items": {"type": "object"}},
+        "resource": {"type": "object"},
+        "services": {"type": "object", "additionalProperties": {"enum": ["enabled", "disabled", "unknown"]}},
+        "capability": {"type": "string"},
+        "provider_status": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,63}$"},
+        "action": {"type": "string"},
+        "candidate_count": {"type": "integer", "minimum": 0},
+        "partial_external_state": {"type": "boolean"},
+        "site_url": {"type": "string"},
+        "start_date": {"type": "string", "format": "date"},
+        "end_date": {"type": "string", "format": "date"},
+        "dimensions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["country", "date", "device", "page", "query", "searchAppearance"]}
+        },
+        "search_type": {"enum": ["WEB", "IMAGE", "VIDEO", "NEWS", "DISCOVER", "GOOGLE_NEWS"]},
+        "data_state": {"enum": ["ALL", "FINAL"]},
+        "aggregation_type": {"enum": ["AUTO", "BY_PAGE", "BY_PROPERTY", "BY_NEWS_SHOWCASE_PANEL"]},
+        "row_limit": {"type": "integer", "minimum": 1, "maximum": 25000},
+        "start_row": {"type": "integer", "minimum": 0},
+        "row_count": {"type": "integer", "minimum": 0},
+        "row_limit_reached": {"type": "boolean"},
+        "response_aggregation_type": {
+          "oneOf": [
+            {"type": "null"},
+            {"enum": ["AUTO", "BY_PAGE", "BY_PROPERTY", "BY_NEWS_SHOWCASE_PANEL"]}
+          ]
+        },
+        "rows": {"type": "array", "items": {"$ref": "#/$defs/search_analytics_row"}}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"kind": {"const": "search_analytics"}}},
+          "then": {
+            "required": [
+              "site_url",
+              "start_date",
+              "end_date",
+              "dimensions",
+              "search_type",
+              "data_state",
+              "aggregation_type",
+              "row_limit",
+              "start_row",
+              "row_count",
+              "row_limit_reached",
+              "response_aggregation_type",
+              "rows"
+            ]
+          }
+        }
+      ]
+    },
+    "search_analytics_row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["keys", "clicks", "impressions", "ctr", "position"],
+      "properties": {
+        "keys": {"type": "array", "items": {"type": "string"}},
+        "clicks": {"type": "number"},
+        "impressions": {"type": "number"},
+        "ctr": {"type": "number"},
+        "position": {"type": "number"}
+      }
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "operation_mode",
+        "target_fingerprint",
+        "authorization_fingerprint",
+        "plan_sha256",
+        "created_at",
+        "expires_at",
+        "output_file_status"
+      ],
+      "properties": {
+        "action": {"enum": ["noop_existing", "submit_sitemap", "create_property_and_stream", "create_stream"]},
+        "operation_mode": {"enum": ["submit_once", "recovery_readback", "ga4_create"]},
+        "target_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "authorization_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "plan_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "expires_at": {"type": "string", "format": "date-time"},
+        "output_file_status": {"enum": ["created", "not_created"]}
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["error_code", "retryable", "next_step"],
+      "properties": {
+        "error_code": {
+          "enum": [
+            "invalid_cli",
+            "invalid_input",
+            "prerequisite_missing",
+            "gcloud_incompatible",
+            "api_not_enabled",
+            "reauth_required",
+            "capability_unknown",
+            "scope_insufficient",
+            "resource_access_insufficient",
+            "quota_project_missing",
+            "quota_project_denied",
+            "target_mismatch",
+            "authorization_mismatch",
+            "plan_invalid",
+            "plan_expired",
+            "plan_digest_mismatch",
+            "provider_transient",
+            "ambiguous_write",
+            "provider_rejected",
+            "not_found",
+            "safe_serialization_failed",
+            "internal_error"
+          ]
+        },
+        "provider_status": {
+          "oneOf": [
+            {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,63}$"},
+            {"type": "integer"},
+            {"type": "null"}
+          ]
+        },
+        "reason": {"type": ["string", "null"], "maxLength": 256},
+        "retryable": {"type": "boolean"},
+        "next_step": {"type": "string", "maxLength": 512}
+      }
+    }
+  }
+}

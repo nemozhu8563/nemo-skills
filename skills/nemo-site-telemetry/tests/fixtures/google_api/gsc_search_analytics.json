@@ -1,0 +1,19 @@
+{
+  "rows": [
+    {
+      "keys": [
+        "quasimorph wiki",
+        "https://example.com/wiki/"
+      ],
+      "clicks": 12,
+      "impressions": 240,
+      "ctr": 0.05,
+      "position": 4.25,
+      "providerOnlyField": "discard"
+    }
+  ],
+  "responseAggregationType": "byPage",
+  "metadata": {
+    "first_incomplete_date": "2026-08-19"
+  }
+}

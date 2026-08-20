@@ -1,0 +1,103 @@
+{
+  "ok": true,
+  "phase": "local",
+  "root": "/private/tmp/nemo-site-telemetry-local-gate.6DxLzg",
+  "version": "0.3.0",
+  "repository": null,
+  "summary": {
+    "pass": 8,
+    "warn": 1,
+    "block": 0
+  },
+  "gates": [
+    {
+      "gate": "package_validation",
+      "status": "pass",
+      "evidence": {
+        "ok": true,
+        "root": "/private/tmp/nemo-site-telemetry-local-gate.6DxLzg",
+        "failures": [],
+        "warnings": []
+      }
+    },
+    {
+      "gate": "version_and_report_consistency",
+      "status": "pass",
+      "evidence": {
+        "ok": true,
+        "failures": [],
+        "evidence": {
+          "manifest_name": "nemo-site-telemetry",
+          "manifest_version": "0.3.0",
+          "skill_ir_name": "nemo-site-telemetry",
+          "skill_ir_version": "0.3.0",
+          "trigger_ok": true,
+          "trigger_summary": {
+            "total": 28,
+            "passed": 28,
+            "false_positive": 0,
+            "false_negative": 0,
+            "pass_rate": 1.0
+          }
+        }
+      }
+    },
+    {
+      "gate": "secret_scan",
+      "status": "pass",
+      "evidence": {
+        "findings": []
+      }
+    },
+    {
+      "gate": "git_diff_check",
+      "status": "pass",
+      "evidence": {
+        "ok": true,
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    {
+      "gate": "feature_branch",
+      "status": "pass",
+      "evidence": {
+        "branch": "codex/nemo-site-telemetry-local-gate"
+      }
+    },
+    {
+      "gate": "clean_worktree",
+      "status": "pass",
+      "evidence": {
+        "dirty": false
+      }
+    },
+    {
+      "gate": "unit_tests",
+      "status": "pass",
+      "evidence": {
+        "ok": true,
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ".........................................\n----------------------------------------------------------------------\nRan 41 tests in 0.052s\n\nOK"
+      }
+    },
+    {
+      "gate": "clean_install",
+      "status": "warn",
+      "evidence": {
+        "missing_evidence": "rerun with --install-check after the target revision is remote"
+      }
+    },
+    {
+      "gate": "provider_or_human_output_evidence",
+      "status": "pass",
+      "evidence": {
+        "path": "reports/output-evidence.json",
+        "evidence_kind": "provider_backed",
+        "ok": true
+      }
+    }
+  ]
+}

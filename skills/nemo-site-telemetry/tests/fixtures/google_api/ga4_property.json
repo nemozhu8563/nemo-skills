@@ -1,0 +1,8 @@
+{
+  "name": "properties/987654",
+  "parent": "accounts/123456",
+  "displayName": "Example",
+  "timeZone": "Asia/Shanghai",
+  "currencyCode": "USD",
+  "createTime": "2026-08-20T00:00:00Z"
+}

@@ -1,0 +1,13 @@
+{
+  "error": {
+    "code": 403,
+    "status": "PERMISSION_DENIED",
+    "message": "Permission denied",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "PERMISSION_DENIED"
+      }
+    ]
+  }
+}

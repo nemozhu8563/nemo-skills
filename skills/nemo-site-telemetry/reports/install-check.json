@@ -1,0 +1,56 @@
+{
+  "checked_at": "2026-08-20T17:43:56+08:00",
+  "status": "pass",
+  "installation_scope": "project_only",
+  "canonical_path": "/Users/nemo/Documents/AI/awesome-skills/nemo-skills/skills/nemo-site-telemetry",
+  "global_link": {
+    "path": "/Users/nemo/.codex/skills/nemo-site-telemetry",
+    "present": false,
+    "symlink": false
+  },
+  "global_agent_link": {
+    "path": "/Users/nemo/.agents/skills/nemo-site-telemetry",
+    "present": false,
+    "symlink": false
+  },
+  "project_links": [
+    {
+      "project": "game-site",
+      "path": "/Users/nemo/Documents/AI/project/game-site/.agents/skills/nemo-site-telemetry",
+      "readlink_target": "/Users/nemo/Documents/AI/awesome-skills/nemo-skills/skills/nemo-site-telemetry",
+      "realpath_target": "/Users/nemo/Documents/AI/awesome-skills/nemo-skills/skills/nemo-site-telemetry",
+      "root_entrypoint_readable": true
+    },
+    {
+      "project": "image-generator",
+      "path": "/Users/nemo/Documents/AI/project/image-generator/.agents/skills/nemo-site-telemetry",
+      "readlink_target": "/Users/nemo/Documents/AI/awesome-skills/nemo-skills/skills/nemo-site-telemetry",
+      "realpath_target": "/Users/nemo/Documents/AI/awesome-skills/nemo-skills/skills/nemo-site-telemetry",
+      "root_entrypoint_readable": true
+    },
+    {
+      "project": "payforplus",
+      "path": "/Users/nemo/Documents/AI/project/payforplus/.agents/skills/nemo-site-telemetry",
+      "readlink_target": "/Users/nemo/Documents/AI/awesome-skills/nemo-skills/skills/nemo-site-telemetry",
+      "realpath_target": "/Users/nemo/Documents/AI/awesome-skills/nemo-skills/skills/nemo-site-telemetry",
+      "root_entrypoint_readable": true
+    },
+    {
+      "project": "new-api",
+      "path": "/Users/nemo/Documents/AI/project/new-api/.agents/skills/nemo-site-telemetry",
+      "readlink_target": "/Users/nemo/Documents/AI/awesome-skills/nemo-skills/skills/nemo-site-telemetry",
+      "realpath_target": "/Users/nemo/Documents/AI/awesome-skills/nemo-skills/skills/nemo-site-telemetry",
+      "root_entrypoint_readable": true
+    }
+  ],
+  "root_skill_name": "nemo-site-telemetry",
+  "old_canonical_absent": true,
+  "old_nemo_gsc_global_link_absent": true,
+  "payforplus_old_link_absent": true,
+  "stale_operational_symlinks": [],
+  "post_scope_change_validation": {
+    "package_validation": "passed with no warnings",
+    "contract_tests": "41/41 passed",
+    "trigger_eval": "28/28 passed"
+  }
+}

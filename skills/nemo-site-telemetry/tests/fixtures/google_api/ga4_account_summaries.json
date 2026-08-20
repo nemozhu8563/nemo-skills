@@ -1,0 +1,14 @@
+{
+  "accountSummaries": [
+    {
+      "account": "accounts/123456",
+      "displayName": "Example Account",
+      "propertySummaries": [
+        {
+          "property": "properties/987654",
+          "displayName": "Example"
+        }
+      ]
+    }
+  ]
+}

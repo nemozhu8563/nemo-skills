@@ -1,0 +1,224 @@
+{
+  "recommended_threshold": 0.38,
+  "description_required_concepts": [
+    "telemetry",
+    "ga4",
+    "clarity",
+    "gsc",
+    "onboarding",
+    "production"
+  ],
+  "positive_concepts": {
+    "telemetry": [
+      "telemetry",
+      "analytics",
+      "tracking",
+      "统计",
+      "埋点"
+    ],
+    "ga4": [
+      "GA4",
+      "Google Analytics",
+      "Google Analytics 4",
+      "Measurement ID"
+    ],
+    "clarity": [
+      "Clarity",
+      "Microsoft Clarity",
+      "session recording",
+      "录屏",
+      "热力图"
+    ],
+    "gsc": [
+      "GSC",
+      "Google Search Console",
+      "Search Console",
+      "谷歌站长平台"
+    ],
+    "onboarding": [
+      "setup",
+      "configure",
+      "connect",
+      "onboard",
+      "install",
+      "launch",
+      "verify",
+      "resume",
+      "troubleshoot",
+      "接入",
+      "配置",
+      "安装",
+      "上线",
+      "验证",
+      "继续",
+      "恢复",
+      "排查",
+      "搞好"
+    ],
+    "production": [
+      "production",
+      "production-only",
+      "preview",
+      "正式环境",
+      "正式域名",
+      "预览环境"
+    ],
+    "gsc_onboarding": [
+      "Domain property",
+      "DNS TXT",
+      "domain ownership",
+      "sitemap submission",
+      "sitemap status",
+      "read back sitemap",
+      "提交 GSC",
+      "域名验证",
+      "提交 sitemap",
+      "sitemap 状态",
+      "是否已提交",
+      "有没有提交",
+      "already submitted",
+      "手动提交",
+      "回读 sitemap"
+    ]
+  },
+  "negative_patterns": [
+    "只分析",
+    "只看报表",
+    "关键词分析",
+    "排名下降",
+    "不要接入",
+    "不要修改",
+    "法律意见",
+    "解释",
+    "广告转化",
+    "Indexing API",
+    "day-7",
+    "day-14",
+    "grow/hold/retire",
+    "only analyze",
+    "do not configure",
+    "keyword research",
+    "ranking analysis",
+    "legal advice",
+    "difference between",
+    "ad conversion"
+  ],
+  "should_trigger": [
+    {
+      "text": "给这个 SaaS 站接入 GA4 和 Clarity，只在正式域名采集",
+      "family": "cn_saas_ga4_clarity"
+    },
+    {
+      "text": "把这个游戏 wiki 的 GA4、Clarity 和 GSC 一起上线",
+      "family": "cn_game_all_components"
+    },
+    {
+      "text": "这个内容站只需要接入 Google Analytics 4，并确认 Realtime 收到数据",
+      "family": "cn_ga4_only"
+    },
+    {
+      "text": "给网站安装 Microsoft Clarity，检查 collect 请求和录屏是否可见",
+      "family": "cn_clarity_only"
+    },
+    {
+      "text": "把 example.com 提交到 GSC，完成 DNS 验证并提交 sitemap",
+      "family": "cn_gsc_only"
+    },
+    {
+      "text": "看下 sitemap 在 GSC 中有没有提交，只查状态，不要提交",
+      "family": "cn_gsc_sitemap_status_readonly"
+    },
+    {
+      "text": "我刚刚手动提交了 sitemap，帮我从 Search Console 回读状态",
+      "family": "cn_gsc_manual_submit_readback"
+    },
+    {
+      "text": "验证这个 GSC property 的 Search Analytics 只读查询是否可用，查最近 28 天 query 行，不要提交或改配置",
+      "family": "cn_gsc_search_analytics_readback"
+    },
+    {
+      "text": "第一次给这个站接入 GA4、Clarity 和 GSC，先跑完整 readiness 检查，再把每一项配置方案写进结果",
+      "family": "cn_first_telemetry_readiness_plan"
+    },
+    {
+      "text": "继续刚才中断的统计接入，别重复创建 GA property、Clarity project 或 GSC property",
+      "family": "cn_resume"
+    },
+    {
+      "text": "排查为什么正式环境没有 GA4 数据，但 preview 不能发送统计请求",
+      "family": "cn_troubleshoot_isolation"
+    },
+    {
+      "text": "Onboard this SaaS website to GA4, Microsoft Clarity, and Google Search Console with production-only tracking.",
+      "family": "en_full_onboarding"
+    },
+    {
+      "text": "Resume the Clarity and Search Console setup without duplicating resources.",
+      "family": "en_resume"
+    },
+    {
+      "text": "Verify that GA4 sends production events and that Realtime receives them.",
+      "family": "en_ga4_verify"
+    },
+    {
+      "text": "Check whether the sitemap is already submitted in Google Search Console without submitting it.",
+      "family": "en_gsc_sitemap_status_readonly"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "只分析 GA4 最近 30 天的访问量和转化漏斗，不要修改配置",
+      "family": "cn_ga4_analysis"
+    },
+    {
+      "text": "看一下 Clarity 录屏，分析用户为什么退出",
+      "family": "cn_clarity_analysis"
+    },
+    {
+      "text": "分析 GSC 哪些关键词排名下降了",
+      "family": "cn_gsc_performance"
+    },
+    {
+      "text": "给我关于欧盟 Cookie 合规的法律意见",
+      "family": "cn_legal"
+    },
+    {
+      "text": "配置 Google Ads 转化和再营销受众",
+      "family": "cn_ads"
+    },
+    {
+      "text": "运行 game-site-pipeline 的 day-7 telemetry snapshot 并决定 grow/hold/retire",
+      "family": "game_pipeline_stage"
+    },
+    {
+      "text": "Only analyze GA4 reports and do not change the site.",
+      "family": "en_analysis_only"
+    },
+    {
+      "text": "Use the Google Indexing API to request indexing for one URL.",
+      "family": "en_indexing_api"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "生成一个 XML sitemap 文件",
+      "family": "sitemap_generation"
+    },
+    {
+      "text": "审计 robots.txt、canonical 和结构化数据",
+      "family": "technical_seo_audit"
+    },
+    {
+      "text": "把现有 gtag 迁移到 Google Tag Manager",
+      "family": "gtm_migration"
+    },
+    {
+      "text": "解释 GA4 和 Clarity 有什么区别",
+      "family": "explain_only"
+    },
+    {
+      "text": "设计一个 Cookie banner，但不要接入任何统计服务",
+      "family": "cmp_design"
+    }
+  ]
+}

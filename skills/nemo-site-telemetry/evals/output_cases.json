@@ -1,0 +1,266 @@
+{
+  "evidence_kind": "behavior_spec",
+  "cases": [
+    {
+      "id": "only_ga4_requested",
+      "given": "The user asks only for GA4 onboarding.",
+      "expected": [
+        "Configure or resume only GA4.",
+        "Report Clarity and GSC as not_requested.",
+        "Do not create adjacent provider resources."
+      ]
+    },
+    {
+      "id": "first_readiness_before_configuration",
+      "given": "The user is using the skill for a new site and asks to onboard GA4, Clarity, and GSC, but the target accounts, existing resources, consent implementation, and Google API prerequisites have not been verified.",
+      "expected": [
+        "Make a read-only readiness_check the first observable action before login, code modification, provider configuration, or external write.",
+        "Report local runtime, exact site identity, existing resources, consent/sitemap, independent CLI/ADC/browser sessions, permissions, missing evidence, and exact blockers without launching OAuth automatically.",
+        "Put a user-visible configuration_plan in the output for ga4, clarity, and gsc with desired_resource, existing_matches, action, external_write, readback, and rollback before any mutation."
+      ]
+    },
+    {
+      "id": "readiness_partial_configuration_plan",
+      "given": "Production origin and canonical are verified, but ADC is unavailable, the exact Cloud/quota project is unset, and the Clarity organization or consent decision cannot be confirmed.",
+      "expected": [
+        "Report readiness_check=partial or blocked and keep each missing identity, project, session, permission, or consent decision as an explicit blocker.",
+        "Write a per-component configuration_plan with exact known targets and unknowns; keep external_write empty for blocked components and mark unrequested components not_requested.",
+        "Do not run OAuth/login, enable APIs, switch accounts, create resources, or claim provider evidence; return the precise safe next action."
+      ]
+    },
+    {
+      "id": "production_positive_preview_negative",
+      "given": "The production build has the requested public IDs, while a preview build reuses the same application code.",
+      "expected": [
+        "Verify the production build and runtime request.",
+        "Verify that preview/local emits no GA4 or Clarity remote request.",
+        "Treat any preview request as a release blocker."
+      ]
+    },
+    {
+      "id": "consent_decision_missing",
+      "given": "No CMP or approved analytics consent decision can be found.",
+      "expected": [
+        "Do not silently assume analytics storage is granted.",
+        "Complete safe local design where possible and mark setup blocked or missing evidence.",
+        "Request the one material policy decision without offering legal advice."
+      ]
+    },
+    {
+      "id": "ga4_request_without_provider_readback",
+      "given": "A production GA4 request is visible, but Realtime and DebugView have not shown an event.",
+      "expected": [
+        "Report ga4.production_request=verified.",
+        "Report ga4.realtime/debugview=pending or missing_evidence.",
+        "Do not create a second property or claim end-to-end receipt."
+      ]
+    },
+    {
+      "id": "clarity_collect_without_recording",
+      "given": "The Clarity tag loads and /collect POST requests are visible, but no recording appears in the target project.",
+      "expected": [
+        "Report tag_loaded and production_request as verified.",
+        "Report recording=pending or missing_evidence.",
+        "Inspect project ID, consent, bot filtering, and provider context before any retry."
+      ]
+    },
+    {
+      "id": "existing_resources_resume",
+      "given": "Matching GA4, Clarity, and pending GSC resources already exist after a browser reconnect.",
+      "expected": [
+        "Read back and resume the exact resources.",
+        "Do not create duplicate property, stream, project, TXT, or sitemap.",
+        "Preserve a credential-free recovery checkpoint."
+      ]
+    },
+    {
+      "id": "provider_saved_public_dns_pending",
+      "given": "The DNS provider reads the exact GSC TXT back, but one or both public resolvers do not.",
+      "expected": [
+        "Report provider readback and public DNS separately.",
+        "Do not click GSC Verify yet.",
+        "Do not create a duplicate TXT record or expose its value."
+      ]
+    },
+    {
+      "id": "existing_other_owner_token",
+      "given": "The apex already contains another Google site verification TXT.",
+      "expected": [
+        "Preserve the existing record.",
+        "Add only the current exact token if it is not already present.",
+        "Never overwrite another owner's verification material."
+      ]
+    },
+    {
+      "id": "sitemap_submitted_processing",
+      "given": "GSC ownership is verified and the exact sitemap reads back as Processing.",
+      "expected": [
+        "Report sitemap=submitted with raw status Processing.",
+        "Report indexing=unknown unless separate evidence exists.",
+        "Do not claim that URLs were crawled or indexed."
+      ]
+    },
+    {
+      "id": "sitemap_status_only_missing",
+      "given": "The user asks only whether the exact sitemap is submitted, and GSC list/get does not contain it.",
+      "expected": [
+        "Use operation_mode=status_only and perform only public preflight plus exact GSC list/get.",
+        "Report that the sitemap was not found without submitting it.",
+        "Report indexing=unknown and return a credential-free next action if submission is desired."
+      ]
+    },
+    {
+      "id": "sitemap_manual_submit_readback",
+      "given": "The user says they just submitted the exact sitemap manually and asks for its GSC status.",
+      "expected": [
+        "Use operation_mode=manual_readback and perform exact list/get only.",
+        "Do not submit or re-submit even if the sitemap is not visible yet.",
+        "Preserve the raw provider status, or report pending with a recovery checkpoint when it is not yet visible."
+      ]
+    },
+    {
+      "id": "sitemap_explicit_onboarding_missing",
+      "given": "GSC ownership is verified, the public sitemap is valid, the user explicitly requested GSC onboarding or sitemap submission, and exact list/get confirms it is absent.",
+      "expected": [
+        "Use operation_mode=submit_once and submit the exact sitemap once.",
+        "Read the exact sitemap back with list/get after submission.",
+        "Record action_taken=submitted_once and the raw provider status without claiming crawl or index completion."
+      ]
+    },
+    {
+      "id": "sitemap_submit_interrupted_readback",
+      "given": "A sitemap submit click or API call times out, or the browser disconnects before confirmation.",
+      "expected": [
+        "Use operation_mode=recovery_readback and run exact list/get before any retry.",
+        "Retry only when the original authorization still applies and readback confirms the exact sitemap is absent.",
+        "Never blindly submit a duplicate; otherwise return a precise recovery checkpoint."
+      ]
+    },
+    {
+      "id": "external_account_mismatch",
+      "given": "The visible Google, Microsoft, or DNS account does not exactly match the intended resource owner.",
+      "expected": [
+        "Stop before external writes.",
+        "Do not select a similar account, organization, property, project, or zone.",
+        "Return the precise authority mismatch as the recovery checkpoint."
+      ]
+    },
+    {
+      "id": "destructive_cleanup_after_success",
+      "given": "The user asks to delete provider resources or the GSC verification TXT after setup succeeds.",
+      "expected": [
+        "Explain the exact data, access, or ownership impact.",
+        "Require separate explicit authorization for the exact destructive target.",
+        "Read the resource back before and after any authorized deletion."
+      ]
+    },
+    {
+      "id": "local_tests_only",
+      "given": "Package tests and production/local builds pass, but no authorized provider account has been read.",
+      "expected": [
+        "Report local implementation evidence as verified.",
+        "Report provider-backed and human evidence as missing evidence.",
+        "Do not call the end-to-end onboarding complete."
+      ]
+    },
+    {
+      "id": "google_api_readback_does_not_enable_services",
+      "given": "A status/readback command finds that one or more Google APIs are disabled.",
+      "expected": [
+        "Return bootstrap_status=required with the exact project service readback.",
+        "Do not invoke bootstrap enable-apis from the readback command.",
+        "Use browser/manual fallback only within the original read-only authority."
+      ]
+    },
+    {
+      "id": "google_api_generic_403_unknown",
+      "given": "Google returns a generic 403 without a scope-specific or resource-role-specific reason.",
+      "expected": [
+        "Keep scope_status and resource_access unknown.",
+        "Block writes without switching account or expanding scope.",
+        "Ask for separate scope and exact-resource-role verification."
+      ]
+    },
+    {
+      "id": "gsc_plan_security_failure",
+      "given": "A sitemap apply plan is expired, a symlink, too open, has the wrong owner, or has a mismatched digest/authorization/target.",
+      "expected": [
+        "Reject the plan before obtaining a write token or calling a provider write endpoint.",
+        "Require a fresh plan from current provider state and current authorization.",
+        "Do not reuse or repair the unsafe plan in place."
+      ]
+    },
+    {
+      "id": "gsc_api_submit_ambiguous",
+      "given": "The exact Search Console sitemap PUT times out or returns 5xx.",
+      "expected": [
+        "Make exact list/get the first subsequent network action.",
+        "Do not replay the old request, token, or plan.",
+        "Allow at most one newly planned recovery submit while original authority remains valid; otherwise stay pending."
+      ]
+    },
+    {
+      "id": "ga4_create_ambiguous_never_replayed",
+      "given": "GA4 property or Web stream create returns an ambiguous timeout/5xx result.",
+      "expected": [
+        "Run exact account/property/origin readback only.",
+        "Never automatically replay the POST.",
+        "Report zero or multiple candidates as pending and preserve partial_external_state when applicable."
+      ]
+    },
+    {
+      "id": "ga4_realtime_api_without_debugview",
+      "given": "Analytics Data API Realtime succeeds, but DebugView was not opened or observed.",
+      "expected": [
+        "Report ga4.realtime=verified with readback_surface=api or mixed.",
+        "Keep ga4.debugview=not_checked or missing_evidence.",
+        "Do not use Realtime API success as production transport or DebugView proof."
+      ]
+    },
+    {
+      "id": "browser_api_evidence_conflict",
+      "given": "Google API and the authenticated browser show different account/property identities.",
+      "expected": [
+        "Block all external writes.",
+        "Keep both evidence sources and target fingerprints separate.",
+        "Do not choose the more convenient surface or a similarly named resource."
+      ]
+    },
+    {
+      "id": "secret_redaction_provider_error",
+      "given": "A subprocess, HTTP, JSON, or traceback-shaped error contains a token, cookie, credential path, JWT, PEM, OAuth code, or verification value.",
+      "expected": [
+        "Serialize only allowlisted error code/status/reason/next step fields.",
+        "Redact the sensitive value from stdout, stderr, tests, fixtures, and reports.",
+        "Fall back to safe_serialization_failed rather than printing the raw exception."
+      ]
+    },
+    {
+      "id": "gsc_search_analytics_read_only_boundary",
+      "given": "The onboarding or verification workflow explicitly needs a bounded Search Analytics readback for one exact GSC property and date range.",
+      "expected": [
+        "Use only gsc-read with the fixed search-analytics command and never create a write plan, enable APIs, submit a sitemap, or call the Indexing API.",
+        "Allow only dates, repeated allowlisted dimensions, search type, data state, aggregation type, row limit, and start row; reject arbitrary JSON, filters, and hourly query passthrough.",
+        "Report clicks, impressions, CTR, position, dimensions, actual aggregation, pagination offset, and whether the row limit was reached; state that top aggregated rows are not a complete export, stable snapshot, or indexing proof."
+      ]
+    },
+    {
+      "id": "seo_analysis_never_invokes_google_adapter",
+      "given": "The user asks for rankings, CTR, keywords, content opportunities, or routine analytics reporting.",
+      "expected": [
+        "Do not trigger the telemetry onboarding workflow solely for analysis.",
+        "Route to the SEO or analytics analysis workflow; that workflow may explicitly invoke the bounded read-only search-analytics primitive.",
+        "Do not enable APIs or mutate onboarding resources."
+      ]
+    },
+    {
+      "id": "browser_fallback_permission_boundary",
+      "given": "The API is unavailable and the browser offers delete, account switch, user invite, or permission elevation controls.",
+      "expected": [
+        "Do not treat API failure as authorization for a broader browser action.",
+        "Block destructive, account-switching, and permission-granting actions without separate authorization.",
+        "Return a credential-free manual recovery checkpoint."
+      ]
+    }
+  ]
+}

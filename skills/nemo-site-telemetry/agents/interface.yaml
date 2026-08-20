@@ -1,0 +1,72 @@
+interface:
+  display_name: "Nemo Site Telemetry"
+  short_description: "Production-safe GA4, Clarity, and GSC onboarding with governed Google API readback"
+  default_prompt: "Use $nemo-site-telemetry to complete or resume the requested GA4, Microsoft Clarity, and Google Search Console onboarding for the target site. For a first use or new target site, the first observable action must be a read-only readiness_check before any login, configuration, code change, or external write. Recover existing resources and deployment state; check the local runtime, exact production origin, preview isolation, existing IDs/resources, consent/CMP, sitemap, target account/organization, gcloud CLI identity, ADC, Google browser session, Microsoft Clarity browser session, and task-required DNS/deployment session. Do not launch OAuth/login automatically; report unavailable checks and exact blockers. Before any external write, put a user-visible configuration_plan in the output: google_api_bootstrap must name auth_mode, exact cloud_project/quota_project, requested capabilities/scopes, required services, resource permissions, interactive login, external writes, readback, and rollback; each of ga4, clarity, and gsc must name desired_resource, existing_matches, action, external_write, readback, and rollback. Keep unrequested components not_requested and update the plan from readback. Use exact-resource idempotency; keep public frontend IDs separate from secrets; validate both production-positive and preview-negative behavior; read GA4 requests and Realtime/DebugView, Clarity tag/collect/recording, and GSC property/DNS/ownership/Search Analytics/sitemap/indexing as separate evidence. Select browser, google_api, or mixed evidence without changing the user's authority: distinguish gcloud CLI login from application-default ADC login; the optional Python 3.11 adapter may use controlled gcloud ADC tokens for fixed GSC/GA4 REST methods, including bounded Search Analytics readback, but normal readback never enables APIs. Search Analytics uses gsc-read and fixed parameters only; report top aggregated rows as incomplete/non-indexing evidence, and do not trigger this onboarding Skill solely for routine rankings, CTR, keyword, or content analysis. Clarity, DebugView, ownership/DNS, and GA4-GSC association remain browser/manual. Resolve GSC sitemap intent before mutation: status checks and manual-submission follow-ups are list/get-only, while an explicit submit or GSC onboarding authorization may use plan/apply/readback once only after confirming the exact sitemap is absent; after any timeout or disconnect, read back before retrying. GA4 ambiguous create is never automatically replayed. Preserve GSC verification TXT; never claim that a request, recording setup, Realtime call, Search Analytics row, URL Inspection result, or sitemap submission proves a different downstream state; and return a credential-free recovery checkpoint for anything pending. Honor host-enforced approval gates and require separate authorization for API bootstrap, destructive, account-switching, permission-granting, billing, or policy-publishing actions."
+  examples:
+    - "给这个 SaaS 站接入 GA4 和 Clarity，只在正式域名采集"
+    - "把 GA4、Clarity 和 GSC 一起上线，验证 DNS 并提交 sitemap"
+    - "继续刚才中断的统计接入，不要重复建 property 或 project"
+    - "检查生产环境是否真的发 GA4 和 Clarity 请求，preview 必须没有"
+    - "把这个内容站提交到 GSC，并把 sitemap 状态读回来"
+    - "看下 sitemap 在 GSC 中有没有提交，只查状态，不要提交"
+    - "我刚手动提交了 sitemap，帮我从 GSC 回读状态"
+    - "验证这个 GSC property 的 Search Analytics 只读查询能力，读取最近 28 天 query 行"
+    - "第一次给这个站接入 GA4、Clarity 和 GSC，先做 readiness 检查并把配置方案写出来"
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual-or-description-trigger"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "bash"
+    provider_modes:
+      - "browser"
+      - "google_api"
+      - "mixed"
+    python: ">=3.11"
+    optional_tools:
+      - "gcloud with ADC print-access-token and services commands"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    generated_public_claims: "evidence-bound"
+  permissions:
+    network: "Read the public production and preview site, GA4, Clarity, GSC, authoritative/public DNS, and fixed official Google API endpoints; mutate only exact requested onboarding resources within explicit authorization"
+    file_write: "Site code/config, credential-free evidence reports, and single-use 0600 plans inside 0700 task temp directories; no cookies, OAuth tokens, credential paths, passwords, provider tokens, or GSC verification values"
+    subprocess: "Project-native build/test tooling, python3 adapter, and fixed gcloud auth application-default print-access-token/services list/services enable commands; no shell interpolation or unreviewed third-party installer"
+    interactive: "Only for missing target identity, consent decision, account/zone mismatch, destructive or externally expanded actions, and host-enforced approval"
+  degradation:
+    openai: "Prefer host Chrome control for logged-in provider readback; use project-native CLI for code and builds"
+    claude: "Use an authenticated browser control plane and provider-native readback"
+    generic: "Complete local implementation and public preflight; use google_api only when Python/gcloud/ADC capability is verified, otherwise keep provider evidence missing and return a precise browser/manual checkpoint"
+    agent-skills-compatible: "Canonical workflow with evidence-bound completion"
+gates:
+  scaffold:
+    - "Cross-site GA4, Clarity, and GSC onboarding triggers with analysis exclusions"
+    - "Provider-neutral setup and recovery workflow"
+  production:
+    - "Read-only first-use readiness check before configuration or external writes"
+    - "User-visible per-component configuration plan with target, matches, write, readback, and rollback"
+    - "Exact production origin and preview isolation"
+    - "Existing resources checked before mutation"
+    - "Production-positive and preview-negative build/runtime checks"
+    - "Independent GA4, Clarity, and GSC provider readback"
+  library:
+    - "Portable output contract, official-source evidence, and recovery checkpoint"
+    - "No runtime dependency on nemo-gsc-submit or game-site-specific pipeline state"
+  governed:
+    - "Explicit authorization and destructive-action boundary"
+    - "Consent decision and credential non-disclosure boundary"
+    - "Rollback preserves GSC ownership and unrelated telemetry"
+    - "Request, provider processing, recording, crawling, and indexing claim guard"
+    - "Read-only sitemap checks and manual-submission readback never imply submit or re-submit"
+    - "Search Analytics uses gsc-read, fixed query parameters, bounded retries, and incomplete-export claim guards"
+    - "Google API bootstrap is isolated from normal readback"
+    - "All API writes require single-use plan/apply/readback with exact target and authorization fingerprints"
+    - "Ambiguous GA4 create is never automatically replayed"
