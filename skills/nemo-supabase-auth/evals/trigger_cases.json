@@ -1,0 +1,238 @@
+{
+  "recommended_threshold": 0.34,
+  "description_required_concepts": [
+    "supabase_google_auth",
+    "setup_action",
+    "provider_configuration"
+  ],
+  "positive_concepts": {
+    "supabase_google_auth": [
+      "supabase google auth",
+      "supabase google login",
+      "supabase google oauth",
+      "google social login",
+      "google identity provider",
+      "supabase 的 google 登录",
+      "supabase google 登录",
+      "谷歌登录"
+    ],
+    "setup_action": [
+      "configure",
+      "setup",
+      "create",
+      "enable",
+      "audit",
+      "repair",
+      "fix",
+      "配置",
+      "接入",
+      "新建",
+      "启用",
+      "审计",
+      "修复",
+      "排查"
+    ],
+    "provider_configuration": [
+      "google cloud project",
+      "oauth web client",
+      "oauth client",
+      "google auth platform",
+      "supabase provider",
+      "site url",
+      "redirect urls",
+      "redirect uri",
+      "google cloud 项目",
+      "回调地址",
+      "重定向地址"
+    ],
+    "pkce_callback": [
+      "pkce",
+      "exchangecodeforsession",
+      "auth callback",
+      "callback route",
+      "code exchange",
+      "回调路由",
+      "交换 session"
+    ],
+    "verification": [
+      "end to end",
+      "real login",
+      "protected route",
+      "session verification",
+      "prove",
+      "真实登录",
+      "端到端",
+      "受保护页面",
+      "验证 session",
+      "证明"
+    ],
+    "diagnosis": [
+      "redirect uri mismatch",
+      "redirect_uri_mismatch",
+      "provider disabled",
+      "login loop",
+      "no session",
+      "登录循环",
+      "没有 session",
+      "回调失败"
+    ],
+    "credential_boundary": [
+      "client secret",
+      "credentials",
+      "token",
+      "cookie",
+      "browser storage",
+      "凭证",
+      "密钥",
+      "浏览器存储"
+    ]
+  },
+  "negative_patterns": [
+    "generic supabase database",
+    "database only",
+    "只做数据库",
+    "github provider",
+    "apple provider",
+    "magic link",
+    "email password",
+    "google drive api",
+    "gmail api",
+    "calendar api",
+    "paste client secret",
+    "export credentials",
+    "dump browser storage",
+    "把密钥发给我",
+    "导出凭证",
+    "抓取浏览器存储",
+    "pentest",
+    "渗透测试",
+    "explain only",
+    "只解释原理"
+  ],
+  "should_trigger": [
+    {
+      "text": "给当前项目配置 Supabase Google 登录，先复用已有 OAuth client，没有再新建。",
+      "family": "cn_full_setup_reuse"
+    },
+    {
+      "text": "在我的 Google 账号里新建当前应用的 Google Cloud 项目和 OAuth Web client，再接入 Supabase。",
+      "family": "cn_new_google_project"
+    },
+    {
+      "text": "审计 Supabase 的 Google 登录配置，核对 Site URL 和 Redirect URLs，先不要修改。",
+      "family": "cn_audit_only"
+    },
+    {
+      "text": "修复 Supabase Google OAuth 的 redirect_uri_mismatch，逐项核对 Google 回调地址。",
+      "family": "cn_redirect_mismatch"
+    },
+    {
+      "text": "Google 登录回调到了应用但没有 session，排查 PKCE exchangeCodeForSession。",
+      "family": "cn_pkce_no_session"
+    },
+    {
+      "text": "启用 Supabase Google provider，并真实登录验证受保护页面。",
+      "family": "cn_provider_real_login"
+    },
+    {
+      "text": "只把 Supabase Google Auth 配置到 configuration ready，核对 OAuth client，暂时不跑真实登录。",
+      "family": "cn_config_only"
+    },
+    {
+      "text": "Supabase 谷歌登录一直循环，排查 Site URL、应用 callback 和 provider redirect URI。",
+      "family": "cn_login_loop"
+    },
+    {
+      "text": "Configure Supabase Google Auth for this web app by reusing the correct Google Cloud project and OAuth client.",
+      "family": "en_full_setup"
+    },
+    {
+      "text": "Audit the Supabase Google provider, Site URL, and Redirect URLs without changing them.",
+      "family": "en_audit_only"
+    },
+    {
+      "text": "Fix redirect_uri_mismatch in our Supabase Google login and verify the PKCE callback route.",
+      "family": "en_mismatch_pkce"
+    },
+    {
+      "text": "Enable Google social login in Supabase, then prove a real session reaches the protected route.",
+      "family": "en_end_to_end"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "只做 Supabase 数据库表设计和 RLS，不涉及认证。",
+      "family": "database_only"
+    },
+    {
+      "text": "给 Supabase 配 GitHub provider。",
+      "family": "non_google_provider"
+    },
+    {
+      "text": "实现 Supabase magic link 和 email password 登录。",
+      "family": "email_auth"
+    },
+    {
+      "text": "给 Google Drive API 创建 service account。",
+      "family": "google_drive"
+    },
+    {
+      "text": "接入 Gmail API 读取邮件。",
+      "family": "gmail_api"
+    },
+    {
+      "text": "解释 OAuth 2.0 和 PKCE 的原理，只解释原理。",
+      "family": "oauth_explanation"
+    },
+    {
+      "text": "把 Google Client secret 发给我，我要贴进聊天。",
+      "family": "credential_exfiltration"
+    },
+    {
+      "text": "导出 Supabase Auth 的全部 token、Cookie 和浏览器存储。",
+      "family": "storage_dump"
+    },
+    {
+      "text": "对 Supabase Auth 做批量注册渗透测试。",
+      "family": "auth_pentest"
+    },
+    {
+      "text": "配置 Google Calendar API 的 OAuth consent。",
+      "family": "calendar_api"
+    },
+    {
+      "text": "把应用部署到 Vercel，不做登录配置。",
+      "family": "deployment_only"
+    },
+    {
+      "text": "删除 Google Cloud project 和所有 OAuth client。",
+      "family": "destructive_cleanup_only"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "审计 Supabase 项目的 API keys 和数据库性能。",
+      "family": "supabase_security_database"
+    },
+    {
+      "text": "给现有 Clerk 登录页面增加 Google 按钮。",
+      "family": "clerk_google_auth"
+    },
+    {
+      "text": "检查普通 OAuth redirect URI 的安全最佳实践。",
+      "family": "generic_oauth_security"
+    },
+    {
+      "text": "为 Firebase Authentication 配置 Google provider。",
+      "family": "firebase_google_auth"
+    },
+    {
+      "text": "查看 Supabase Auth 用户数量，不改任何登录方式。",
+      "family": "auth_user_metrics"
+    },
+    {
+      "text": "设计一个登录页的视觉样式和按钮布局。",
+      "family": "login_visual_design"
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "name": "nemo-supabase-auth",
+  "version": "0.1.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-21",
+  "status": "active",
+  "publication_status": "local_only",
+  "maturity_tier": "governed",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "medium",
+  "review_cadence": "quarterly-or-on-supabase-google-auth-change",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "intent": {
+    "job_to_be_done": "Configure, audit, repair, and prove a Supabase Google Auth flow across the exact application, Google Cloud project and OAuth Web client, Supabase provider and redirect configuration, and a real protected browser session without exposing credentials or personal identity data.",
+    "target_users": [
+      "Nemo",
+      "web application maintainer",
+      "Supabase Auth operator"
+    ],
+    "inputs": [
+      "project directory, environment, application origins, callback route, and protected success signal",
+      "exact Supabase organization and project alias",
+      "exact Google account or organization and existing-or-new project decision",
+      "Google audience and testing versus production status",
+      "separate authorization for code, Google, Supabase, and real-login actions"
+    ],
+    "outputs": [
+      "audited existing-resource inventory and reuse decision",
+      "exact Google and Supabase URL matrix",
+      "per-action authorization, before snapshot, execution, readback, and rollback ledger",
+      "PKCE callback and relative-next verification",
+      "redacted configuration-ready and end-to-end evidence report"
+    ],
+    "exclusions": [
+      "non-Google identity providers or unrelated Google APIs",
+      "database schema, RLS, user migration, account linking, or MFA",
+      "credential extraction, browser-storage inspection, or auth pentesting",
+      "automatic OAuth app publication, billing, resource deletion, or Git push"
+    ]
+  },
+  "dependencies": [
+    {
+      "skill": "supabase:supabase",
+      "required": true,
+      "purpose": "current Supabase Auth documentation, changelog, provider configuration, and verification behavior"
+    },
+    {
+      "skill": "web-access:web-access",
+      "required": false,
+      "purpose": "safe Google and Supabase Dashboard interaction when no equally reliable CLI or API route exists"
+    }
+  ],
+  "upstream_inspiration": [
+    "openai-curated-supabase:supabase",
+    "sickn33/agentic-awesome-skills:nextjs-supabase-auth",
+    "mcollina/skills:oauth",
+    "yoanbernabeu/supabase-pentest-skills:supabase-audit-auth-config",
+    "nemo-skills:nemo-domain-launch"
+  ],
+  "nemo_identity": {
+    "github": "https://github.com/nemozhu8563/"
+  },
+  "release_gates": [
+    "official_source_review",
+    "exact_account_project_environment",
+    "existing_resource_reuse_audit",
+    "separate_action_authorization",
+    "two_callback_url_matrix",
+    "pkce_exchange_and_relative_next",
+    "minimum_google_scopes",
+    "credential_and_identity_non_disclosure",
+    "before_snapshot",
+    "google_provider_readback",
+    "supabase_provider_and_url_readback",
+    "real_browser_login_authorization",
+    "trusted_user_and_protected_route_verification",
+    "rollback_boundary",
+    "public_claim_guard",
+    "trigger_eval",
+    "output_behavior_cases",
+    "package_validation",
+    "root_entrypoint_isolation",
+    "secret_scan",
+    "offline_contract_tests"
+  ]
+}

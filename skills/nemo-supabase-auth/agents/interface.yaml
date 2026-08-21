@@ -1,0 +1,52 @@
+interface:
+  display_name: "Nemo Supabase Auth"
+  short_description: "Configure and prove Supabase Google Auth without exposing credentials"
+  default_prompt: "Use $nemo-supabase-auth to audit existing resources first, then configure only the exact authorized application, Google Cloud project and OAuth Web client, Supabase Google provider, Site URL, Redirect URLs, and PKCE callback. Keep Google’s Supabase provider callback separate from the application callback, let the user enter credential values directly in provider UI, and claim success only after provider readback plus an authorized real protected session."
+  examples:
+    - "给当前项目配置 Supabase Google 登录，先复用已有 OAuth client"
+    - "在我的 Google 账号为这个项目新建 Web client，再接到 Supabase"
+    - "修复 redirect_uri_mismatch 并验证真实登录和受保护页面"
+    - "只读审计 Supabase Google Auth 配置，不要改任何 provider"
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "project-native commands, bundled report validator, Supabase tools, and governed browser interaction"
+  trust:
+    source_tier: "local governed package; mutable Supabase and Google behavior requires current official or live-provider evidence"
+    remote_inline_execution: "forbid"
+    public_claims: "provider-readback-and-real-session-bound"
+    credential_policy: "credential and personal identity values never enter prompts, reports, fixtures, command output, screenshots, source, or shell persistence"
+  permissions:
+    network: "only exact Supabase, Google Auth Platform, application, and official documentation resources in the locked scope"
+    file_write: "only exact authorized application auth files and an explicit redacted OAuth report"
+    subprocess: "project-native checks plus bundled validators; no credential-bearing command arguments"
+    live_mutation: "only separately authorized Google project, Auth configuration, Web client, Supabase provider, URL configuration, and real-login actions"
+    interactive: "allowed for provider UI and consent; the user directly enters credential values and personal test-account selections"
+  degradation:
+    ambiguous_identity_or_project: "continue read-only discovery; do not create or mutate resources"
+    no_google_write_access: "produce a reuse audit, exact URL matrix, code checks, mutation plan, and missing-evidence report"
+    no_supabase_write_access: "leave provider and URL actions pending with exact handoff and rollback plan"
+    no_browser_or_real_login_authorization: "cap the claim at configuration_ready and record provider-backed login as missing evidence"
+    no_current_google_docs: "use current Supabase official guidance plus live provider readback, record missing evidence, and avoid fixed UI claims"
+gates:
+  governed:
+    - "exact account, organization, project, environment, origins, and callback route are locked before mutation"
+    - "compatible existing Google project and OAuth client are audited before any duplicate is created"
+    - "application code and each Google, Supabase, and real-login action have separate authorization and readback"
+    - "Google redirect URI is the Supabase provider callback while Supabase redirect URLs are application callbacks"
+    - "PKCE callback exchanges the code once and next remains a safe relative application path"
+    - "Google scopes stay at openid, email, and profile unless separately authorized"
+    - "credential, OAuth code, token, Cookie, session ID, email, user ID, and browser storage are prohibited evidence"
+    - "real login is announced as a consent, user, and session mutation before execution"
+    - "configuration_ready requires code, URL matrix, Google readback, and Supabase readback"
+    - "end_to_end_verified additionally requires callback, trusted user, protected route, and logout-negative evidence"
+    - "provider-backed or human-review evidence remains missing until actually recorded"

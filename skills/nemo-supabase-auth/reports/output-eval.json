@@ -1,0 +1,27 @@
+{
+  "schema_version": "2.0",
+  "generated_at": "2026-08-21",
+  "ok": true,
+  "evidence_kind": "recorded_fixture",
+  "source": "evals/output_cases.json plus deterministic offline contract tests",
+  "summary": {
+    "case_count": 10,
+    "behavior_contract_recorded": 10,
+    "offline_unit_tests_passed": 15,
+    "provider_backed_cases": 0,
+    "human_blind_reviews": 0
+  },
+  "validated_mechanisms": [
+    "existing Google projects and clients are audited before create",
+    "Google provider callback and application callback are kept separate",
+    "Google JavaScript origins are origin-only",
+    "credential and personal identity data are prohibited",
+    "PKCE exchange and safe relative next are explicit code gates",
+    "ordinary login scopes remain minimal",
+    "configuration-ready and end-to-end claims require different evidence ladders",
+    "real login is treated as a consent, user, and session mutation",
+    "rollback is exact and destructive cleanup remains separately authorized",
+    "missing provider access degrades to a claim-safe handoff"
+  ],
+  "evidence_boundary": "Recorded fixtures and deterministic tests validate package behavior only. Provider-backed comparison and human blind review remain missing evidence."
+}

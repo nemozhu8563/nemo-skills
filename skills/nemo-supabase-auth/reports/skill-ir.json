@@ -1,0 +1,182 @@
+{
+  "schema_version": "2.0.0-qiaomu-lite",
+  "generated_at": "2026-08-21",
+  "package": {
+    "name": "nemo-supabase-auth",
+    "version": "0.1.0",
+    "owner": "Nemo",
+    "maturity_tier": "governed",
+    "lifecycle_stage": "local",
+    "upstream_inspiration": [
+      "openai-curated-supabase:supabase",
+      "sickn33/agentic-awesome-skills:nextjs-supabase-auth",
+      "mcollina/skills:oauth",
+      "yoanbernabeu/supabase-pentest-skills:supabase-audit-auth-config",
+      "nemo-skills:nemo-domain-launch"
+    ],
+    "upstream_sync": {}
+  },
+  "intent": {
+    "description": "Governed setup, audit, repair, and end-to-end verification of Supabase Google Auth for a web project. Use when Nemo asks to create or reuse the exact Google Cloud project and OAuth Web application, configure Google Auth Platform branding/audience/scopes, enable the Supabase Google provider, set Site URL and Redirect URLs, implement or validate a PKCE callback with exchangeCodeForSession, or prove a real Google sign-in and protected session. Also use for redirect_uri_mismatch, provider-disabled, callback, or login-loop diagnosis in a Supabase Google OAuth flow. Prefer a compatible existing project/client over duplicates. Do not trigger for generic Supabase database work, non-Google identity providers, unrelated Google APIs, explanation-only OAuth questions, pentesting, or any request to paste or export credentials.",
+    "job_to_be_done": "Configure, audit, repair, and prove a Supabase Google Auth flow across the exact application, Google Cloud project and OAuth Web client, Supabase provider and redirect configuration, and a real protected browser session without exposing credentials or personal identity data.",
+    "target_users": [
+      "Nemo",
+      "web application maintainer",
+      "Supabase Auth operator"
+    ],
+    "inputs": [
+      "project directory, environment, application origins, callback route, and protected success signal",
+      "exact Supabase organization and project alias",
+      "exact Google account or organization and existing-or-new project decision",
+      "Google audience and testing versus production status",
+      "separate authorization for code, Google, Supabase, and real-login actions"
+    ],
+    "outputs": [
+      "audited existing-resource inventory and reuse decision",
+      "exact Google and Supabase URL matrix",
+      "per-action authorization, before snapshot, execution, readback, and rollback ledger",
+      "PKCE callback and relative-next verification",
+      "redacted configuration-ready and end-to-end evidence report"
+    ],
+    "exclusions": [
+      "non-Google identity providers or unrelated Google APIs",
+      "database schema, RLS, user migration, account linking, or MFA",
+      "credential extraction, browser-storage inspection, or auth pentesting",
+      "automatic OAuth app publication, billing, resource deletion, or Git push"
+    ],
+    "creator_defaults": {}
+  },
+  "triggers": {
+    "should_trigger": [
+      "给当前项目配置 Supabase Google 登录，先复用已有 OAuth client，没有再新建。",
+      "在我的 Google 账号里新建当前应用的 Google Cloud 项目和 OAuth Web client，再接入 Supabase。",
+      "审计 Supabase 的 Google 登录配置，核对 Site URL 和 Redirect URLs，先不要修改。",
+      "修复 Supabase Google OAuth 的 redirect_uri_mismatch，逐项核对 Google 回调地址。",
+      "Google 登录回调到了应用但没有 session，排查 PKCE exchangeCodeForSession。",
+      "启用 Supabase Google provider，并真实登录验证受保护页面。",
+      "只把 Supabase Google Auth 配置到 configuration ready，核对 OAuth client，暂时不跑真实登录。",
+      "Supabase 谷歌登录一直循环，排查 Site URL、应用 callback 和 provider redirect URI。",
+      "Configure Supabase Google Auth for this web app by reusing the correct Google Cloud project and OAuth client.",
+      "Audit the Supabase Google provider, Site URL, and Redirect URLs without changing them.",
+      "Fix redirect_uri_mismatch in our Supabase Google login and verify the PKCE callback route.",
+      "Enable Google social login in Supabase, then prove a real session reaches the protected route."
+    ],
+    "should_not_trigger": [
+      "只做 Supabase 数据库表设计和 RLS，不涉及认证。",
+      "给 Supabase 配 GitHub provider。",
+      "实现 Supabase magic link 和 email password 登录。",
+      "给 Google Drive API 创建 service account。",
+      "接入 Gmail API 读取邮件。",
+      "解释 OAuth 2.0 和 PKCE 的原理，只解释原理。",
+      "把 Google Client secret 发给我，我要贴进聊天。",
+      "导出 Supabase Auth 的全部 token、Cookie 和浏览器存储。",
+      "对 Supabase Auth 做批量注册渗透测试。",
+      "配置 Google Calendar API 的 OAuth consent。",
+      "把应用部署到 Vercel，不做登录配置。",
+      "删除 Google Cloud project 和所有 OAuth client。"
+    ],
+    "near_neighbor": [
+      "审计 Supabase 项目的 API keys 和数据库性能。",
+      "给现有 Clerk 登录页面增加 Google 按钮。",
+      "检查普通 OAuth redirect URI 的安全最佳实践。",
+      "为 Firebase Authentication 配置 Google provider。",
+      "查看 Supabase Auth 用户数量，不改任何登录方式。",
+      "设计一个登录页的视觉样式和按钮布局。"
+    ]
+  },
+  "workflow": {
+    "router_rules": [],
+    "compact_workflow": [
+      "**建立脱敏基线。** 记录 Git revision/dirty state、auth SDK/SSR helpers、登录入口、callback route、protected route、环境、现有 provider/client 数量与每个动作的 before snapshot。只记录别名、状态和证据 pointer，不记录用户或凭证数据。",
+      "**审计与复用。** 在精确 Google account/organization 下查找与当前应用对应的 project 和 Web client；在 Supabase 查 Google provider、Site URL 与 redirect allowlist。名称相近但归属或 callback 不一致时标为冲突，不猜测、不重复创建。",
+      "**验证代码路径。** 确认 `signInWithOAuth({ provider: 'google', options: { redirectTo } })` 使用 URL matrix 中的应用 callback。PKCE/SSR callback 必须读取一次性 `code`、调用 `exchangeCodeForSession(code)`、处理失败，并在服务器端用可信的 `getUser()` 或等价当前官方方法验证用户。",
+      "**封闭 `next`。** `next` 只能是以单个 `/` 开头的站内相对路径；拒绝 `//host`、绝对 URL、反斜杠和编码后可逃逸的值。默认回到固定安全页面。",
+      "**配置 Google Auth。** 精确确认 project 后，只设置完成登录所需的 branding、audience 和 `openid`、email、profile scopes。External Testing 的测试用户由用户在 provider UI 直接选择；不记录邮箱。不要顺带启用无关 Google API、offline access、billing 或 Production publication。",
+      "**创建或更新 Web client。** client type 必须是 Web application。先保存现有 origins/redirects 快照，再做一个最小变更并回读。Client ID 可作为 provider 标识使用；Client secret 由用户直接从 Google UI 填到 Supabase UI，agent 不复制、不回显、不截图。",
+      "**配置 Supabase。** 在精确 project 启用 Google provider，写入 client ID 和用户直接输入的 secret；再单独配置 Site URL 与 Redirect URLs。Provider enable 与 URL allowlist 是两个 mutation，分别回读。",
+      "**运行真实登录。** 先告知该步骤可能产生 Google consent grant、Supabase user 和 session。只有授权后才在真实浏览器执行；不检查 Cookie/localStorage。登录完成后验证 callback chain、最终站内 URL、服务端用户信号与一个受保护页面。",
+      "**收尾。** 登出测试会话；如用户要求撤销 consent、删除测试用户或删除多余 OAuth client，把每项作为新的 destructive mutation 单独授权。默认保留成功配置，不自动清理真实用户或 provider 资源。"
+    ],
+    "gate_ladder": [],
+    "output_contract": []
+  },
+  "resources": {
+    "references": [
+      "references/evidence-and-rollback.md",
+      "references/official-sources.md",
+      "references/runbook.md"
+    ],
+    "scripts": [
+      "scripts/validate_report.py"
+    ],
+    "evals": [
+      "evals/output_cases.json",
+      "evals/trigger_cases.json"
+    ],
+    "reports": [
+      "reports/creation-handoff.md",
+      "reports/output-eval.json",
+      "reports/output-evidence.json",
+      "reports/prior-art-candidates.json",
+      "reports/prior-art-research.md"
+    ]
+  },
+  "portability": {
+    "canonical_format": "agent-skills",
+    "adapter_targets": [
+      "openai",
+      "claude",
+      "generic",
+      "agent-skills-compatible"
+    ],
+    "activation": {
+      "mode": "manual",
+      "paths": []
+    },
+    "execution": {
+      "context": "inline",
+      "shell": "project-native commands, bundled report validator, Supabase tools, and governed browser interaction"
+    },
+    "trust": {
+      "source_tier": "local governed package; mutable Supabase and Google behavior requires current official or live-provider evidence",
+      "remote_inline_execution": "forbid",
+      "public_claims": "provider-readback-and-real-session-bound",
+      "credential_policy": "credential and personal identity values never enter prompts, reports, fixtures, command output, screenshots, source, or shell persistence"
+    },
+    "permissions": {
+      "network": "only exact Supabase, Google Auth Platform, application, and official documentation resources in the locked scope",
+      "file_write": "only exact authorized application auth files and an explicit redacted OAuth report",
+      "subprocess": "project-native checks plus bundled validators; no credential-bearing command arguments",
+      "live_mutation": "only separately authorized Google project, Auth configuration, Web client, Supabase provider, URL configuration, and real-login actions",
+      "interactive": "allowed for provider UI and consent; the user directly enters credential values and personal test-account selections"
+    },
+    "degradation": {
+      "ambiguous_identity_or_project": "continue read-only discovery; do not create or mutate resources",
+      "no_google_write_access": "produce a reuse audit, exact URL matrix, code checks, mutation plan, and missing-evidence report",
+      "no_supabase_write_access": "leave provider and URL actions pending with exact handoff and rollback plan",
+      "no_browser_or_real_login_authorization": "cap the claim at configuration_ready and record provider-backed login as missing evidence",
+      "no_current_google_docs": "use current Supabase official guidance plus live provider readback, record missing evidence, and avoid fixed UI claims"
+    }
+  },
+  "gates": {
+    "governed": [
+      "exact account, organization, project, environment, origins, and callback route are locked before mutation",
+      "compatible existing Google project and OAuth client are audited before any duplicate is created",
+      "application code and each Google, Supabase, and real-login action have separate authorization and readback",
+      "Google redirect URI is the Supabase provider callback while Supabase redirect URLs are application callbacks",
+      "PKCE callback exchanges the code once and next remains a safe relative application path",
+      "Google scopes stay at openid, email, and profile unless separately authorized",
+      "credential, OAuth code, token, Cookie, session ID, email, user ID, and browser storage are prohibited evidence",
+      "real login is announced as a consent, user, and session mutation before execution",
+      "configuration_ready requires code, URL matrix, Google readback, and Supabase readback",
+      "end_to_end_verified additionally requires callback, trusted user, protected route, and logout-negative evidence",
+      "provider-backed or human-review evidence remains missing until actually recorded"
+    ]
+  },
+  "evidence_boundary": {
+    "generated_reports_are_evidence": true,
+    "planned_work_is_evidence": false,
+    "missing_external_or_human_evidence_label": "missing evidence",
+    "public_claim_policy": "claim only what local validation, install proof, human review, or provider-backed evidence actually supports"
+  }
+}

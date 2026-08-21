@@ -1,0 +1,15 @@
+{
+  "schema_version": "2.0",
+  "generated_at": "2026-08-21",
+  "ok": true,
+  "evidence_kind": "recorded_fixture",
+  "source": "evals/output_cases.json, templates/oauth-report.template.json, and tests/test_contract.py",
+  "recorded_fixture": true,
+  "provider_backed": false,
+  "human_blind_review": false,
+  "missing_evidence": [
+    "provider-backed comparison",
+    "human blind review"
+  ],
+  "claim_boundary": "This file does not prove a real Google Cloud or Supabase mutation, Google consent, Supabase user creation, authenticated session, or protected application request."
+}

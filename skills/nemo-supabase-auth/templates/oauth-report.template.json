@@ -1,0 +1,138 @@
+{
+  "schema_version": "1.0",
+  "scope": {
+    "project_dir": "/absolute/path/to/project",
+    "environment": "production",
+    "source_revision": "unresolved",
+    "supabase_project_alias": "current-project",
+    "supabase_auth_origin": "https://project-ref.supabase.co",
+    "google_account_alias": "verified-owner",
+    "google_project_alias": "current-project-auth",
+    "resource_decision": "unresolved"
+  },
+  "url_matrix": {
+    "google_javascript_origins": [
+      "https://project-ref.supabase.co"
+    ],
+    "google_redirect_uris": [
+      "https://project-ref.supabase.co/auth/v1/callback"
+    ],
+    "supabase_site_url": "https://app.example.com",
+    "supabase_redirect_urls": [
+      "https://app.example.com/auth/callback",
+      "http://localhost:3000/auth/callback"
+    ],
+    "application_redirect_to": [
+      "https://app.example.com/auth/callback",
+      "http://localhost:3000/auth/callback"
+    ],
+    "preview_patterns": []
+  },
+  "actions": {
+    "application_code": {
+      "target": "project auth entrypoint and callback",
+      "authorization": {"status": "requested", "evidence": null},
+      "before": null,
+      "execution": {"status": "pending", "evidence": null},
+      "readback": {"status": "missing_evidence", "evidence": null},
+      "rollback": "Revert only the reviewed auth diff and preserve unrelated changes."
+    },
+    "google_cloud_project": {
+      "target": "verified Google account and exact project alias",
+      "authorization": {"status": "requested", "evidence": null},
+      "before": null,
+      "execution": {"status": "pending", "evidence": null},
+      "readback": {"status": "missing_evidence", "evidence": null},
+      "rollback": "Leave an isolated project unless separate destructive deletion is authorized."
+    },
+    "google_auth_configuration": {
+      "target": "exact Google project audience, branding, and minimum scopes",
+      "authorization": {"status": "requested", "evidence": null},
+      "before": null,
+      "execution": {"status": "pending", "evidence": null},
+      "readback": {"status": "missing_evidence", "evidence": null},
+      "rollback": "Restore captured non-personal audience, publication, and scope state where supported."
+    },
+    "google_oauth_client": {
+      "target": "exact Google Web application client alias",
+      "authorization": {"status": "requested", "evidence": null},
+      "before": null,
+      "execution": {"status": "pending", "evidence": null},
+      "readback": {"status": "missing_evidence", "evidence": null},
+      "rollback": "Restore exact origins and redirect URIs; deletion requires separate authorization."
+    },
+    "supabase_google_provider": {
+      "target": "exact Supabase project Google provider",
+      "authorization": {"status": "requested", "evidence": null},
+      "before": null,
+      "execution": {"status": "pending", "evidence": null},
+      "readback": {"status": "missing_evidence", "evidence": null},
+      "rollback": "Restore provider state and client identifier; any prior credential value must be re-entered by the user."
+    },
+    "supabase_url_configuration": {
+      "target": "exact Supabase project Site URL and Redirect URLs",
+      "authorization": {"status": "requested", "evidence": null},
+      "before": null,
+      "execution": {"status": "pending", "evidence": null},
+      "readback": {"status": "missing_evidence", "evidence": null},
+      "rollback": "Restore the exact previous Site URL and Redirect URLs."
+    },
+    "real_login_test": {
+      "target": "authorized redacted browser identity and protected application route",
+      "authorization": {"status": "requested", "evidence": null},
+      "before": {"account_or_grant_state": "unknown", "expected_effects": ["consent_grant", "user_create_or_reuse", "session_create"]},
+      "execution": {"status": "pending", "evidence": null},
+      "readback": {"status": "missing_evidence", "evidence": null},
+      "rollback": "Sign out; user deletion and grant revocation require separate authorization."
+    }
+  },
+  "observations": {
+    "official_sources": {
+      "supabase_google_guide_current": false,
+      "supabase_redirect_guide_current": false,
+      "supabase_changelog_reviewed": false,
+      "google_direct_docs": "missing_evidence"
+    },
+    "application": {
+      "login_initiation_verified": false,
+      "pkce_exchange_verified": false,
+      "safe_relative_next_verified": false,
+      "trusted_server_check_present": false,
+      "project_native_checks": "missing_evidence"
+    },
+    "google": {
+      "exact_project_verified": false,
+      "web_client_type_verified": false,
+      "origins_match": false,
+      "redirect_uris_match": false,
+      "audience_and_publication_verified": false,
+      "minimum_scopes_only": false
+    },
+    "supabase": {
+      "exact_project_verified": false,
+      "provider_enabled": false,
+      "client_identifier_matches": false,
+      "credential_present": false,
+      "site_url_matches": false,
+      "redirect_urls_match": false,
+      "preview_patterns_reviewed": true
+    },
+    "browser": {
+      "expected_google_surface": false,
+      "callback_chain_completed": false,
+      "trusted_user_verified": false,
+      "protected_route_verified": false,
+      "logout_negative_verified": false
+    }
+  },
+  "claims": {
+    "configuration_ready": false,
+    "end_to_end_verified": false
+  },
+  "missing_evidence": [
+    "application preflight",
+    "Google provider readback",
+    "Supabase provider and URL readback",
+    "authorized real browser login"
+  ]
+}

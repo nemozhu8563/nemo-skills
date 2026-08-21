@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "researched_at": "2026-08-21",
+  "runner_output": "/private/tmp/nemo-supabase-auth-prior-art.json",
+  "queries": [
+    "supabase google auth oauth",
+    "google oauth client configuration",
+    "oauth redirect uri security"
+  ],
+  "catalog_status": {
+    "skills_sh": "complete",
+    "skillsmp": "complete",
+    "candidate_family_count": 69
+  },
+  "metric_semantics": {
+    "skills_sh_installs": "ecosystem install telemetry, not ratings or correctness",
+    "skillsmp_repo_stars": "repository stars, not installs or skill-specific quality",
+    "rating_evidence": "missing_evidence"
+  },
+  "shortlist": [
+    {
+      "candidate": "openai-curated-supabase:supabase",
+      "signal": "official installed Supabase plugin skill",
+      "license": "provider-distributed local plugin",
+      "keep": ["current documentation and changelog gate", "post-change verification", "credential and session safety"],
+      "reject": ["not an end-to-end Google Cloud, Supabase Dashboard, application callback, and real-login workflow"]
+    },
+    {
+      "candidate": "sickn33/agentic-awesome-skills:nextjs-supabase-auth",
+      "signal": "6200 skills.sh installs observed 2026-08-21",
+      "license": "MIT",
+      "keep": ["PKCE callback", "exchangeCodeForSession", "trusted getUser check", "callback error validation"],
+      "reject": ["boilerplate-heavy code-only workflow", "no Google or Supabase Dashboard governance"]
+    },
+    {
+      "candidate": "mcollina/skills:oauth",
+      "signal": "1100 skills.sh installs observed 2026-08-21",
+      "license": "MIT",
+      "keep": ["exact redirect matching", "state and PKCE principles", "token-safety principles"],
+      "reject": ["Fastify-specific implementation details"]
+    },
+    {
+      "candidate": "yoanbernabeu/supabase-pentest-skills:supabase-audit-auth-config",
+      "signal": "402 skills.sh installs observed 2026-08-21",
+      "license": "MIT",
+      "keep": ["configuration readback", "provider audit mindset", "security-sensitive reporting"],
+      "reject": ["intrusive signup tests", "progressive pentest logs", "pentest mutation assumptions"]
+    },
+    {
+      "candidate": "nemo-skills:nemo-domain-launch",
+      "signal": "local Governed structural template",
+      "license": "MIT",
+      "keep": ["activation gate", "per-action authorization and readback", "before snapshots", "rollback matrix", "degraded output", "project-level symlink pattern"],
+      "reject": ["domain-specific routing and DNS logic"]
+    }
+  ]
+}
