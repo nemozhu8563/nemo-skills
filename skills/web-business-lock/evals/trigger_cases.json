@@ -1,0 +1,87 @@
+{
+  "recommended_threshold": 0.5,
+  "description_required_concepts": [
+    "candidate",
+    "qualification",
+    "identity",
+    "approval"
+  ],
+  "positive_concepts": {
+    "candidate": [
+      "candidate lock",
+      "候选锁词",
+      "主词确认",
+      "candidate-lock.json"
+    ],
+    "qualification": [
+      "upstream qualification",
+      "资格检查",
+      "合格候选",
+      "qualification checks"
+    ],
+    "identity": [
+      "provider identity",
+      "稳定身份",
+      "internal product id",
+      "identities"
+    ],
+    "approval": [
+      "exact confirmation",
+      "精确确认",
+      "人工确认",
+      "approved by"
+    ]
+  },
+  "negative_patterns": [
+    "不要使用这个 skill",
+    "跳过门禁",
+    "直接默认通过",
+    "只解释"
+  ],
+  "should_trigger": [
+    {
+      "text": "把这个客户访谈合格的 SaaS 候选做 candidate lock，我精确确认 saas:invoice-reminder",
+      "family": "positive_1"
+    },
+    {
+      "text": "核对 internal product ID 后生成 candidate-lock.json，批准人写 Nemo",
+      "family": "positive_2"
+    },
+    {
+      "text": "把这个小企业培训线索业务候选接入流水线，先锁定资格检查、provider identity 和 business_hypothesis",
+      "family": "positive_3"
+    },
+    {
+      "text": "This game-keyword-radar candidate passed its own checks; create a candidate lock with the Steam identity after my exact confirmation",
+      "family": "positive_4"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "继续寻找和比较新的 Web 出海需求候选",
+      "family": "negative_1"
+    },
+    {
+      "text": "把现有 candidate-lock.json 直接改成另一个产品",
+      "family": "negative_2"
+    },
+    {
+      "text": "不用人工确认，自动选搜索量最高的候选",
+      "family": "negative_3"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "为已锁定候选设计 page-matrix.json 和页面功能契约",
+      "family": "neighbor_1"
+    },
+    {
+      "text": "为页面收集双来源和 claim 证据",
+      "family": "neighbor_2"
+    },
+    {
+      "text": "检查站点本地构建和当前变更批次逐页人工审核",
+      "family": "neighbor_3"
+    }
+  ]
+}

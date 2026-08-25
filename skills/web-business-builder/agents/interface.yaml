@@ -1,0 +1,52 @@
+interface:
+  display_name: "Web Business Builder"
+  short_description: "按页面契约和证据实现页面及内容清单"
+  default_prompt: "Use $web-business-builder within the central web-business-pipeline contract. Verify the current stage, own only this stage's artifacts, pass the central semantic gate, and report blockers without claiming external completion."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "python3"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "none by default; package installation or external asset downloads require separate explicit scope"
+    generated_public_claims: "central-gate-and-evidence-bound"
+  permissions:
+    network: "none by default; package installation or external asset downloads require separate explicit scope"
+    file_write: "用户项目中的页面/组件/内容文件, content-manifest.json"
+    subprocess: "central web-business-pipeline CLI plus project-local checks named by the project"
+    interactive: "required for stack-changing choices or any page behavior outside the approved contract"
+  degradation:
+    openai: "central-cli-plus-available-scoped-tools"
+    claude: "central-cli-plus-manual-provider-handoff"
+    generic: "central-cli-and-human-evidence-handoff"
+gates:
+  production:
+    - "implementation matches the page function contract"
+    - "every planned page has exactly one manifest entry"
+    - "all public claims map to evidence"
+    - "generated files exist and placeholders are absent before handoff"
+name: web-business-builder
+version: 1.0.0
+mode: production
+inputs:
+  - "初次建站为 `researched`；优化/扩展模式仅由 `$web-business-expander` 在 `grow` 中调用"
+outputs:
+  - "契约内的真实页面和必要组件"
+  - "逐页来源与 claim 映射完整的 content-manifest.json"
+  - "最小实现检查结果"
+  - "build_ready gate 或 optimization/expansion validation 结果"
+side_effects:
+  default: "local project artifacts only"
+  external: "none unless the Skill explicitly owns and receives exact authorization"
+privacy:
+  prohibited: ["passwords", "cookies", "tokens", "private keys", "browser storage", "provider credentials"]

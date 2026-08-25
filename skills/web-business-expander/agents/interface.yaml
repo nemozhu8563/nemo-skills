@@ -1,0 +1,52 @@
+interface:
+  display_name: "Web Business Expander"
+  short_description: "按数据复盘优化现有页或扩展新页，并重走上线观察门"
+  default_prompt: "Use $web-business-expander for one approved grow execution mode: optimize existing pages or add new pages. Size the change batch from evidence, risk, dependencies, and full human-review capacity; reuse the central planner-evidence-builder-QA-launch-telemetry chain without claiming external completion."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "python3"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "read-only research in planning/evidence; external relaunch is delegated to web-business-launch with exact authorization"
+    generated_public_claims: "central-gate-and-evidence-bound"
+  permissions:
+    network: "read-only research in planning/evidence; external relaunch is delegated to web-business-launch with exact authorization"
+    file_write: "decision-log.md 中的优化/扩展批次说明, 由 planner/evidence/builder/qa/launch/telemetry 各自更新的既有产物"
+    subprocess: "central web-business-pipeline CLI plus project-local checks named by the project"
+    interactive: "required when mode or scope materially branches the outcome, for every changed-page human review, relaunch actions and observation handoff"
+  degradation:
+    openai: "central-cli-plus-available-scoped-tools"
+    claude: "central-cli-plus-manual-provider-handoff"
+    generic: "central-cli-and-human-evidence-handoff"
+gates:
+  production:
+    - "one explicit mode is selected: optimize-existing or expand-new"
+    - "every change item has evidence, target, problem, expected impact and acceptance criteria"
+    - "batch size follows evidence, risk, dependencies and full-review capacity"
+    - "every changed page has independent evidence, differentiated value and human review"
+name: web-business-expander
+version: 1.0.0
+mode: production
+inputs:
+  - "`grow`，且已批准的 growth decision 包含有效 GSC/query/page 机会"
+outputs:
+  - "明确的 optimize-existing 或 expand-new 模式"
+  - "带证据、目标、问题、预期影响和验收条件的有限变更批次"
+  - "更新后的矩阵、证据、内容、QA 和全批次人审结果"
+  - "重发/telemetry handoff，或最终 observing gate"
+side_effects:
+  default: "local project artifacts only"
+  external: "only exact user-authorized actions explicitly owned by this Skill"
+privacy:
+  prohibited: ["passwords", "cookies", "tokens", "private keys", "browser storage", "provider credentials"]

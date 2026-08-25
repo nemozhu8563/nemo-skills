@@ -1,0 +1,40 @@
+{
+  "schema_version": 2,
+  "candidate_key": "tool:invoice-currency-converter",
+  "site_identity": {
+    "canonical_origin": "https://invoice-tool.example",
+    "forbidden_origins": [
+      "https://old-site.example"
+    ]
+  },
+  "local_checks": [
+    {"name": "build", "status": "not_run", "command": null, "evidence": null},
+    {"name": "lint", "status": "not_run", "command": null, "evidence": null},
+    {"name": "tests", "status": "not_run", "command": null, "evidence": null},
+    {"name": "links", "status": "not_run", "command": null, "evidence": null},
+    {"name": "assets", "status": "not_run", "command": null, "evidence": null},
+    {"name": "visual", "status": "not_run", "command": null, "evidence": null},
+    {"name": "content_review", "status": "not_run", "command": null, "evidence": null}
+  ],
+  "external_actions": [
+    {"action": "deployment", "status": "planned", "authorization_id": null, "evidence": null}
+  ],
+  "deployment": {
+    "status": "not_started",
+    "url": null,
+    "provider": null,
+    "source_revision": null,
+    "authorization_id": null,
+    "deployed_at": null
+  },
+  "http_readback": {
+    "status": "not_run",
+    "url": null,
+    "status_code": null,
+    "checked_at": null
+  },
+  "rollback": {
+    "documented": true,
+    "procedure": "Replace this example with the exact project rollback command and verification step."
+  }
+}

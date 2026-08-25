@@ -1,0 +1,56 @@
+{
+  "name": "web-business-expander",
+  "version": "1.0.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-24",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "dependencies": [
+    {
+      "skill": "web-business-pipeline",
+      "version": ">=1.0.0",
+      "required": true
+    }
+  ],
+  "intent": {
+    "job_to_be_done": "把已批准的数据复盘转成可验证的站点变更批次：优化现有页面或新增页面，并按证据、风险、依赖和完整审核能力控制范围后重走上线观察链。",
+    "target_users": [
+      "Nemo",
+      "Web business operator"
+    ],
+    "inputs": [
+      "`grow`，且已批准的 growth decision 包含有效 GSC/query/page 机会"
+    ],
+    "outputs": [
+      "明确的 optimize-existing 或 expand-new 模式",
+      "带证据、目标、问题、预期影响和验收条件的有限变更批次",
+      "更新后的矩阵、证据、内容、QA 和全批次人审结果",
+      "重发/telemetry handoff，或最终 observing gate"
+    ],
+    "exclusions": [
+      "用固定页数替代证据、风险和审核能力判断",
+      "关键词一换就复制同一篇内容",
+      "没有真实来源也批量填充数值、功能或结论",
+      "一开始就写自动抓取/生成脚本替代尚未跑通的手工流程"
+    ]
+  },
+  "release_gates": [
+    "central_pipeline_dependency",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "trigger_eval",
+    "export_skill_ir",
+    "suite_contract_tests",
+    "action_boundary",
+    "missing_evidence_guard"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "evidence_kind": "behavior_specification",
+  "generated_at": "2026-08-24",
+  "local_evidence": {
+    "unit_tests": "27/27 central tests passed",
+    "trigger_eval": "20/20 central trigger cases passed",
+    "output_eval": "10/10 behavior cases contract-covered"
+  },
+  "missing_evidence": [
+    "provider-backed output from a real deployed Web business",
+    "human blind review of a real generated page batch",
+    "GSC or GA performance readback",
+    "indexing, traffic, ranking, revenue or advertising outcome"
+  ],
+  "note": "Recorded fixtures and behavior tests are not provider or human outcome evidence."
+}

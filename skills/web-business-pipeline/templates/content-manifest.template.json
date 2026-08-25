@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "candidate_key": "tool:invoice-currency-converter",
+  "pages": [
+    {
+      "page_id": "converter-en",
+      "path": "content/invoice-currency-converter.md",
+      "title": "Invoice Currency Converter",
+      "locale": "en-US",
+      "primary_keyword": "invoice currency converter",
+      "status": "planned",
+      "source_ids": ["official-rate-docs", "independent-invoicing-guide"],
+      "claim_ids": ["official-rate-source-link"],
+      "content_sha256": null,
+      "human_reviewed": false,
+      "reviewed_by": null,
+      "reviewed_at": null
+    }
+  ]
+}

@@ -6,6 +6,8 @@ Google Trends 固定全球、Web 搜索、过去 30 天；整体上涨且不是�
 
 它不会保存账号、Cookie 或 Token，也不会把缺失 Semrush 数据估算成真实值。
 
+候选满足全部雷达规则且用户要求进入后续业务验证时，可输出 `web-business-pipeline` v2 candidate handoff，交给 `web-business-lock` 做精确人工批准。雷达本身不调用中央 `init`，也不把“可进入主词复核”写成已批准。
+
 ## 你可以直接这样说
 
 - “运行游戏热词雷达，比较今天和昨天的中腰部候选。”

@@ -1,9 +1,9 @@
 {
   "schema_version": "2.0.0-qiaomu-lite",
-  "generated_at": "2026-08-07",
+  "generated_at": "2026-08-24",
   "package": {
     "name": "game-keyword-radar",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "owner": "Nemo",
     "maturity_tier": "governed",
     "lifecycle_stage": "local",
@@ -14,12 +14,12 @@
     "description": "Run and govern a game keyword radar workflow that collects middle-tail Steam and Roblox candidates, compares historical momentum, validates search demand through 3ue/Semrush Volume, KD, intent and long-tail evidence, and writes combined local Markdown/CSV reports. Use for 生财航海热词游戏站、游戏热词雷达、中腰部游戏关键词、Steam/Roblox 找词、3ue 或 Semrush 核验、候选增量对比和报告回填；not for generic SEO advice, unrelated competitor research, credential extraction, or automatic publishing.",
     "job_to_be_done": "Run and govern a game keyword radar workflow that collects middle-tail Steam and Roblox candidates, compares historical momentum, validates search demand through 3ue/Semrush Volume, KD, intent and long-tail evidence, and writes combined local Markdown/CSV reports. Use for 生财航海热词游戏站、游戏热词雷达、中腰部游戏关键词、Steam/Roblox 找词、3ue 或 Semrush 核验、候选增量对比和报告回填；not for generic SEO advice, unrelated competitor research, credential extraction, or automatic publishing.",
     "target_users": [
-      "Qiaomu operator"
+      "Nemo operator"
     ],
     "inputs": [],
     "outputs": [],
     "exclusions": [],
-    "qiaomu_defaults": {}
+    "creator_defaults": {}
   },
   "triggers": {
     "should_trigger": [
@@ -49,7 +49,8 @@
       "已验证事实：本轮实际来源状态、候选数量、真实 Semrush 字段和测试结果。",
       "推断：为什么某词值得继续核验。",
       "未完成：验证码、额度、登录、SERP 或 Trends 等缺口。",
-      "本地文件：最新 Markdown、CSV、人工核验表和运行时快照路径。"
+      "本地文件：最新 Markdown、CSV、机器证据表和运行时快照路径。",
+      "可选交接：仅在满足规则且用户要求时给出 candidate v2；明确它仍待 `$web-business-lock` 人工批准。"
     ]
   },
   "resources": {

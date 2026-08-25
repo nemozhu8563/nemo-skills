@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nemo.local/web-business-pipeline/launch-report.schema.json",
+  "title": "Web Business Launch Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "candidate_key",
+    "site_identity",
+    "local_checks",
+    "external_actions",
+    "deployment",
+    "http_readback",
+    "rollback"
+  ],
+  "properties": {
+    "schema_version": {"const": 2},
+    "candidate_key": {"type": "string", "minLength": 1},
+    "site_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_origin", "forbidden_origins"],
+      "properties": {
+        "canonical_origin": {"type": "string", "minLength": 1},
+        "forbidden_origins": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "local_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "status", "command", "evidence"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "status": {"enum": ["passed", "not_applicable", "failed", "not_run"]},
+          "command": {"type": ["string", "null"]},
+          "evidence": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "external_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["action", "status", "authorization_id", "evidence"],
+        "properties": {
+          "action": {
+            "enum": [
+              "domain_purchase",
+              "dns_change",
+              "git_push",
+              "deployment",
+              "gsc_setup",
+              "ga_setup",
+              "advertising_application"
+            ]
+          },
+          "status": {"enum": ["planned", "not_needed", "verified", "failed"]},
+          "authorization_id": {"type": ["string", "null"]},
+          "evidence": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "url", "provider", "source_revision", "authorization_id", "deployed_at"],
+      "properties": {
+        "status": {"enum": ["not_started", "verified", "failed"]},
+        "url": {"type": ["string", "null"]},
+        "provider": {"type": ["string", "null"]},
+        "source_revision": {"type": ["string", "null"]},
+        "authorization_id": {"type": ["string", "null"]},
+        "deployed_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "http_readback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "url", "status_code", "checked_at"],
+      "properties": {
+        "status": {"enum": ["not_run", "passed", "failed"]},
+        "url": {"type": ["string", "null"]},
+        "status_code": {"type": ["integer", "null"]},
+        "checked_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["documented", "procedure"],
+      "properties": {
+        "documented": {"type": "boolean"},
+        "procedure": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

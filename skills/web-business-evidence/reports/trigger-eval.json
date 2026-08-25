@@ -1,0 +1,142 @@
+{
+  "ok": true,
+  "threshold": 0.5,
+  "description_concepts": [
+    "claims",
+    "coverage",
+    "evidence",
+    "freshness"
+  ],
+  "missing_description_concepts": [],
+  "summary": {
+    "total": 10,
+    "passed": 10,
+    "false_positive": 0,
+    "false_negative": 0,
+    "pass_rate": 1.0
+  },
+  "failures": [],
+  "results": {
+    "should_trigger": [
+      {
+        "prompt": "为页面矩阵建立 evidence-pack.json，每页至少双来源",
+        "family": "positive_1",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "coverage",
+          "evidence"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "在 evidence-pack.json 中做 SaaS 价格、功能状态、数值和官方链接的 claim 核验",
+        "family": "positive_2",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "claims",
+          "evidence"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "把素材整理成 source lineage 和 current_as_of 可审计记录",
+        "family": "positive_3",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "coverage",
+          "freshness"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "Build an evidence pack with claim-level current trusted evidence for this Web business",
+        "family": "positive_4",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.75,
+        "matched_concepts": [
+          "claims",
+          "evidence",
+          "freshness"
+        ],
+        "negative_pattern": null
+      }
+    ],
+    "should_not_trigger": [
+      {
+        "prompt": "复制竞品文章全文当成我们的内容",
+        "family": "negative_1",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "只做 SERP 页面规划和功能契约",
+        "family": "negative_2",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "没有来源也先把价格和功能状态写上去",
+        "family": "negative_3",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      }
+    ],
+    "near_neighbor": [
+      {
+        "prompt": "为已锁候选写 page-matrix.json",
+        "family": "neighbor_1",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "根据证据包实现页面和内容清单",
+        "family": "neighbor_2",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.25,
+        "matched_concepts": [
+          "evidence"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "检查本地构建、资产和视觉验收",
+        "family": "neighbor_3",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      }
+    ]
+  }
+}

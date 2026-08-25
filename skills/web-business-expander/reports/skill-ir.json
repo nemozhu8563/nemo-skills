@@ -1,0 +1,151 @@
+{
+  "schema_version": "2.0.0-qiaomu-lite",
+  "generated_at": "2026-08-24",
+  "package": {
+    "name": "web-business-expander",
+    "version": "1.0.0",
+    "owner": "Nemo",
+    "maturity_tier": "production",
+    "lifecycle_stage": "local",
+    "upstream_inspiration": null,
+    "upstream_sync": {}
+  },
+  "intent": {
+    "description": "Optimize existing pages or add new pages for a proven grow Web business from an approved data retrospective, real query/page evidence, explicit hypotheses, and testable acceptance criteria. Select a finite change batch from evidence strength, risk, dependencies, and human review capacity; update the existing planner-evidence-builder artifacts, human-review every changed page, and reuse the QA-launch-telemetry re-entry chain. Use for 按复盘优化 Web 业务、现有页转化/CTR/内容/内链改进、grow 后扩页、真实新意图、有限变更批次、重新上线后 observing；not for data review without an execution decision, thin-page spam, fixed-count bulk generation, bypassing evidence or deployment, changing hold/retire sites, or automating before the manual workflow is proven.",
+    "job_to_be_done": "把已批准的数据复盘转成可验证的站点变更批次：优化现有页面或新增页面，并按证据、风险、依赖和完整审核能力控制范围后重走上线观察链。",
+    "target_users": [
+      "Nemo",
+      "Web business operator"
+    ],
+    "inputs": [
+      "`grow`，且已批准的 growth decision 包含有效 GSC/query/page 机会"
+    ],
+    "outputs": [
+      "明确的 optimize-existing 或 expand-new 模式",
+      "带证据、目标、问题、预期影响和验收条件的有限变更批次",
+      "更新后的矩阵、证据、内容、QA 和全批次人审结果",
+      "重发/telemetry handoff，或最终 observing gate"
+    ],
+    "exclusions": [
+      "用固定页数替代证据、风险和审核能力判断",
+      "关键词一换就复制同一篇内容",
+      "没有真实来源也批量填充数值、功能或结论",
+      "一开始就写自动抓取/生成脚本替代尚未跑通的手工流程"
+    ],
+    "creator_defaults": {}
+  },
+  "triggers": {
+    "should_trigger": [
+      "按照这个复盘优化网站",
+      "按照这次数据复盘优化现有页面，逐项写清证据、预期影响和验收条件",
+      "grow 后新增有真实搜索意图或客户旅程缺口的页面，批次大小按证据强度和审核能力决定",
+      "先修 CTR 低的标题和首屏，再重走 QA、launch、telemetry 回到 observing",
+      "Optimize existing pages in a finite change batch, human-review every changed page, then use the QA-launch-telemetry re-entry"
+    ],
+    "should_not_trigger": [
+      "单篇还没做好，先自动生成一千个薄页",
+      "这个站是 hold 状态，也直接大规模改页",
+      "跳过上线和 telemetry，把本地文件直接记成 observing"
+    ],
+    "near_neighbor": [
+      "只根据第 14 天 GSC 数据做复盘，决定 grow、hold 还是 retire，不修改页面",
+      "把 grow 站点拆成框架、配置和内容三层模板",
+      "只为一个候选页面收集双来源 claim 证据，不实现页面"
+    ]
+  },
+  "workflow": {
+    "router_rules": [
+      "exactly one mode is selected: `optimize-existing` or `expand-new`",
+      "every change item records evidence, target, problem, expected impact and acceptance criteria",
+      "every change item names one funnel stage and one primary success metric",
+      "batch size follows evidence, risk, dependencies and full-review capacity, never a fixed page count",
+      "existing pages keep stable page IDs; only new pages receive new IDs",
+      "every changed page receives human review before relaunch",
+      "完整全链路或当前阶段不明时，回到 `$web-business-pipeline`；只做数据复盘和 grow/hold/retire 决策时使用 `$web-business-growth`；机会发现仍由匹配的上游方法负责，只有 Steam/Roblox 游戏找词才使用 `$game-keyword-radar`。",
+      "同一项目同一时间只允许一个阶段 Skill 写产物；发现上游契约错误时停止并交回总编排器。"
+    ],
+    "compact_workflow": [
+      "运行中央 `status`/`validate`，确认当前为 `grow`，并读取已批准 growth decision、当前部署 revision、页面矩阵、证据包、内容清单和 analytics snapshot。hold、retire、无 valid data 或没有具体机会时停止。",
+      "选择且只选择一种模式：",
+      "`optimize-existing`：改进已有页面的意图承接、标题/摘要、首屏、内容结构、claim、内链、导航或可用性；保持稳定 `page_id`。",
+      "`expand-new`：为尚未被现有页面承接的真实搜索意图新增页面；创建新 `page_id` 并先消除关键词蚕食。",
+      "建立变更项清单。每项记录 `change_id`、目标 page ID/route、证据引用、可观察问题、改动假设、`funnel_stage`（`search_growth`、`conversion_learning` 或 `commercial_scale`）、`primary_success_metric`、基线/时间窗、预期影响、验收条件、风险、依赖和回滚影响。每项只允许一个主要成功指标，其余作为 guardrail；新增页还要记录 primary keyword、用户问题、页面类型、独特信息和内部链接位置。",
+      "选择能够验证假设、覆盖必要依赖且可以逐页完成人工审核的最小连贯批次。批次可以是一页或多页；不设最小或固定目标页数。若主要指标没有可靠基线，先把测量或页面契约修复作为本轮工作；证据弱、共享组件影响面过大或审核能力不足时，缩小批次或停止。",
+      "只有存在可重复的同类工作时才写生产契约/提示，明确固定结构、必备字段、来源要求、禁止编造、待确认标记和项目内容格式。提示是生产约束，不是事实来源。",
+      "调用 `$web-business-planner` 的 optimization/expansion mode 更新矩阵，再用 `$web-business-evidence` 更新来源与 claim，最后用 `$web-business-builder` 更新页面和 manifest。现有页优化必须同步其受影响的 matrix/evidence/manifest 记录；新增页必须完成全部新记录。任何一步失败即停。",
+      "调用 `$web-business-qa` 的 optimization/expansion mode 运行 build、标题/正文、内链、导航、SEO、资产和视觉检查。manifest 中 `status: reviewed` 标识当前变更批次，`status: published` 只保留给未改动的部署基线页；每个变更页都完成人工审核并记录 reviewer/time，模型自审不算。",
+      "本地通过后仍保持 `grow`。只有用户逐项授权时才交给 `$web-business-launch` 部署并记录新 revision/HTTP 回读，再由 `$web-business-telemetry` 更新 snapshot 和观察窗口。",
+      "所有更新产物通过中央 `gate --target observing` 后才执行 `grow -> observing`。下一轮依据新数据重新决策；不得在同一轮继续扩大范围来掩盖未通过的假设。"
+    ],
+    "gate_ladder": [],
+    "output_contract": [
+      "明确的 `optimize-existing` 或 `expand-new` 模式",
+      "带证据、目标、问题、funnel stage、主要成功指标、预期影响和验收条件的有限变更批次",
+      "更新后的矩阵、证据、内容、QA 和全批次人审结果",
+      "重发/telemetry handoff，或最终 observing gate",
+      "最终回复分开列出：已验证事实、推断、人工决定、missing evidence、当前状态和下一阶段。",
+      "文件存在、模型判断、计划执行或授权记录都不能冒充 gate 通过、真实执行或线上回读。"
+    ]
+  },
+  "resources": {
+    "references": [],
+    "scripts": [],
+    "evals": [
+      "evals/trigger_cases.json"
+    ],
+    "reports": [
+      "reports/creation-handoff.md",
+      "reports/prior-art-research.md",
+      "reports/skill-ir.json",
+      "reports/trigger-eval.json"
+    ]
+  },
+  "portability": {
+    "canonical_format": "agent-skills",
+    "adapter_targets": [
+      "openai",
+      "claude",
+      "generic",
+      "agent-skills-compatible"
+    ],
+    "activation": {
+      "mode": "manual",
+      "paths": []
+    },
+    "execution": {
+      "context": "inline",
+      "shell": "python3"
+    },
+    "trust": {
+      "source_tier": "local",
+      "remote_inline_execution": "forbid",
+      "remote_metadata_policy": "read-only research in planning/evidence; external relaunch is delegated to web-business-launch with exact authorization",
+      "generated_public_claims": "central-gate-and-evidence-bound"
+    },
+    "permissions": {
+      "network": "read-only research in planning/evidence; external relaunch is delegated to web-business-launch with exact authorization",
+      "file_write": "decision-log.md 中的优化/扩展批次说明, 由 planner/evidence/builder/qa/launch/telemetry 各自更新的既有产物",
+      "subprocess": "central web-business-pipeline CLI plus project-local checks named by the project",
+      "interactive": "required when mode or scope materially branches the outcome, for every changed-page human review, relaunch actions and observation handoff"
+    },
+    "degradation": {
+      "openai": "central-cli-plus-available-scoped-tools",
+      "claude": "central-cli-plus-manual-provider-handoff",
+      "generic": "central-cli-and-human-evidence-handoff"
+    }
+  },
+  "gates": {
+    "production": [
+      "one explicit mode is selected: optimize-existing or expand-new",
+      "every change item has evidence, target, problem, expected impact and acceptance criteria",
+      "batch size follows evidence, risk, dependencies and full-review capacity",
+      "every changed page has independent evidence, differentiated value and human review"
+    ]
+  },
+  "evidence_boundary": {
+    "generated_reports_are_evidence": true,
+    "planned_work_is_evidence": false,
+    "missing_external_or_human_evidence_label": "missing evidence",
+    "public_claim_policy": "claim only what local validation, install proof, human review, or provider-backed evidence actually supports"
+  }
+}

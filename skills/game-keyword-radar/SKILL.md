@@ -73,6 +73,51 @@ description: "Run and govern a game keyword radar workflow that collects middle-
    - 检查最新 Markdown、CSV、快照和历史文件中没有凭证形态字符串。
    - 报告数据源成功/失败、候选总数、今日批次及候选池累计的三层实际尝试数、`verified|partial|blocked|not_found|unqueried` 分布、三层均已尝试数、三层均 verified 数、报告路径和历史是否更新。
    - 对每个候选清楚列出 Volume、KD、CPC、Intent、趋势、长尾数量、意图匹配、缺失字段状态和原因。只有当日批次存在 `unqueried` 才让当日批次标为 `incomplete`；候选池外的未查询词显示为待轮到，不得称为当日失败，也不得把用户手工复核列为正常下一步。
+   - 只有候选满足本 Skill 自己的全部资格规则且用户要求交接时，才附带 `web-business-pipeline` v2 candidate handoff；不得调用中央 `init`，不得填写批准人，也不得把“可进入主词复核”写成已批准。
+
+## Web Business Candidate V2 Handoff
+
+游戏雷达是可选的垂直上游，不是 Web 出海业务总入口。向 `$web-business-lock` 交接时使用下面的通用结构：
+
+```json
+{
+  "key": "game:<slug>",
+  "name": "<verified game name>",
+  "source_report": "<local report path or stable evidence reference>",
+  "identities": [
+    {"provider": "steam", "id": "<app-id>"}
+  ],
+  "qualification": {
+    "status": "qualified",
+    "method": "game-keyword-radar@0.2.0",
+    "checked_at": "<ISO-8601 UTC>",
+    "checks": [
+      {
+        "check_id": "search-opportunity",
+        "criterion": "All current game-keyword-radar qualification rules passed",
+        "status": "passed",
+        "evidence_refs": ["<report-or-row-reference>"],
+        "observations": {}
+      }
+    ]
+  },
+  "business_hypothesis": {
+    "target_customer": "<evidence-backed player segment hypothesis>",
+    "customer_problem": "<search-intent problem hypothesis>",
+    "value_proposition": "<site value hypothesis>",
+    "business_models": ["<hypothesis only>"],
+    "primary_acquisition_channel": "search",
+    "primary_value_event": "<observable value event hypothesis>",
+    "riskiest_assumption": "<single highest-risk assumption>",
+    "unknowns": ["<unverified commercial or user unknown>"]
+  }
+}
+```
+
+- `identities` 使用真实稳定 ID；Steam 用 app ID，Roblox 用 universe/place 等能够消歧的稳定 ID。同名游戏的不同 provider identity 不得合并。
+- `qualification.checks` 必须逐项保留趋势、Volume、KD、长尾、SERP、intent 和来源检查的真实 observations 与 evidence refs；示例中的空对象不能原样交付。
+- `business_hypothesis` 只写有证据或用户陈述支持的假设。商业模式、价值事件和收入未知时写进 `unknowns`，不得冒充已验证商业闭环。
+- 不满足全部资格规则时，保持原始失败/缺失状态，不生成 `status: qualified` 的 handoff。
 
 详细字段和降级流程见 [references/workflow.md](references/workflow.md)。
 
@@ -84,6 +129,7 @@ description: "Run and govern a game keyword radar workflow that collects middle-
 - 推断：为什么某词值得继续核验。
 - 未完成：验证码、额度、登录、SERP 或 Trends 等缺口。
 - 本地文件：最新 Markdown、CSV、机器证据表和运行时快照路径。
+- 可选交接：仅在满足规则且用户要求时给出 candidate v2；明确它仍待 `$web-business-lock` 人工批准。
 
 不得把 installs、stars、榜单排名、单日热度或模型判断称为市场验证；不得把“优先验证”称为已选定主词。
 

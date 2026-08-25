@@ -1,0 +1,55 @@
+{
+  "name": "web-business-planner",
+  "version": "1.0.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-24",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "dependencies": [
+    {
+      "skill": "web-business-pipeline",
+      "version": ">=1.0.0",
+      "required": true
+    }
+  ],
+  "intent": {
+    "job_to_be_done": "把已锁定 Web 业务机会拆成有限、互不争抢搜索意图且承担明确用户动作的页面集合，并在任何 UI 或代码之前冻结页面功能契约。",
+    "target_users": [
+      "Nemo",
+      "Web business operator"
+    ],
+    "inputs": [
+      "初次建站为 `candidate_locked`；优化/扩展模式仅由 `$web-business-expander` 在 `grow` 中调用"
+    ],
+    "outputs": [
+      "可追溯 SERP/竞品意图摘要",
+      "页面级功能契约",
+      "无关键词蚕食的 page-matrix.json",
+      "planned gate 或 optimization/expansion validation 结果"
+    ],
+    "exclusions": [
+      "批量抓取或复制竞品内容",
+      "在功能契约之外发明 UI 元素",
+      "因为模板能生成就增加语言或页面"
+    ]
+  },
+  "release_gates": [
+    "central_pipeline_dependency",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "trigger_eval",
+    "export_skill_ir",
+    "suite_contract_tests",
+    "action_boundary",
+    "missing_evidence_guard"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "name": "web-business-growth",
+  "version": "1.0.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-24",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "dependencies": [
+    {
+      "skill": "web-business-pipeline",
+      "version": ">=1.0.0",
+      "required": true
+    }
+  ],
+  "intent": {
+    "job_to_be_done": "把“感觉这个站行不行”变成一个有时间区间、原始指标、机会解释和人类批准的生命周期决定。",
+    "target_users": [
+      "Nemo",
+      "Web business operator"
+    ],
+    "inputs": [
+      "`observing` 且 analytics snapshot 已通过中央校验；`hold` 必须先由 telemetry 更新后回到 observing"
+    ],
+    "outputs": [
+      "事实/推断/不确定性分开的数据复盘",
+      "grow/hold/retire 推荐与备选",
+      "用户批准的 analytics decision",
+      "中央决策 gate、状态和下一步路由"
+    ],
+    "exclusions": [
+      "根据模型预测或单日波动自动执行页面优化/扩展",
+      "没有有效 GSC 数据就 retire",
+      "承诺固定收录、排名、流量、RPM 或收入"
+    ]
+  },
+  "release_gates": [
+    "central_pipeline_dependency",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "trigger_eval",
+    "export_skill_ir",
+    "suite_contract_tests",
+    "action_boundary",
+    "missing_evidence_guard"
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "recommended_threshold": 0.5,
+  "description_required_concepts": [
+    "decision",
+    "data",
+    "approval",
+    "outcomes"
+  ],
+  "positive_concepts": {
+    "decision": [
+      "growth decision",
+      "数据复盘",
+      "grow hold retire",
+      "继续投入"
+    ],
+    "data": [
+      "valid gsc data",
+      "有效 gsc 数据",
+      "有效 gsc 流量",
+      "有流量无转化",
+      "queries",
+      "indexed pages",
+      "转化事件",
+      "商业证据"
+    ],
+    "approval": [
+      "human approval",
+      "人工批准",
+      "approved_by",
+      "决策确认",
+      "让我批准"
+    ],
+    "outcomes": [
+      "grow",
+      "hold",
+      "retire",
+      "生命周期",
+      "商业放大"
+    ]
+  },
+  "negative_patterns": [
+    "不要使用这个 skill",
+    "跳过门禁",
+    "直接默认通过",
+    "只解释"
+  ],
+  "should_trigger": [
+    {
+      "text": "根据第 14 天有效 GSC 数据做数据复盘，决定 grow、hold 还是 retire",
+      "family": "positive_1"
+    },
+    {
+      "text": "复盘 queries、pages 和 indexed pages，再让我确认是否继续投入",
+      "family": "positive_2"
+    },
+    {
+      "text": "没有 valid GSC data，只能给 hold 并保留复查日期",
+      "family": "positive_3"
+    },
+    {
+      "text": "Make a growth decision with human approval from valid GSC data: grow or retire",
+      "family": "positive_4"
+    },
+    {
+      "text": "这个 SaaS 有有效 GSC 流量但没有注册或付费转化，区分搜索增长、转化学习和商业放大后再让我批准 grow、hold 或 retire",
+      "family": "commercial_validation"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "预测这个站下个月一定赚多少钱",
+      "family": "negative_1"
+    },
+    {
+      "text": "没有 GSC 数据也直接 retire 并删除域名",
+      "family": "negative_2"
+    },
+    {
+      "text": "帮我创建 GA property 和 sitemap",
+      "family": "negative_3"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "核验 GSC/GA property 并建立观察窗口",
+      "family": "neighbor_1"
+    },
+    {
+      "text": "按照已批准的 grow 复盘优化现有页面或新增页面",
+      "family": "neighbor_2"
+    },
+    {
+      "text": "把已跑通站点拆成框架、配置和内容三层",
+      "family": "neighbor_3"
+    }
+  ]
+}

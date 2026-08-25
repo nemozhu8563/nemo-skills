@@ -1,0 +1,87 @@
+{
+  "recommended_threshold": 0.5,
+  "description_required_concepts": [
+    "qa",
+    "checks",
+    "review",
+    "launch"
+  ],
+  "positive_concepts": {
+    "qa": [
+      "web business qa",
+      "Web 业务 QA",
+      "本地验收",
+      "部署前门禁"
+    ],
+    "checks": [
+      "build lint tests",
+      "链接资产检查",
+      "视觉验收",
+      "local checks"
+    ],
+    "review": [
+      "human review",
+      "人工审核",
+      "变更批次逐页",
+      "reviewed_by"
+    ],
+    "launch": [
+      "launch-report.json",
+      "旧域名扫描",
+      "rollback",
+      "deploy_ready"
+    ]
+  },
+  "negative_patterns": [
+    "不要使用这个 skill",
+    "跳过门禁",
+    "直接默认通过",
+    "只解释"
+  ],
+  "should_trigger": [
+    {
+      "text": "给这个 Web 业务做本地验收，写 launch-report.json",
+      "family": "positive_1"
+    },
+    {
+      "text": "做本地验收，跑 build、链接资产检查和视觉验收，并完成人工审核覆盖整个变更批次",
+      "family": "positive_2"
+    },
+    {
+      "text": "做工具站 Web 业务 QA 和本地验收，完成人工审核，扫描旧域名并写 launch-report.json，再判断 deploy_ready",
+      "family": "positive_3"
+    },
+    {
+      "text": "Run Web business QA with human review and build lint tests",
+      "family": "positive_4"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "不用人工审核，模型自评直接通过",
+      "family": "negative_1"
+    },
+    {
+      "text": "现在就把站点部署上线",
+      "family": "negative_2"
+    },
+    {
+      "text": "只要 build 成功就声称公共域名正常",
+      "family": "negative_3"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "根据页面契约实现内容文件和 manifest",
+      "family": "neighbor_1"
+    },
+    {
+      "text": "记录部署授权并做真实 HTTP 回读",
+      "family": "neighbor_2"
+    },
+    {
+      "text": "配置 GSC 和 GA 后进入 observing",
+      "family": "neighbor_3"
+    }
+  ]
+}

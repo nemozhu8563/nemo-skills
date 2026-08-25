@@ -1,0 +1,50 @@
+{
+  "example_only": true,
+  "key": "tool:invoice-currency-converter",
+  "name": "Invoice Currency Converter",
+  "source_report": "/absolute/path/to/qualification-report.md",
+  "qualification": {
+    "status": "qualified",
+    "method": "manual-problem-evidence-review",
+    "checked_at": "2026-08-24T00:00:00Z",
+    "checks": [
+      {
+        "check_id": "problem-evidence",
+        "criterion": "The target customer has a specific recurring problem",
+        "status": "passed",
+        "evidence_refs": ["qualification-report.md#problem-evidence"],
+        "observations": {"evidence_type": "customer-language"}
+      },
+      {
+        "check_id": "acquisition-evidence",
+        "criterion": "At least one reachable acquisition path has direct evidence",
+        "status": "passed",
+        "evidence_refs": ["qualification-report.md#acquisition-evidence"],
+        "observations": {"channel": "search"}
+      },
+      {
+        "check_id": "delivery-feasibility",
+        "criterion": "A narrow first solution can be delivered and verified",
+        "status": "passed",
+        "evidence_refs": ["qualification-report.md#delivery-feasibility"],
+        "observations": {"scope": "single-purpose web tool"}
+      }
+    ]
+  },
+  "identities": [
+    {
+      "provider": "internal",
+      "id": "invoice-currency-converter-v1"
+    }
+  ],
+  "business_hypothesis": {
+    "target_customer": "Small businesses issuing invoices in foreign currencies",
+    "customer_problem": "They need a clear conversion result and source before sending an invoice",
+    "value_proposition": "A focused web tool produces a source-linked conversion result",
+    "business_models": ["subscription"],
+    "primary_acquisition_channel": "search",
+    "primary_value_event": "completed conversion export",
+    "riskiest_assumption": "Users will return often enough to pay for saved workflows",
+    "unknowns": ["repeat usage", "willingness to pay"]
+  }
+}

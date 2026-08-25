@@ -1,0 +1,55 @@
+{
+  "name": "web-business-lock",
+  "version": "1.0.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-24",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "dependencies": [
+    {
+      "skill": "web-business-pipeline",
+      "version": ">=1.0.0",
+      "required": true
+    }
+  ],
+  "intent": {
+    "job_to_be_done": "把任一上游方法产出的合格候选变成一个由人精确批准、身份与资格证据明确、不可原地改写的 Web 业务项目起点。",
+    "target_users": [
+      "Nemo",
+      "Web business operator"
+    ],
+    "inputs": [
+      "带完整资格检查的合格上游候选，且当前项目尚无 `candidate-lock.json`"
+    ],
+    "outputs": [
+      "不可变、可哈希的候选身份",
+      "由用户原话支持的批准记录",
+      "中央 CLI 的 validate/status 结果",
+      "下一步 planner handoff 与所有 missing evidence"
+    ],
+    "exclusions": [
+      "替用户从多个候选中静默选赢家",
+      "把单一指标、模型判断或缺失证据当作合格结论",
+      "为修正候选而覆盖 candidate-lock.json"
+    ]
+  },
+  "release_gates": [
+    "central_pipeline_dependency",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "trigger_eval",
+    "export_skill_ir",
+    "suite_contract_tests",
+    "action_boundary",
+    "missing_evidence_guard"
+  ]
+}

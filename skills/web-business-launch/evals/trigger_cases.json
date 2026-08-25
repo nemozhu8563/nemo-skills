@@ -1,0 +1,88 @@
+{
+  "recommended_threshold": 0.5,
+  "description_required_concepts": [
+    "launch",
+    "authorization",
+    "provider",
+    "readback"
+  ],
+  "positive_concepts": {
+    "launch": [
+      "site launch",
+      "Web 业务上线",
+      "上线动作",
+      "launch-report.json"
+    ],
+    "authorization": [
+      "deployment authorization",
+      "部署授权",
+      "逐项授权",
+      "authorization id"
+    ],
+    "provider": [
+      "git push",
+      "vercel",
+      "cloudflare",
+      "dns 修改"
+    ],
+    "readback": [
+      "public readback",
+      "http readback",
+      "线上回读",
+      "public url",
+      "部署 revision"
+    ]
+  },
+  "negative_patterns": [
+    "不要使用这个 skill",
+    "跳过门禁",
+    "直接默认通过",
+    "只解释"
+  ],
+  "should_trigger": [
+    {
+      "text": "这个 SaaS 已 deploy_ready，做 Web 业务上线和部署授权，并完成 HTTP readback",
+      "family": "positive_1"
+    },
+    {
+      "text": "为 Git push、Vercel 和 DNS 修改分别做逐项授权与线上回读",
+      "family": "positive_2"
+    },
+    {
+      "text": "按 launch-report.json 做工具站上线，确认 public URL 而不是只看 provider READY",
+      "family": "positive_3"
+    },
+    {
+      "text": "Use Web business launch with deployment authorization and public readback for this verified lead-generation site",
+      "family": "positive_4"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "不用确认，直接买最贵的域名并扣款",
+      "family": "negative_1"
+    },
+    {
+      "text": "只做 localhost 的 build 和视觉检查",
+      "family": "negative_2"
+    },
+    {
+      "text": "帮我创建 GSC property 并分析搜索词",
+      "family": "negative_3"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "检查页面哈希、链接、资产和当前变更批次逐页人工审核",
+      "family": "neighbor_1"
+    },
+    {
+      "text": "读取 GSC/GA 属性并建立观察窗口",
+      "family": "neighbor_2"
+    },
+    {
+      "text": "根据第 14 天数据决定 grow 或 retire",
+      "family": "neighbor_3"
+    }
+  ]
+}

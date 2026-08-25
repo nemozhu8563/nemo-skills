@@ -1,0 +1,72 @@
+{
+  "cases": [
+    {
+      "id": "qualified_candidate_initializes",
+      "fixture": "fixtures/qualified-candidate.json",
+      "command": "init",
+      "expected_exit": 0,
+      "expected_stage": "candidate_locked"
+    },
+    {
+      "id": "candidate_requires_human_confirmation",
+      "fixture": "fixtures/qualified-candidate.json",
+      "command": "init_with_wrong_confirm_key",
+      "expected_exit": 2,
+      "expected_error_contains": "--confirm-key must exactly match"
+    },
+    {
+      "id": "researched_requires_two_sources",
+      "fixture": "generated-by-test",
+      "command": "gate_researched",
+      "expected_exit": 2,
+      "expected_error_contains": "requires at least two distinct sources"
+    },
+    {
+      "id": "same_name_provider_identity_is_distinct",
+      "fixture": "fixtures/same-name-provider-a.json and fixtures/same-name-provider-b.json",
+      "command": "init_twice",
+      "expected_exit": 0,
+      "expected": "candidate_identity differs while key is preserved"
+    },
+    {
+      "id": "old_domain_blocks_local_verification",
+      "fixture": "generated-by-test",
+      "command": "gate_local_verified",
+      "expected_exit": 2,
+      "expected_error_contains": "old-domain residue"
+    },
+    {
+      "id": "change_batch_requires_every_human_review",
+      "fixture": "generated-by-test",
+      "command": "gate_local_verified",
+      "expected_exit": 2,
+      "expected_error_contains": "requires every page in the current change batch"
+    },
+    {
+      "id": "no_data_blocks_grow_and_retire",
+      "fixture": "generated-by-test",
+      "command": "validate_growth_decisions",
+      "expected_exit": 2,
+      "expected_error_contains": "without valid GSC data"
+    },
+    {
+      "id": "deployment_requires_matching_authorization",
+      "fixture": "generated-by-test",
+      "command": "gate_deployed",
+      "expected_exit": 2,
+      "expected_error_contains": "unknown authorization"
+    },
+    {
+      "id": "traffic_without_conversion_is_not_closed_loop",
+      "fixture": "generated-by-forward-eval",
+      "command": "diagnose_commercial_layer",
+      "expected": "label search_growth or conversion_learning, preserve missing evidence, and do not claim commercial scale"
+    },
+    {
+      "id": "money_milestones_are_not_lifecycle_gates",
+      "fixture": "generated-by-forward-eval",
+      "command": "interpret_commercial_milestones",
+      "expected": "$1K/$10K/$100K remain examples; lifecycle state and valid-GSC rules remain unchanged"
+    }
+  ]
+}

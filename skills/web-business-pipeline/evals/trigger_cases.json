@@ -1,0 +1,156 @@
+{
+  "recommended_threshold": 0.5,
+  "description_required_concepts": [
+    "pipeline",
+    "candidate",
+    "evidence",
+    "authorization"
+  ],
+  "positive_concepts": {
+    "pipeline": [
+      "web business pipeline",
+      "Web 出海业务流水线",
+      "业务流水线",
+      "出海业务全链路",
+      "从候选到上线复盘",
+      "业务验证流水线",
+      "SaaS 验证",
+      "工具站验证",
+      "线索业务验证",
+      "游戏站验证",
+      "商业验证",
+      "业务验证",
+      "线索业务",
+      "转化闭环",
+      "有流量无转化"
+    ],
+    "candidate": [
+      "candidate lock",
+      "candidate",
+      "qualified opportunity",
+      "候选",
+      "锁定候选",
+      "候选确认",
+      "页面矩阵",
+      "业务假设"
+    ],
+    "evidence": [
+      "evidence pack",
+      "claim-level",
+      "来源",
+      "内容门禁",
+      "页面矩阵",
+      "证据包",
+      "埋点",
+      "复盘",
+      "变更批次",
+      "第 14 天数据",
+      "grow",
+      "通用基础设施",
+      "项目专属内容"
+    ],
+    "authorization": [
+      "部署门禁",
+      "授权",
+      "人工确认",
+      "批准",
+      "gsc",
+      "ga",
+      "上线复盘"
+    ]
+  },
+  "negative_patterns": [
+    "只找需求",
+    "只找词",
+    "只运行雷达",
+    "只研究冷启动",
+    "只解释",
+    "通用 seo"
+  ],
+  "should_trigger": [
+    {
+      "text": "这个 SaaS 候选已经确认，用 Web 出海业务流水线从锁定做到上线后复盘",
+      "family": "cn_saas_full_pipeline"
+    },
+    {
+      "text": "把这个汇率工具候选锁定，做页面矩阵、证据包和当前变更批次逐页内容门禁",
+      "family": "cn_tool_lock_build"
+    },
+    {
+      "text": "继续上次的工具站业务流水线，检查本地构建后是否满足部署门禁",
+      "family": "cn_resume_gate"
+    },
+    {
+      "text": "Use the web business pipeline to move this approved SaaS candidate through evidence, local verification, deployment authorization, and GSC observation",
+      "family": "en_pipeline"
+    },
+    {
+      "text": "根据 GSC 第 14 天数据决定这个出海内容站 grow、hold 还是 retire",
+      "family": "cn_growth_decision"
+    },
+    {
+      "text": "这个 Web 业务验证完成了，区分通用基础设施和项目专属内容后沉淀模板",
+      "family": "cn_template"
+    },
+    {
+      "text": "复盘这个站有流量无转化的问题，区分搜索增长、转化学习和商业放大，再决定 grow、hold 还是 retire",
+      "family": "cn_commercial_validation"
+    },
+    {
+      "text": "把面向小企业主的培训线索业务，从客户问题假设推进到承接页、埋点和复盘",
+      "family": "cn_lead_generation_pipeline"
+    },
+    {
+      "text": "这个游戏词候选已经由雷达验证并由我人工确认，接入 Web 出海业务流水线继续建站",
+      "family": "cn_game_adapter_handoff"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "只运行 Steam 和 Roblox 游戏热词雷达找候选",
+      "family": "radar_only"
+    },
+    {
+      "text": "用 Similarweb 研究 GPT Pro 竞品当初怎么冷启动，先不要立项",
+      "family": "cold_start_research_only"
+    },
+    {
+      "text": "帮我解释 Semrush KD 的含义",
+      "family": "explain_only"
+    },
+    {
+      "text": "写一篇通用 SEO 教程",
+      "family": "generic_seo"
+    },
+    {
+      "text": "直接替我买域名并扣款，不要确认",
+      "family": "unsafe_purchase"
+    },
+    {
+      "text": "只修改企业官网联系我们页面的电话号码",
+      "family": "one_off_site_edit"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "从 Steam 和 Roblox 找中腰部游戏词，再用 Semrush 验证",
+      "family": "game_keyword_radar"
+    },
+    {
+      "text": "分析我现有网站的 GSC 搜索词和 CTR 机会",
+      "family": "gsc_seo_opportunity"
+    },
+    {
+      "text": "把一个已经写好的普通 Next.js 网站部署到 Vercel",
+      "family": "generic_deploy"
+    },
+    {
+      "text": "研究一个竞品网站的页面结构和关键词",
+      "family": "competitor_research"
+    },
+    {
+      "text": "和五个小企业主访谈，帮我验证他们是否需要企业培训",
+      "family": "demand_discovery"
+    }
+  ]
+}

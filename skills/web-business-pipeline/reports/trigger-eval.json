@@ -1,0 +1,261 @@
+{
+  "ok": true,
+  "threshold": 0.5,
+  "description_concepts": [
+    "authorization",
+    "candidate",
+    "evidence",
+    "pipeline"
+  ],
+  "missing_description_concepts": [],
+  "summary": {
+    "total": 20,
+    "passed": 20,
+    "false_positive": 0,
+    "false_negative": 0,
+    "pass_rate": 1.0
+  },
+  "failures": [],
+  "results": {
+    "should_trigger": [
+      {
+        "prompt": "这个 SaaS 候选已经确认，用 Web 出海业务流水线从锁定做到上线后复盘",
+        "family": "cn_saas_full_pipeline",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.75,
+        "matched_concepts": [
+          "candidate",
+          "evidence",
+          "pipeline"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "把这个汇率工具候选锁定，做页面矩阵、证据包和当前变更批次逐页内容门禁",
+        "family": "cn_tool_lock_build",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "candidate",
+          "evidence"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "继续上次的工具站业务流水线，检查本地构建后是否满足部署门禁",
+        "family": "cn_resume_gate",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "authorization",
+          "pipeline"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "Use the web business pipeline to move this approved SaaS candidate through evidence, local verification, deployment authorization, and GSC observation",
+        "family": "en_pipeline",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.75,
+        "matched_concepts": [
+          "authorization",
+          "candidate",
+          "pipeline"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "根据 GSC 第 14 天数据决定这个出海内容站 grow、hold 还是 retire",
+        "family": "cn_growth_decision",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "authorization",
+          "evidence"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "这个 Web 业务验证完成了，区分通用基础设施和项目专属内容后沉淀模板",
+        "family": "cn_template",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "evidence",
+          "pipeline"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "复盘这个站有流量无转化的问题，区分搜索增长、转化学习和商业放大，再决定 grow、hold 还是 retire",
+        "family": "cn_commercial_validation",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "evidence",
+          "pipeline"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "把面向小企业主的培训线索业务，从客户问题假设推进到承接页、埋点和复盘",
+        "family": "cn_lead_generation_pipeline",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "evidence",
+          "pipeline"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "这个游戏词候选已经由雷达验证并由我人工确认，接入 Web 出海业务流水线继续建站",
+        "family": "cn_game_adapter_handoff",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.75,
+        "matched_concepts": [
+          "authorization",
+          "candidate",
+          "pipeline"
+        ],
+        "negative_pattern": null
+      }
+    ],
+    "should_not_trigger": [
+      {
+        "prompt": "只运行 Steam 和 Roblox 游戏热词雷达找候选",
+        "family": "radar_only",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.25,
+        "matched_concepts": [
+          "candidate"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "用 Similarweb 研究 GPT Pro 竞品当初怎么冷启动，先不要立项",
+        "family": "cold_start_research_only",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "帮我解释 Semrush KD 的含义",
+        "family": "explain_only",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "写一篇通用 SEO 教程",
+        "family": "generic_seo",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": "通用 seo"
+      },
+      {
+        "prompt": "直接替我买域名并扣款，不要确认",
+        "family": "unsafe_purchase",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "只修改企业官网联系我们页面的电话号码",
+        "family": "one_off_site_edit",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      }
+    ],
+    "near_neighbor": [
+      {
+        "prompt": "从 Steam 和 Roblox 找中腰部游戏词，再用 Semrush 验证",
+        "family": "game_keyword_radar",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "分析我现有网站的 GSC 搜索词和 CTR 机会",
+        "family": "gsc_seo_opportunity",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.25,
+        "matched_concepts": [
+          "authorization"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "把一个已经写好的普通 Next.js 网站部署到 Vercel",
+        "family": "generic_deploy",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "研究一个竞品网站的页面结构和关键词",
+        "family": "competitor_research",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "和五个小企业主访谈，帮我验证他们是否需要企业培训",
+        "family": "demand_discovery",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      }
+    ]
+  }
+}

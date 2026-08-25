@@ -1,0 +1,1843 @@
+{
+  "ok": true,
+  "complete": true,
+  "researched_at": "2026-08-24",
+  "queries": [
+    "web business validation pipeline",
+    "website launch analytics growth",
+    "SEO business monetization workflow"
+  ],
+  "metric_semantics": {
+    "skills_sh_installs": "ecosystem install telemetry; not ratings or correctness",
+    "skillsmp_repo_stars": "GitHub repository stars; not installs, ratings, or skill-specific quality",
+    "cross_catalog_score": "not calculated; metrics remain separate"
+  },
+  "query_runs": [
+    {
+      "query": "web business validation pipeline",
+      "skills_sh": "ok",
+      "skillsmp": "ok",
+      "skills_sh_candidates": 14,
+      "skillsmp_candidates": 8
+    },
+    {
+      "query": "website launch analytics growth",
+      "skills_sh": "ok",
+      "skillsmp": "ok",
+      "skills_sh_candidates": 18,
+      "skillsmp_candidates": 10
+    },
+    {
+      "query": "SEO business monetization workflow",
+      "skills_sh": "ok",
+      "skillsmp": "ok",
+      "skills_sh_candidates": 20,
+      "skillsmp_candidates": 8
+    }
+  ],
+  "candidate_family_count": 78,
+  "candidates": [
+    {
+      "family_key": "freshtechbro/claudedesignskills:blender-web-pipeline",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "freshtechbro/claudedesignskills",
+        "skill_name": "blender-web-pipeline",
+        "family_key": "freshtechbro/claudedesignskills:blender-web-pipeline",
+        "skills_sh_installs": 2200,
+        "skills_sh_installs_display": "2.2K",
+        "skills_sh_url": "https://skills.sh/freshtechbro/claudedesignskills/blender-web-pipeline"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "jezweb/claude-skills:seo-local-business",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "jezweb/claude-skills",
+        "skill_name": "seo-local-business",
+        "family_key": "jezweb/claude-skills:seo-local-business",
+        "skills_sh_installs": 1600,
+        "skills_sh_installs_display": "1.6K",
+        "skills_sh_url": "https://skills.sh/jezweb/claude-skills/seo-local-business"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "kostja94/marketing-skills:integrated-marketing",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "kostja94/marketing-skills",
+        "skill_name": "integrated-marketing",
+        "family_key": "kostja94/marketing-skills:integrated-marketing",
+        "skills_sh_installs": 888,
+        "skills_sh_installs_display": "888",
+        "skills_sh_url": "https://skills.sh/kostja94/marketing-skills/integrated-marketing"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nexscope-ai/ecommerce-skills:ecommerce-social-media-marketing",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "nexscope-ai/ecommerce-skills",
+        "skill_name": "ecommerce-social-media-marketing",
+        "family_key": "nexscope-ai/ecommerce-skills:ecommerce-social-media-marketing",
+        "skills_sh_installs": 841,
+        "skills_sh_installs_display": "841",
+        "skills_sh_url": "https://skills.sh/nexscope-ai/ecommerce-skills/ecommerce-social-media-marketing"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "arnabbagxd/brand-building-skills:brand-launch",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "arnabbagxd/brand-building-skills",
+        "skill_name": "brand-launch",
+        "family_key": "arnabbagxd/brand-building-skills:brand-launch",
+        "skills_sh_installs": 824,
+        "skills_sh_installs_display": "824",
+        "skills_sh_url": "https://skills.sh/arnabbagxd/brand-building-skills/brand-launch"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "sickn33/agentic-awesome-skills:content-marketer",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "sickn33/agentic-awesome-skills",
+        "skill_name": "content-marketer",
+        "family_key": "sickn33/agentic-awesome-skills:content-marketer",
+        "skills_sh_installs": 801,
+        "skills_sh_installs_display": "801",
+        "skills_sh_url": "https://skills.sh/sickn33/agentic-awesome-skills/content-marketer"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "kostja94/marketing-skills:open-source-strategy",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "kostja94/marketing-skills",
+        "skill_name": "open-source-strategy",
+        "family_key": "kostja94/marketing-skills:open-source-strategy",
+        "skills_sh_installs": 793,
+        "skills_sh_installs_display": "793",
+        "skills_sh_url": "https://skills.sh/kostja94/marketing-skills/open-source-strategy"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nexscope-ai/ecommerce-skills:shopify-marketing",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "nexscope-ai/ecommerce-skills",
+        "skill_name": "shopify-marketing",
+        "family_key": "nexscope-ai/ecommerce-skills:shopify-marketing",
+        "skills_sh_installs": 765,
+        "skills_sh_installs_display": "765",
+        "skills_sh_url": "https://skills.sh/nexscope-ai/ecommerce-skills/shopify-marketing"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "akin-ozer/cc-devops-skills:azure-pipelines-validator",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "akin-ozer/cc-devops-skills",
+        "skill_name": "azure-pipelines-validator",
+        "family_key": "akin-ozer/cc-devops-skills:azure-pipelines-validator",
+        "skills_sh_installs": 469,
+        "skills_sh_installs_display": "469",
+        "skills_sh_url": "https://skills.sh/akin-ozer/cc-devops-skills/azure-pipelines-validator"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "akillness/jeo-skills:marketing-automation",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "akillness/jeo-skills",
+        "skill_name": "marketing-automation",
+        "family_key": "akillness/jeo-skills:marketing-automation",
+        "skills_sh_installs": 316,
+        "skills_sh_installs_display": "316",
+        "skills_sh_url": "https://skills.sh/akillness/jeo-skills/marketing-automation"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "zzci/skills:pma-bun",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "zzci/skills",
+        "skill_name": "pma-bun",
+        "family_key": "zzci/skills:pma-bun",
+        "skills_sh_installs": 282,
+        "skills_sh_installs_display": "282",
+        "skills_sh_url": "https://skills.sh/zzci/skills/pma-bun"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "rampstackco/claude-skills:analytics-strategy",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "rampstackco/claude-skills",
+        "skill_name": "analytics-strategy",
+        "family_key": "rampstackco/claude-skills:analytics-strategy",
+        "skills_sh_installs": 162,
+        "skills_sh_installs_display": "162",
+        "skills_sh_url": "https://skills.sh/rampstackco/claude-skills/analytics-strategy"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "travisjneuman/.claude:podcast-producer",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "travisjneuman/.claude",
+        "skill_name": "podcast-producer",
+        "family_key": "travisjneuman/.claude:podcast-producer",
+        "skills_sh_installs": 130,
+        "skills_sh_installs_display": "130",
+        "skills_sh_url": "https://skills.sh/travisjneuman/.claude/podcast-producer"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nickcrew/claude-cortex:security-testing-patterns",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "nickcrew/claude-cortex",
+        "skill_name": "security-testing-patterns",
+        "family_key": "nickcrew/claude-cortex:security-testing-patterns",
+        "skills_sh_installs": 123,
+        "skills_sh_installs_display": "123",
+        "skills_sh_url": "https://skills.sh/nickcrew/claude-cortex/security-testing-patterns"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "simota/agent-skills:growth",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "simota/agent-skills",
+        "skill_name": "growth",
+        "family_key": "simota/agent-skills:growth",
+        "skills_sh_installs": 119,
+        "skills_sh_installs_display": "119",
+        "skills_sh_url": "https://skills.sh/simota/agent-skills/growth"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "datadrivenconstruction/ddc_skills_for_ai_agents_in_construction:bim-validation-pipeline",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "datadrivenconstruction/ddc_skills_for_ai_agents_in_construction",
+        "skill_name": "bim-validation-pipeline",
+        "family_key": "datadrivenconstruction/ddc_skills_for_ai_agents_in_construction:bim-validation-pipeline",
+        "skills_sh_installs": 91,
+        "skills_sh_installs_display": "91",
+        "skills_sh_url": "https://skills.sh/datadrivenconstruction/ddc_skills_for_ai_agents_in_construction/bim-validation-pipeline"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "mathews-tom/armory:idea-validator",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "mathews-tom/armory",
+        "skill_name": "idea-validator",
+        "family_key": "mathews-tom/armory:idea-validator",
+        "skills_sh_installs": 83,
+        "skills_sh_installs_display": "83",
+        "skills_sh_url": "https://skills.sh/mathews-tom/armory/idea-validator"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "finsilabs/awesome-ecommerce-skills:ecommerce-budgeting-forecasting",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "finsilabs/awesome-ecommerce-skills",
+        "skill_name": "ecommerce-budgeting-forecasting",
+        "family_key": "finsilabs/awesome-ecommerce-skills:ecommerce-budgeting-forecasting",
+        "skills_sh_installs": 76,
+        "skills_sh_installs_display": "76",
+        "skills_sh_url": "https://skills.sh/finsilabs/awesome-ecommerce-skills/ecommerce-budgeting-forecasting"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "rshade/agent-skills:lint-fix",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "rshade/agent-skills",
+        "skill_name": "lint-fix",
+        "family_key": "rshade/agent-skills:lint-fix",
+        "skills_sh_installs": 76,
+        "skills_sh_installs_display": "76",
+        "skills_sh_url": "https://skills.sh/rshade/agent-skills/lint-fix"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "sales-skills/sales:sales-third-party",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "sales-skills/sales",
+        "skill_name": "sales-third-party",
+        "family_key": "sales-skills/sales:sales-third-party",
+        "skills_sh_installs": 73,
+        "skills_sh_installs_display": "73",
+        "skills_sh_url": "https://skills.sh/sales-skills/sales/sales-third-party"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "rmyndharis/antigravity-skills:content-marketer",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "rmyndharis/antigravity-skills",
+        "skill_name": "content-marketer",
+        "family_key": "rmyndharis/antigravity-skills:content-marketer",
+        "skills_sh_installs": 56,
+        "skills_sh_installs_display": "56",
+        "skills_sh_url": "https://skills.sh/rmyndharis/antigravity-skills/content-marketer"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "fabricioctelles/skills:substack-expert",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "fabricioctelles/skills",
+        "skill_name": "substack-expert",
+        "family_key": "fabricioctelles/skills:substack-expert",
+        "skills_sh_installs": 52,
+        "skills_sh_installs_display": "52",
+        "skills_sh_url": "https://skills.sh/fabricioctelles/skills/substack-expert"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "majesticlabs-dev/majestic-marketplace:seo-content",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "majesticlabs-dev/majestic-marketplace",
+        "skill_name": "seo-content",
+        "family_key": "majesticlabs-dev/majestic-marketplace:seo-content",
+        "skills_sh_installs": 46,
+        "skills_sh_installs_display": "46",
+        "skills_sh_url": "https://skills.sh/majesticlabs-dev/majestic-marketplace/seo-content"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "garrettjsmith/localseoskills:service-area-seo",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "garrettjsmith/localseoskills",
+        "skill_name": "service-area-seo",
+        "family_key": "garrettjsmith/localseoskills:service-area-seo",
+        "skills_sh_installs": 44,
+        "skills_sh_installs_display": "44",
+        "skills_sh_url": "https://skills.sh/garrettjsmith/localseoskills/service-area-seo"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "proffesor-for-testing/agentic-qe:validation-pipeline",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "proffesor-for-testing/agentic-qe",
+        "skill_name": "validation-pipeline",
+        "family_key": "proffesor-for-testing/agentic-qe:validation-pipeline",
+        "skills_sh_installs": 44,
+        "skills_sh_installs_display": "44",
+        "skills_sh_url": "https://skills.sh/proffesor-for-testing/agentic-qe/validation-pipeline"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "ulpi-io/skills:launch-analytics",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "ulpi-io/skills",
+        "skill_name": "launch-analytics",
+        "family_key": "ulpi-io/skills:launch-analytics",
+        "skills_sh_installs": 42,
+        "skills_sh_installs_display": "42",
+        "skills_sh_url": "https://skills.sh/ulpi-io/skills/launch-analytics"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "yoanbernabeu/producthunt-skills:ph-profile-optimizer",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "yoanbernabeu/producthunt-skills",
+        "skill_name": "ph-profile-optimizer",
+        "family_key": "yoanbernabeu/producthunt-skills:ph-profile-optimizer",
+        "skills_sh_installs": 42,
+        "skills_sh_installs_display": "42",
+        "skills_sh_url": "https://skills.sh/yoanbernabeu/producthunt-skills/ph-profile-optimizer"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "yoanbernabeu/producthunt-skills:ph-seo-benefits",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "yoanbernabeu/producthunt-skills",
+        "skill_name": "ph-seo-benefits",
+        "family_key": "yoanbernabeu/producthunt-skills:ph-seo-benefits",
+        "skills_sh_installs": 42,
+        "skills_sh_installs_display": "42",
+        "skills_sh_url": "https://skills.sh/yoanbernabeu/producthunt-skills/ph-seo-benefits"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "alexsmedile/hormozi-skills:business-model",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "alexsmedile/hormozi-skills",
+        "skill_name": "business-model",
+        "family_key": "alexsmedile/hormozi-skills:business-model",
+        "skills_sh_installs": 39,
+        "skills_sh_installs_display": "39",
+        "skills_sh_url": "https://skills.sh/alexsmedile/hormozi-skills/business-model"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "androidpoet/playconsole-cli-skills:gpc-monetization",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "androidpoet/playconsole-cli-skills",
+        "skill_name": "gpc-monetization",
+        "family_key": "androidpoet/playconsole-cli-skills:gpc-monetization",
+        "skills_sh_installs": 31,
+        "skills_sh_installs_display": "31",
+        "skills_sh_url": "https://skills.sh/androidpoet/playconsole-cli-skills/gpc-monetization"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "aaaaqwq/agi-super-team:content-marketer",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "aaaaqwq/agi-super-team",
+        "skill_name": "content-marketer",
+        "family_key": "aaaaqwq/agi-super-team:content-marketer",
+        "skills_sh_installs": 26,
+        "skills_sh_installs_display": "26",
+        "skills_sh_url": "https://skills.sh/aaaaqwq/agi-super-team/content-marketer"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "swan-gtm/gtm-skills:seo-business-context",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "swan-gtm/gtm-skills",
+        "skill_name": "seo-business-context",
+        "family_key": "swan-gtm/gtm-skills:seo-business-context",
+        "skills_sh_installs": 25,
+        "skills_sh_installs_display": "25",
+        "skills_sh_url": "https://skills.sh/swan-gtm/gtm-skills/seo-business-context"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "swan-gtm/gtm-skills:seo-business-fit-filter",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "swan-gtm/gtm-skills",
+        "skill_name": "seo-business-fit-filter",
+        "family_key": "swan-gtm/gtm-skills:seo-business-fit-filter",
+        "skills_sh_installs": 25,
+        "skills_sh_installs_display": "25",
+        "skills_sh_url": "https://skills.sh/swan-gtm/gtm-skills/seo-business-fit-filter"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "sales-skills/sales:sales-beehiiv",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "sales-skills/sales",
+        "skill_name": "sales-beehiiv",
+        "family_key": "sales-skills/sales:sales-beehiiv",
+        "skills_sh_installs": 20,
+        "skills_sh_installs_display": "20",
+        "skills_sh_url": "https://skills.sh/sales-skills/sales/sales-beehiiv"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nirholas/xactions:creator-monetization",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "nirholas/xactions",
+        "skill_name": "creator-monetization",
+        "family_key": "nirholas/xactions:creator-monetization",
+        "skills_sh_installs": 17,
+        "skills_sh_installs_display": "17",
+        "skills_sh_url": "https://skills.sh/nirholas/xactions/creator-monetization"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "composio-community/opencode-skills:claude-seo-workflows",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "composio-community/opencode-skills",
+        "skill_name": "claude-seo-workflows",
+        "family_key": "composio-community/opencode-skills:claude-seo-workflows",
+        "skills_sh_installs": 16,
+        "skills_sh_installs_display": "16",
+        "skills_sh_url": "https://skills.sh/composio-community/opencode-skills/claude-seo-workflows"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "danzam98/claude-skills-toolkit:e2e-pipeline-validator",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "danzam98/claude-skills-toolkit",
+        "skill_name": "e2e-pipeline-validator",
+        "family_key": "danzam98/claude-skills-toolkit:e2e-pipeline-validator",
+        "skills_sh_installs": 14,
+        "skills_sh_installs_display": "14",
+        "skills_sh_url": "https://skills.sh/danzam98/claude-skills-toolkit/e2e-pipeline-validator"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "ariktulcha/biz-reporter:biz-reporter",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "ariktulcha/biz-reporter",
+        "skill_name": "biz-reporter",
+        "family_key": "ariktulcha/biz-reporter:biz-reporter",
+        "skills_sh_installs": 13,
+        "skills_sh_installs_display": "13",
+        "skills_sh_url": "https://skills.sh/ariktulcha/biz-reporter/biz-reporter"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "slooowshutter/skills:blendai-issue-tagging",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "slooowshutter/skills",
+        "skill_name": "blendai-issue-tagging",
+        "family_key": "slooowshutter/skills:blendai-issue-tagging",
+        "skills_sh_installs": 13,
+        "skills_sh_installs_display": "13",
+        "skills_sh_url": "https://skills.sh/slooowshutter/skills/blendai-issue-tagging"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "larsartmann/skills:website-launch",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "larsartmann/skills",
+        "skill_name": "website-launch",
+        "family_key": "larsartmann/skills:website-launch",
+        "skills_sh_installs": 12,
+        "skills_sh_installs_display": "12",
+        "skills_sh_url": "https://skills.sh/larsartmann/skills/website-launch"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "duc01226/easyplatform:workflow-business-evaluation",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "duc01226/easyplatform",
+        "skill_name": "workflow-business-evaluation",
+        "family_key": "duc01226/easyplatform:workflow-business-evaluation",
+        "skills_sh_installs": 9,
+        "skills_sh_installs_display": "9",
+        "skills_sh_url": "https://skills.sh/duc01226/easyplatform/workflow-business-evaluation"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "microsoft/github-copilot-modernization:business-workflows",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "microsoft/github-copilot-modernization",
+        "skill_name": "business-workflows",
+        "family_key": "microsoft/github-copilot-modernization:business-workflows",
+        "skills_sh_installs": 8,
+        "skills_sh_installs_display": "8",
+        "skills_sh_url": "https://skills.sh/microsoft/github-copilot-modernization/business-workflows"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "howells/arc:seo",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "howells/arc",
+        "skill_name": "seo",
+        "family_key": "howells/arc:seo",
+        "skills_sh_installs": 6,
+        "skills_sh_installs_display": "6",
+        "skills_sh_url": "https://skills.sh/howells/arc/seo"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "peterbamuhigire/proposal-skills:website-design-proposal-strategy",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "peterbamuhigire/proposal-skills",
+        "skill_name": "website-design-proposal-strategy",
+        "family_key": "peterbamuhigire/proposal-skills:website-design-proposal-strategy",
+        "skills_sh_installs": 6,
+        "skills_sh_installs_display": "6",
+        "skills_sh_url": "https://skills.sh/peterbamuhigire/proposal-skills/website-design-proposal-strategy"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "tom54699/agent-skills:business-logic-workflow",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "SEO business monetization workflow",
+        "owner_repo": "tom54699/agent-skills",
+        "skill_name": "business-logic-workflow",
+        "family_key": "tom54699/agent-skills:business-logic-workflow",
+        "skills_sh_installs": 6,
+        "skills_sh_installs_display": "6",
+        "skills_sh_url": "https://skills.sh/tom54699/agent-skills/business-logic-workflow"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "vertile-ai/skills:web-coding-skills-crm-workspace",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "vertile-ai/skills",
+        "skill_name": "web-coding-skills-crm-workspace",
+        "family_key": "vertile-ai/skills:web-coding-skills-crm-workspace",
+        "skills_sh_installs": 6,
+        "skills_sh_installs_display": "6",
+        "skills_sh_url": "https://skills.sh/vertile-ai/skills/web-coding-skills-crm-workspace"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "vertile-ai/skills:web-coding-skills-object-storage-pipeline",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "vertile-ai/skills",
+        "skill_name": "web-coding-skills-object-storage-pipeline",
+        "family_key": "vertile-ai/skills:web-coding-skills-object-storage-pipeline",
+        "skills_sh_installs": 6,
+        "skills_sh_installs_display": "6",
+        "skills_sh_url": "https://skills.sh/vertile-ai/skills/web-coding-skills-object-storage-pipeline"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "pesty-marketing/agent-skills:website-launch-impact-report",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "pesty-marketing/agent-skills",
+        "skill_name": "website-launch-impact-report",
+        "family_key": "pesty-marketing/agent-skills:website-launch-impact-report",
+        "skills_sh_installs": 5,
+        "skills_sh_installs_display": "5",
+        "skills_sh_url": "https://skills.sh/pesty-marketing/agent-skills/website-launch-impact-report"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "samuelcastro/startup-skills:growth-analytics",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "website launch analytics growth",
+        "owner_repo": "samuelcastro/startup-skills",
+        "skill_name": "growth-analytics",
+        "family_key": "samuelcastro/startup-skills:growth-analytics",
+        "skills_sh_installs": 5,
+        "skills_sh_installs_display": "5",
+        "skills_sh_url": "https://skills.sh/samuelcastro/startup-skills/growth-analytics"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "eduardokanema/skills:business-idea-validation",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "eduardokanema/skills",
+        "skill_name": "business-idea-validation",
+        "family_key": "eduardokanema/skills:business-idea-validation",
+        "skills_sh_installs": 4,
+        "skills_sh_installs_display": "4",
+        "skills_sh_url": "https://skills.sh/eduardokanema/skills/business-idea-validation"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "joacod/skills:business-idea-validator",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "joacod/skills",
+        "skill_name": "business-idea-validator",
+        "family_key": "joacod/skills:business-idea-validator",
+        "skills_sh_installs": 3,
+        "skills_sh_installs_display": "3",
+        "skills_sh_url": "https://skills.sh/joacod/skills/business-idea-validator"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nvidia/model-optimizer:eagle3-validate",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": {
+        "source": "skills.sh",
+        "query": "web business validation pipeline",
+        "owner_repo": "nvidia/model-optimizer",
+        "skill_name": "eagle3-validate",
+        "family_key": "nvidia/model-optimizer:eagle3-validate",
+        "skills_sh_installs": 3,
+        "skills_sh_installs_display": "3",
+        "skills_sh_url": "https://skills.sh/nvidia/model-optimizer/eagle3-validate"
+      },
+      "skillsmp": null,
+      "catalogs": [
+        "skills.sh"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "openclaw/openclaw:auto-qa",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "auto-qa",
+        "author": "openclaw",
+        "description": "Continuously audit, live-test, and stress-test the current OpenClaw codebase across at least ten independently scoped subsystem lanes; default to 100 independently verified, landed root-cause fixes, maintain an evidence-backed report, and announce each merged pull request immediately. Use for OpenClaw-wide autonomous QA, live-provider campaigns, gateway, CLI, web, plugin, native-app, scenario, packaging, and extended soak testing.",
+        "content_language": "en",
+        "github_url": "https://github.com/openclaw/openclaw/tree/main/.agents/skills/auto-qa",
+        "skillsmp_url": "https://skillsmp.com/creators/openclaw/openclaw/agents-skills-auto-qa",
+        "repo_stars": 386620,
+        "catalog_updated_at": "2026-08-16T15:25:04+00:00",
+        "source_key": "openclaw/openclaw:.agents/skills/auto-qa",
+        "family_key": "openclaw/openclaw:auto-qa",
+        "aliases": [],
+        "query": "web business validation pipeline"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "openclaw/openclaw:browser-automation",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "browser-automation",
+        "author": "openclaw",
+        "description": "Use when controlling web pages with the OpenClaw browser tool, especially multi-step flows, login checks, tab management, or recovery from stale refs/timeouts.",
+        "content_language": "en",
+        "github_url": "https://github.com/openclaw/openclaw/tree/main/extensions/browser/skills/browser-automation",
+        "skillsmp_url": "https://skillsmp.com/creators/openclaw/openclaw/extensions-browser-skills-browser-automation",
+        "repo_stars": 386620,
+        "catalog_updated_at": "2026-08-07T01:32:14+00:00",
+        "source_key": "openclaw/openclaw:extensions/browser/skills/browser-automation",
+        "family_key": "openclaw/openclaw:browser-automation",
+        "aliases": [],
+        "query": "web business validation pipeline"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "openclaw/openclaw:tavily",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "tavily",
+        "author": "openclaw",
+        "description": "Tavily web search, content extraction, and research tools.",
+        "content_language": "en",
+        "github_url": "https://github.com/openclaw/openclaw/tree/main/extensions/tavily/skills/tavily",
+        "skillsmp_url": "https://skillsmp.com/creators/openclaw/openclaw/extensions-tavily-skills-tavily",
+        "repo_stars": 386620,
+        "catalog_updated_at": "2026-03-20T05:06:26+00:00",
+        "source_key": "openclaw/openclaw:extensions/tavily/skills/tavily",
+        "family_key": "openclaw/openclaw:tavily",
+        "aliases": [],
+        "query": "web business validation pipeline"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "openclaw/openclaw:weather",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "weather",
+        "author": "openclaw",
+        "description": "Current weather and forecasts with web_fetch, falling back to wttr.in curl for locations, rain, temperature, travel planning.",
+        "content_language": "en",
+        "github_url": "https://github.com/openclaw/openclaw/tree/main/skills/weather",
+        "skillsmp_url": "https://skillsmp.com/creators/openclaw/openclaw/skills-weather",
+        "repo_stars": 386620,
+        "catalog_updated_at": "2026-06-05T18:35:55+00:00",
+        "source_key": "openclaw/openclaw:skills/weather",
+        "family_key": "openclaw/openclaw:weather",
+        "aliases": [],
+        "query": "web business validation pipeline"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "affaan-m/ecc:deep-research",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "deep-research",
+        "author": "affaan-m",
+        "description": "Multi-source deep research using firecrawl and exa MCPs. Searches the web, synthesizes findings, and delivers cited reports with source attribution. Use when the user wants thorough research on any topic with evidence and citations.",
+        "content_language": "en",
+        "github_url": "https://github.com/affaan-m/ECC/tree/main/.agents/skills/deep-research",
+        "skillsmp_url": "https://skillsmp.com/creators/affaan-m/ecc/agents-skills-deep-research",
+        "repo_stars": 241055,
+        "catalog_updated_at": "2026-04-29T02:10:17+00:00",
+        "source_key": "affaan-m/ecc:.agents/skills/deep-research",
+        "family_key": "affaan-m/ecc:deep-research",
+        "aliases": [],
+        "query": "web business validation pipeline"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "affaan-m/ecc:exa-search",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "exa-search",
+        "author": "affaan-m",
+        "description": "Neural search via Exa MCP for web, code, and company research. Use when the user needs web search, code examples, company intel, people lookup, or AI-powered deep research with Exa's neural search engine.",
+        "content_language": "en",
+        "github_url": "https://github.com/affaan-m/ECC/tree/main/skills/exa-search",
+        "skillsmp_url": "https://skillsmp.com/creators/affaan-m/ecc/skills-exa-search",
+        "repo_stars": 241055,
+        "catalog_updated_at": "2026-06-11T12:12:21+00:00",
+        "source_key": "affaan-m/ecc:skills/exa-search",
+        "family_key": "affaan-m/ecc:exa-search",
+        "aliases": [
+          {
+            "language": "en",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/.agents/skills/exa-search"
+          }
+        ],
+        "query": "web business validation pipeline"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "affaan-m/ecc:frontend-design-direction",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "frontend-design-direction",
+        "author": "affaan-m",
+        "description": "Set an ECC-specific frontend design direction for production UI work. Use when building or improving websites, dashboards, applications, components, landing pages, visual tools, or any web UI that needs stronger product-specific design judgment.",
+        "content_language": "en",
+        "github_url": "https://github.com/affaan-m/ECC/tree/main/skills/frontend-design-direction",
+        "skillsmp_url": "https://skillsmp.com/creators/affaan-m/ecc/skills-frontend-design-direction",
+        "repo_stars": 241055,
+        "catalog_updated_at": "2026-06-11T12:12:21+00:00",
+        "source_key": "affaan-m/ecc:skills/frontend-design-direction",
+        "family_key": "affaan-m/ecc:frontend-design-direction",
+        "aliases": [],
+        "query": "website launch analytics growth"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "affaan-m/ecc:seo",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "seo",
+        "author": "affaan-m",
+        "description": "Audit, plan, and implement SEO improvements across technical SEO, on-page optimization, structured data, Core Web Vitals, and content strategy. Use when the user wants better search visibility, SEO remediation, schema markup, sitemap/robots work, or keyword mapping.",
+        "content_language": "en",
+        "github_url": "https://github.com/affaan-m/ECC/tree/main/skills/seo",
+        "skillsmp_url": "https://skillsmp.com/creators/affaan-m/ecc/skills-seo",
+        "repo_stars": 241055,
+        "catalog_updated_at": "2026-06-11T12:12:21+00:00",
+        "source_key": "affaan-m/ecc:skills/seo",
+        "family_key": "affaan-m/ecc:seo",
+        "aliases": [
+          {
+            "language": "zh",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/zh-CN/skills/seo"
+          },
+          {
+            "language": "zh",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/zh-CN/skills/seo"
+          },
+          {
+            "language": "ja",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/ja-JP/skills/seo"
+          }
+        ],
+        "query": "SEO business monetization workflow"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "affaan-m/ecc:skill-scout",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "skill-scout",
+        "author": "affaan-m",
+        "description": "新しいスキルを作成する前に、ローカル・マーケットプレイス・GitHub・Webの既存スキルを検索する。スキルの作成・ビルド・フォーク・検索を行う際に使用。",
+        "content_language": "ja",
+        "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/ja-JP/skills/skill-scout",
+        "skillsmp_url": "https://skillsmp.com/creators/affaan-m/ecc/docs-ja-jp-skills-skill-scout",
+        "repo_stars": 241055,
+        "catalog_updated_at": "2026-05-17T06:31:40+00:00",
+        "source_key": "affaan-m/ecc:docs/ja-jp/skills/skill-scout",
+        "family_key": "affaan-m/ecc:skill-scout",
+        "aliases": [],
+        "query": "web business validation pipeline"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "affaan-m/ecc:ui-demo",
+      "queries": [
+        "web business validation pipeline"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "ui-demo",
+        "author": "affaan-m",
+        "description": "Playwrightを使用して美しいUIデモ動画を録画する。ユーザーがWebアプリのデモ、ウォークスルー、スクリーン録画、またはチュートリアル動画の作成を求める場合に使用する。可視カーソル、自然なリズム、プロフェッショナルな仕上がりのWebM動画を生成する。",
+        "content_language": "ja",
+        "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/ja-JP/skills/ui-demo",
+        "skillsmp_url": "https://skillsmp.com/creators/affaan-m/ecc/docs-ja-jp-skills-ui-demo",
+        "repo_stars": 241055,
+        "catalog_updated_at": "2026-05-17T06:31:40+00:00",
+        "source_key": "affaan-m/ecc:docs/ja-jp/skills/ui-demo",
+        "family_key": "affaan-m/ecc:ui-demo",
+        "aliases": [
+          {
+            "language": "zh",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/zh-CN/skills/ui-demo"
+          },
+          {
+            "language": "zh",
+            "github_url": "https://github.com/affaan-m/ECC/tree/main/docs/zh-CN/skills/ui-demo"
+          }
+        ],
+        "query": "web business validation pipeline"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "deepseek-ai/deepseek-harness:dsh-doc-site-sync",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "dsh-doc-site-sync",
+        "author": "deepseek-ai",
+        "description": "Use when publishing, updating, moving, or removing DeepSeek Harness documentation website pages; editing website/docs.ts mappings or navigation; diagnosing a page missing from the VitePress site; fixing projected documentation links; or running the docs:dev, docs:check, and doc-sync workflow after website-content changes.",
+        "content_language": "en",
+        "github_url": "https://github.com/deepseek-ai/deepseek-harness/tree/master/.agents/skills/dsh-doc-site-sync",
+        "skillsmp_url": "https://skillsmp.com/creators/deepseek-ai/deepseek-harness/agents-skills-dsh-doc-site-sync",
+        "repo_stars": 148602,
+        "catalog_updated_at": "2026-08-13T06:30:17+00:00",
+        "source_key": "deepseek-ai/deepseek-harness:.agents/skills/dsh-doc-site-sync",
+        "family_key": "deepseek-ai/deepseek-harness:dsh-doc-site-sync",
+        "aliases": [],
+        "query": "website launch analytics growth"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nextlevelbuilder/ui-ux-pro-max-skill:banner-design",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "banner-design",
+        "author": "nextlevelbuilder",
+        "description": "Design banners for social media, ads, website heroes, creative assets, and print. Multiple art direction options with AI-generated visuals. Actions: design, create, generate banner. Platforms: Facebook, Twitter/X, LinkedIn, YouTube, Instagram, Google Display, website hero, print. Styles: minimalist, gradient, bold typography, photo-based, illustrated, geometric, retro, glassmorphism, 3D, neon, duotone, editorial, collage. Uses ui-ux-pro-max, frontend-design, ai-artist, ai-multimodal skills.",
+        "content_language": "en",
+        "github_url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/main/.claude/skills/banner-design",
+        "skillsmp_url": "https://skillsmp.com/creators/nextlevelbuilder/ui-ux-pro-max-skill/claude-skills-banner-design",
+        "repo_stars": 118099,
+        "catalog_updated_at": "2026-06-25T09:43:46+00:00",
+        "source_key": "nextlevelbuilder/ui-ux-pro-max-skill:.claude/skills/banner-design",
+        "family_key": "nextlevelbuilder/ui-ux-pro-max-skill:banner-design",
+        "aliases": [],
+        "query": "website launch analytics growth"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "browser-use/browser-use:qa",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "qa",
+        "author": "browser-use",
+        "description": "QA-test a website or web app and return a 1-5 quality score (5 = flawless, 1 = broken) with evidence. Use when the user wants to test, QA, evaluate, score, or \"check how good\" a site, page, flow, or app — including a local dev server (e.g. \"qa test localhost:5173\", \"does the checkout work?\", \"rate this landing page\"). Drives a real Browser Use cloud browser, tunneling localhost automatically.",
+        "content_language": "en",
+        "github_url": "https://github.com/browser-use/browser-use/tree/main/skills/qa",
+        "skillsmp_url": "https://skillsmp.com/creators/browser-use/browser-use/skills-qa",
+        "repo_stars": 109611,
+        "catalog_updated_at": "2026-06-20T18:16:47+00:00",
+        "source_key": "browser-use/browser-use:skills/qa",
+        "family_key": "browser-use/browser-use:qa",
+        "aliases": [],
+        "query": "website launch analytics growth"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "browser-use/browser-use:remote-browser",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "remote-browser",
+        "author": "browser-use",
+        "description": "Controls a local browser from a sandboxed remote machine. Use when the agent is running in a sandbox (no GUI) and needs to navigate websites, interact with web pages, fill forms, take screenshots, or expose local dev servers via tunnels.",
+        "content_language": "en",
+        "github_url": "https://github.com/browser-use/browser-use/tree/main/skills/remote-browser",
+        "skillsmp_url": "https://skillsmp.com/creators/browser-use/browser-use/skills-remote-browser",
+        "repo_stars": 109611,
+        "catalog_updated_at": "2026-03-25T00:27:38+00:00",
+        "source_key": "browser-use/browser-use:skills/remote-browser",
+        "family_key": "browser-use/browser-use:remote-browser",
+        "aliases": [],
+        "query": "website launch analytics growth"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nexu-io/open-design:brand-extract",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "brand-extract",
+        "author": "nexu-io",
+        "description": "Extract a complete Brand Kit from a live website by driving the in-app\nbrowser. Use when a brand-extraction project opens with a site in the Browser\ntab, or when the user asks to \"extract a brand\", \"pull the brand from <url>\",\n\"get the colors/fonts/logo from this site\", or build a brand/design system\nfrom a reference website. Pairs with the agent-browser tool for measurement\nand pauses for the user when an anti-bot wall blocks the page.",
+        "content_language": "en",
+        "github_url": "https://github.com/nexu-io/open-design/tree/main/skills/brand-extract",
+        "skillsmp_url": "https://skillsmp.com/creators/nexu-io/open-design/skills-brand-extract",
+        "repo_stars": 89136,
+        "catalog_updated_at": "2026-06-30T13:22:29+00:00",
+        "source_key": "nexu-io/open-design:skills/brand-extract",
+        "family_key": "nexu-io/open-design:brand-extract",
+        "aliases": [],
+        "query": "website launch analytics growth"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nexu-io/open-design:high-end-visual-design",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "high-end-visual-design",
+        "author": "nexu-io",
+        "description": "Teaches the AI to design like a high-end agency. Defines the exact fonts, spacing, shadows, card structures, and animations that make a website feel expensive. Blocks all the common defaults that make AI designs look cheap or generic.",
+        "content_language": "en",
+        "github_url": "https://github.com/nexu-io/open-design/tree/main/plugins/community/agent-skill-principal-ui-ux-architect-motion-choreographer-awwwards-tier-mqu4mbbj",
+        "skillsmp_url": "https://skillsmp.com/creators/nexu-io/open-design/plugins-community-agent-skill-principal-ui-ux-architect-motion-choreographer-awwwards-tier-mqu4mbbj",
+        "repo_stars": 89136,
+        "catalog_updated_at": "2026-08-18T07:09:45+00:00",
+        "source_key": "nexu-io/open-design:plugins/community/agent-skill-principal-ui-ux-architect-motion-choreographer-awwwards-tier-mqu4mbbj",
+        "family_key": "nexu-io/open-design:high-end-visual-design",
+        "aliases": [],
+        "query": "website launch analytics growth"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nexu-io/open-design:image-to-code",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "image-to-code",
+        "author": "nexu-io",
+        "description": "Elite website image-to-code skill for Codex. For visually important web tasks, it must first generate the design image(s) itself, deeply analyze them, then implement the website to match them as closely as possible. In Codex, it must prefer large, readable, section-specific images instead of tiny compressed boards, generate fresh standalone images for sections or detail views instead of cropping old ones, avoid lazy under-generation, avoid cards-inside-cards-inside-cards UI, and keep the hero clean, spacious, readable, and visible on a small laptop.",
+        "content_language": "en",
+        "github_url": "https://github.com/nexu-io/open-design/tree/main/skills/image-to-code-skill",
+        "skillsmp_url": "https://skillsmp.com/creators/nexu-io/open-design/skills-image-to-code-skill",
+        "repo_stars": 89136,
+        "catalog_updated_at": "2026-06-02T07:34:30+00:00",
+        "source_key": "nexu-io/open-design:skills/image-to-code-skill",
+        "family_key": "nexu-io/open-design:image-to-code",
+        "aliases": [],
+        "query": "website launch analytics growth"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nexu-io/open-design:imagegen-frontend-web",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "imagegen-frontend-web",
+        "author": "nexu-io",
+        "description": "Elite frontend image-direction skill for generating premium, conversion-aware website design references. CRITICAL OUTPUT RULE — generate ONE separate horizontal image FOR EVERY section. A landing page with 8 sections produces 8 images. Never compress multiple sections into one image. Enforces composition variety (not always left-text / right-image), background-image freedom, varied CTAs, varied hero scales (giant / mid / mini minimalist), narrative concept spine, second-read moments, and a single consistent palette across all images. Optimized for landing pages, marketing sites, and product comps that developers or coding models can accurately recreate.",
+        "content_language": "en",
+        "github_url": "https://github.com/nexu-io/open-design/tree/main/skills/imagegen-frontend-web",
+        "skillsmp_url": "https://skillsmp.com/creators/nexu-io/open-design/skills-imagegen-frontend-web",
+        "repo_stars": 89136,
+        "catalog_updated_at": "2026-06-02T07:34:30+00:00",
+        "source_key": "nexu-io/open-design:skills/imagegen-frontend-web",
+        "family_key": "nexu-io/open-design:imagegen-frontend-web",
+        "aliases": [],
+        "query": "website launch analytics growth"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "nexu-io/open-design:pixelbin-media",
+      "queries": [
+        "website launch analytics growth"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "pixelbin-media",
+        "author": "nexu-io",
+        "description": "Generate and edit images and videos with an 85+ API portfolio and build visually appealing website pages via Pixelbin.",
+        "content_language": "en",
+        "github_url": "https://github.com/nexu-io/open-design/tree/main/skills/pixelbin-media",
+        "skillsmp_url": "https://skillsmp.com/creators/nexu-io/open-design/skills-pixelbin-media",
+        "repo_stars": 89136,
+        "catalog_updated_at": "2026-08-18T07:09:45+00:00",
+        "source_key": "nexu-io/open-design:skills/pixelbin-media",
+        "family_key": "nexu-io/open-design:pixelbin-media",
+        "aliases": [],
+        "query": "website launch analytics growth"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "lobehub/lobehub:split-micro-app",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "split-micro-app",
+        "author": "lobehub",
+        "description": "Use when splitting a monorepo surface into a standalone micro app (React Router SSR on Cloudflare Workers), fighting SSR bundle bloat from main-src imports, deploying its assets to CDN/R2, adding SEO/OG meta to an SSR page, adding a target and route rules for it in the lobehub gateway (torii), wiring it into the OSS Docker image, or deciding whether Cloud Next should still build or rewrite it.",
+        "content_language": "en",
+        "github_url": "https://github.com/lobehub/lobehub/tree/canary/.agents/skills/split-micro-app",
+        "skillsmp_url": "https://skillsmp.com/creators/lobehub/lobehub/agents-skills-split-micro-app",
+        "repo_stars": 81820,
+        "catalog_updated_at": "2026-08-19T10:44:11+00:00",
+        "source_key": "lobehub/lobehub:.agents/skills/split-micro-app",
+        "family_key": "lobehub/lobehub:split-micro-app",
+        "aliases": [],
+        "query": "SEO business monetization workflow"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "thedaviddias/front-end-checklist:meta-title",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "meta-title",
+        "author": "thedaviddias",
+        "description": "Use when auditing page metadata or generating SEO-optimized titles. Applies to every HTML page that should appear in search results.",
+        "content_language": "en",
+        "github_url": "https://github.com/thedaviddias/Front-End-Checklist/tree/main/skills/meta-title",
+        "skillsmp_url": "https://skillsmp.com/creators/thedaviddias/front-end-checklist/skills-meta-title",
+        "repo_stars": 73561,
+        "catalog_updated_at": "2026-05-29T21:54:06+00:00",
+        "source_key": "thedaviddias/front-end-checklist:skills/meta-title",
+        "family_key": "thedaviddias/front-end-checklist:meta-title",
+        "aliases": [],
+        "query": "SEO business monetization workflow"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "thedaviddias/front-end-checklist:nap-consistency",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "nap-consistency",
+        "author": "thedaviddias",
+        "description": "Use when auditing a local business website for local SEO. Applies to any business that has a physical address and wants to appear in local search results or Google Maps.",
+        "content_language": "en",
+        "github_url": "https://github.com/thedaviddias/Front-End-Checklist/tree/main/skills/nap-consistency",
+        "skillsmp_url": "https://skillsmp.com/creators/thedaviddias/front-end-checklist/skills-nap-consistency",
+        "repo_stars": 73561,
+        "catalog_updated_at": "2026-05-29T21:54:06+00:00",
+        "source_key": "thedaviddias/front-end-checklist:skills/nap-consistency",
+        "family_key": "thedaviddias/front-end-checklist:nap-consistency",
+        "aliases": [],
+        "query": "SEO business monetization workflow"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "thedaviddias/front-end-checklist:quality",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "quality",
+        "author": "thedaviddias",
+        "description": "Use when evaluating content pages for SEO quality. Applies to blog posts, product descriptions, landing pages, or any page expected to receive organic search traffic.",
+        "content_language": "en",
+        "github_url": "https://github.com/thedaviddias/Front-End-Checklist/tree/main/skills/quality",
+        "skillsmp_url": "https://skillsmp.com/creators/thedaviddias/front-end-checklist/skills-quality",
+        "repo_stars": 73561,
+        "catalog_updated_at": "2026-05-29T21:54:06+00:00",
+        "source_key": "thedaviddias/front-end-checklist:skills/quality",
+        "family_key": "thedaviddias/front-end-checklist:quality",
+        "aliases": [],
+        "query": "SEO business monetization workflow"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "thedaviddias/front-end-checklist:reading-level",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "reading-level",
+        "author": "thedaviddias",
+        "description": "Use when reviewing content pages for user experience and SEO. Applies to blog posts, landing pages, how-to guides, and any long-form content intended for a broad audience.",
+        "content_language": "en",
+        "github_url": "https://github.com/thedaviddias/Front-End-Checklist/tree/main/skills/reading-level",
+        "skillsmp_url": "https://skillsmp.com/creators/thedaviddias/front-end-checklist/skills-reading-level",
+        "repo_stars": 73561,
+        "catalog_updated_at": "2026-05-29T21:54:06+00:00",
+        "source_key": "thedaviddias/front-end-checklist:skills/reading-level",
+        "family_key": "thedaviddias/front-end-checklist:reading-level",
+        "aliases": [],
+        "query": "SEO business monetization workflow"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "thedaviddias/front-end-checklist:robots-txt",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "robots-txt",
+        "author": "thedaviddias",
+        "description": "Use when applies to any public website. Use when auditing technical SEO foundations or diagnosing crawl coverage gaps.",
+        "content_language": "en",
+        "github_url": "https://github.com/thedaviddias/Front-End-Checklist/tree/main/skills/robots-txt",
+        "skillsmp_url": "https://skillsmp.com/creators/thedaviddias/front-end-checklist/skills-robots-txt",
+        "repo_stars": 73561,
+        "catalog_updated_at": "2026-05-29T21:54:06+00:00",
+        "source_key": "thedaviddias/front-end-checklist:skills/robots-txt",
+        "family_key": "thedaviddias/front-end-checklist:robots-txt",
+        "aliases": [],
+        "query": "SEO business monetization workflow"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    },
+    {
+      "family_key": "thedaviddias/front-end-checklist:service-area",
+      "queries": [
+        "SEO business monetization workflow"
+      ],
+      "skills_sh": null,
+      "skillsmp": {
+        "source": "skillsmp",
+        "name": "service-area",
+        "author": "thedaviddias",
+        "description": "Use when applies to service businesses (plumbers, lawyers, consultants) serving multiple regions. Use when planning local SEO strategy for businesses without brick-and-mortar locations in every city.",
+        "content_language": "en",
+        "github_url": "https://github.com/thedaviddias/Front-End-Checklist/tree/main/skills/service-area",
+        "skillsmp_url": "https://skillsmp.com/creators/thedaviddias/front-end-checklist/skills-service-area",
+        "repo_stars": 73561,
+        "catalog_updated_at": "2026-05-29T21:54:06+00:00",
+        "source_key": "thedaviddias/front-end-checklist:skills/service-area",
+        "family_key": "thedaviddias/front-end-checklist:service-area",
+        "aliases": [],
+        "query": "SEO business monetization workflow"
+      },
+      "catalogs": [
+        "skillsmp"
+      ],
+      "requires_source_review": true
+    }
+  ],
+  "missing_evidence": [],
+  "next_steps": [
+    "shortlist by job relevance and role coverage, not combined popularity",
+    "open canonical GitHub source and inspect SKILL.md before adoption",
+    "verify license, maintenance, permissions, security, duplication, and rating evidence",
+    "write keep/adapt/reject/invent synthesis before authoring"
+  ]
+}

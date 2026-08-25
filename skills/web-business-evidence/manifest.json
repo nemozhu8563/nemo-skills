@@ -1,0 +1,55 @@
+{
+  "name": "web-business-evidence",
+  "version": "1.0.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-24",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "dependencies": [
+    {
+      "skill": "web-business-pipeline",
+      "version": ">=1.0.0",
+      "required": true
+    }
+  ],
+  "intent": {
+    "job_to_be_done": "把“有素材”升级为逐页可引用、逐条 claim 可核验的证据包，让后续内容无法用相似产品、竞品转述或模型记忆补空。",
+    "target_users": [
+      "Nemo",
+      "Web business operator"
+    ],
+    "inputs": [
+      "初次建站为 `planned`；优化/扩展模式仅由 `$web-business-expander` 在 `grow` 中调用"
+    ],
+    "outputs": [
+      "来源注册表及可靠性/时效信息",
+      "逐页至少两条独立来源覆盖",
+      "claim 到 source 的可审计映射",
+      "researched gate 或 optimization/expansion validation 结果"
+    ],
+    "exclusions": [
+      "复制竞品全文或专有数据",
+      "用 AI 摘要制造第二来源",
+      "在证据不足时补出价格、功能、数字、日期、可用状态或官方 URL"
+    ]
+  },
+  "release_gates": [
+    "central_pipeline_dependency",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "trigger_eval",
+    "export_skill_ir",
+    "suite_contract_tests",
+    "action_boundary",
+    "missing_evidence_guard"
+  ]
+}

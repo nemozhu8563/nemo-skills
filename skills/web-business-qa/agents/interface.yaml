@@ -1,0 +1,52 @@
+interface:
+  display_name: "Web Business QA"
+  short_description: "完成本地构建、内容人工审核和部署就绪门禁"
+  default_prompt: "Use $web-business-qa within the central web-business-pipeline contract. Verify the current stage, own only this stage's artifacts, pass the central semantic gate, and report blockers without claiming external completion."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "python3"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "none for local QA; browser access may inspect a local preview only"
+    generated_public_claims: "central-gate-and-evidence-bound"
+  permissions:
+    network: "none for local QA; browser access may inspect a local preview only"
+    file_write: "content-manifest.json 中的真实哈希和审核字段, launch-report.json"
+    subprocess: "central web-business-pipeline CLI plus project-local checks named by the project"
+    interactive: "mandatory for every page in the current change batch and unresolved visual acceptance"
+  degradation:
+    openai: "central-cli-plus-available-scoped-tools"
+    claude: "central-cli-plus-manual-provider-handoff"
+    generic: "central-cli-and-human-evidence-handoff"
+gates:
+  production:
+    - "all real files and hashes match"
+    - "build/lint/tests/links/assets/visual/content checks pass or have justified not_applicable"
+    - "every page in the current change batch is reviewed by a human"
+    - "canonical origin, forbidden old origins and rollback are explicit"
+name: web-business-qa
+version: 1.0.0
+mode: production
+inputs:
+  - "初次建站为 `build_ready`；优化/扩展模式由 `$web-business-expander` 在 `grow` 中调用"
+outputs:
+  - "真实内容哈希和审核记录"
+  - "七类本地检查及证据"
+  - "canonical/旧域名/回滚记录完整的 launch-report.json"
+  - "local_verified/deploy_ready gate 或 optimization/expansion validation 结果"
+side_effects:
+  default: "local project artifacts only"
+  external: "none unless the Skill explicitly owns and receives exact authorization"
+privacy:
+  prohibited: ["passwords", "cookies", "tokens", "private keys", "browser storage", "provider credentials"]

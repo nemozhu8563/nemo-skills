@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nemo.local/web-business-pipeline/pipeline-state.schema.json",
+  "title": "Web Business Pipeline State",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "candidate_key",
+    "candidate_identity",
+    "candidate_lock_sha256",
+    "current_stage",
+    "updated_at",
+    "authorizations",
+    "history"
+  ],
+  "properties": {
+    "schema_version": {"const": 2},
+    "project_id": {"type": "string", "minLength": 1},
+    "candidate_key": {"type": "string", "minLength": 1},
+    "candidate_identity": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "candidate_lock_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "current_stage": {
+      "enum": [
+        "candidate_locked",
+        "planned",
+        "researched",
+        "build_ready",
+        "local_verified",
+        "deploy_ready",
+        "deployed",
+        "telemetry_verified",
+        "observing",
+        "grow",
+        "hold",
+        "retire",
+        "templated"
+      ]
+    },
+    "updated_at": {"type": "string", "format": "date-time"},
+    "authorizations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "authorization_id",
+          "action",
+          "status",
+          "granted_by",
+          "granted_at",
+          "expires_at",
+          "scope",
+          "user_instruction"
+        ],
+        "properties": {
+          "authorization_id": {"type": "string", "pattern": "^auth-[a-f0-9]{12}$"},
+          "action": {
+            "enum": [
+              "domain_purchase",
+              "dns_change",
+              "git_push",
+              "deployment",
+              "gsc_setup",
+              "ga_setup",
+              "advertising_application"
+            ]
+          },
+          "status": {"enum": ["granted", "revoked"]},
+          "granted_by": {"type": "string", "minLength": 1},
+          "granted_at": {"type": "string", "format": "date-time"},
+          "expires_at": {"type": ["string", "null"], "format": "date-time"},
+          "scope": {"type": "string", "minLength": 1},
+          "user_instruction": {"type": "string", "minLength": 1},
+          "revoked_at": {"type": "string", "format": "date-time"},
+          "revoked_by": {"type": "string", "minLength": 1},
+          "revoke_reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "history": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["event", "at", "actor", "reason"],
+        "properties": {
+          "event": {
+            "enum": ["transition", "authorization_granted", "authorization_revoked"]
+          },
+          "from": {"type": ["string", "null"]},
+          "to": {"type": "string"},
+          "authorization_id": {"type": "string"},
+          "action": {"type": "string"},
+          "at": {"type": "string", "format": "date-time"},
+          "actor": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

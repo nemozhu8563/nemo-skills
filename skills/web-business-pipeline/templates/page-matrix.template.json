@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "candidate_key": "tool:invoice-currency-converter",
+  "base_locale": "en-US",
+  "locales": [
+    {
+      "locale": "en-US",
+      "demand_validated": true,
+      "demand_evidence": ["candidate-lock qualification"],
+      "content_complete": true
+    }
+  ],
+  "pages": [
+    {
+      "page_id": "converter-en",
+      "slug": "invoice-currency-converter",
+      "page_type": "utility",
+      "locale": "en-US",
+      "primary_keyword": "invoice currency converter",
+      "keyword_aliases": ["foreign currency invoice calculator"],
+      "intent_key": "invoice-currency-conversion",
+      "search_intent": "Convert an invoice amount and verify the rate source",
+      "user_goal": "Produce a conversion result with a traceable source",
+      "allowed_fields": ["amount", "source_currency", "target_currency", "rate_source", "result"],
+      "allowed_actions": ["calculate", "open_rate_source"],
+      "allowed_states": ["ready", "loading", "result", "error"],
+      "non_goals": ["account login", "payment collection", "invented exchange rates"]
+    }
+  ]
+}

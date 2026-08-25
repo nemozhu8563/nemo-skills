@@ -1,0 +1,145 @@
+{
+  "schema_version": "2.0.0-qiaomu-lite",
+  "generated_at": "2026-08-24",
+  "package": {
+    "name": "web-business-lock",
+    "version": "1.0.0",
+    "owner": "Nemo",
+    "maturity_tier": "production",
+    "lifecycle_stage": "local",
+    "upstream_inspiration": null,
+    "upstream_sync": {}
+  },
+  "intent": {
+    "description": "Lock one human-approved, upstream-qualified Web business opportunity into immutable identity, qualification, business-hypothesis, and pipeline state records. Use for 候选锁定、需求人工确认、candidate lock、上游机会进入 Web 出海业务流水线、稳定 provider identity、生成 candidate-lock.json；not for discovering opportunities, silently selecting a winner, inventing or relaxing qualification checks, or rewriting an existing candidate lock.",
+    "job_to_be_done": "把任一上游方法产出的合格候选变成一个由人精确批准、身份与资格证据明确、不可原地改写的 Web 业务项目起点。",
+    "target_users": [
+      "Nemo",
+      "Web business operator"
+    ],
+    "inputs": [
+      "带完整资格检查的合格上游候选，且当前项目尚无 `candidate-lock.json`"
+    ],
+    "outputs": [
+      "不可变、可哈希的候选身份",
+      "由用户原话支持的批准记录",
+      "中央 CLI 的 validate/status 结果",
+      "下一步 planner handoff 与所有 missing evidence"
+    ],
+    "exclusions": [
+      "替用户从多个候选中静默选赢家",
+      "把单一指标、模型判断或缺失证据当作合格结论",
+      "为修正候选而覆盖 candidate-lock.json"
+    ],
+    "creator_defaults": {}
+  },
+  "triggers": {
+    "should_trigger": [
+      "把这个客户访谈合格的 SaaS 候选做 candidate lock，我精确确认 saas:invoice-reminder",
+      "核对 internal product ID 后生成 candidate-lock.json，批准人写 Nemo",
+      "把这个小企业培训线索业务候选接入流水线，先锁定资格检查、provider identity 和 business_hypothesis",
+      "This game-keyword-radar candidate passed its own checks; create a candidate lock with the Steam identity after my exact confirmation"
+    ],
+    "should_not_trigger": [
+      "继续寻找和比较新的 Web 出海需求候选",
+      "把现有 candidate-lock.json 直接改成另一个产品",
+      "不用人工确认，自动选搜索量最高的候选"
+    ],
+    "near_neighbor": [
+      "为已锁定候选设计 page-matrix.json 和页面功能契约",
+      "为页面收集双来源和 claim 证据",
+      "检查站点本地构建和当前变更批次逐页人工审核"
+    ]
+  },
+  "workflow": {
+    "router_rules": [
+      "candidate still passes every recorded upstream qualification check",
+      "provider identity is explicit and non-ambiguous",
+      "exact current human confirmation exists",
+      "`business_hypothesis` keeps the customer, problem, value, business model, acquisition channel, primary value event, riskiest assumption and unknowns explicit",
+      "existing candidate lock is never overwritten",
+      "完整全链路或当前阶段不明时，回到 `$web-business-pipeline`；机会发现与资格规则由匹配的上游方法负责，只有 Steam/Roblox 游戏找词才使用 `$game-keyword-radar`。",
+      "同一项目同一时间只允许一个阶段 Skill 写产物；发现上游契约错误时停止并交回总编排器。"
+    ],
+    "compact_workflow": [
+      "读取上游候选与原始证据，逐项核对 `qualification.status`、`method`、`checked_at` 和全部 `checks`。每项检查必须有 criterion、真实状态、证据引用与原始 observations；中央阶段不自行发明 KD、趋势、搜索量或其他垂直阈值。",
+      "保留稳定的 `<namespace>:<slug>` key，并记录足以消歧的 `identities[{provider,id}]`。没有外部平台 ID 时使用项目已有的稳定内部 ID；同名但 provider/id 不同的对象不能合并。",
+      "若当前用户指令没有精确确认候选 key、批准人和具体理由，展示 key、名称、provider identities、资格证据和 `business_hypothesis` 后提出一个阻塞式确认问题；用户回答前不得运行 `init`。批准理由同时写明商业模式假设、目标客户、用户问题、价值主张、主要获客渠道、目标价值事件、最高风险假设和关键未知项；这些内容不能写成已验证收入或已跑通商业闭环。",
+      "从中央模板 `templates/candidate-input.example.json` 准备输入，替换全部示例值并删除 `example_only`。保留真实 `source_report`；缺失字段不估算。",
+      "确认目标目录中不存在候选锁、状态文件或决策日志，再运行中央 CLI 的 `init`，把精确确认值分别传给 `--approved-by`、`--confirm-key` 和 `--rationale`。",
+      "运行 `validate` 和 `status`。只有输出确认 `current_stage: candidate_locked` 且候选哈希有效，才交给 `$web-business-planner`。"
+    ],
+    "gate_ladder": [],
+    "output_contract": [
+      "不可变、可哈希的候选身份",
+      "由用户原话支持的批准记录",
+      "商业模式假设、目标事件与关键未知项，且不冒充商业验证",
+      "中央 CLI 的 validate/status 结果",
+      "下一步 planner handoff 与所有 missing evidence",
+      "最终回复分开列出：已验证事实、推断、人工决定、missing evidence、当前状态和下一阶段。",
+      "文件存在、模型判断、计划执行或授权记录都不能冒充 gate 通过、真实执行或线上回读。"
+    ]
+  },
+  "resources": {
+    "references": [],
+    "scripts": [],
+    "evals": [
+      "evals/trigger_cases.json"
+    ],
+    "reports": [
+      "reports/creation-handoff.md",
+      "reports/prior-art-research.md",
+      "reports/skill-ir.json",
+      "reports/trigger-eval.json"
+    ]
+  },
+  "portability": {
+    "canonical_format": "agent-skills",
+    "adapter_targets": [
+      "openai",
+      "claude",
+      "generic",
+      "agent-skills-compatible"
+    ],
+    "activation": {
+      "mode": "manual",
+      "paths": []
+    },
+    "execution": {
+      "context": "inline",
+      "shell": "python3"
+    },
+    "trust": {
+      "source_tier": "local",
+      "remote_inline_execution": "forbid",
+      "remote_metadata_policy": "none; read existing local upstream evidence only",
+      "generated_public_claims": "central-gate-and-evidence-bound"
+    },
+    "permissions": {
+      "network": "none; read existing local upstream evidence only",
+      "file_write": "candidate-lock.json, pipeline-state.json, decision-log.md",
+      "subprocess": "central web-business-pipeline CLI plus project-local checks named by the project",
+      "interactive": "required for exact candidate key approval, approver and rationale"
+    },
+    "degradation": {
+      "openai": "central-cli-plus-available-scoped-tools",
+      "claude": "central-cli-plus-manual-provider-handoff",
+      "generic": "central-cli-and-human-evidence-handoff"
+    }
+  },
+  "gates": {
+    "production": [
+      "candidate still passes every recorded upstream qualification check",
+      "provider identity is explicit and non-ambiguous",
+      "exact current human confirmation exists",
+      "business hypothesis fields remain explicit and unverified claims stay hypotheses",
+      "existing candidate lock is never overwritten"
+    ]
+  },
+  "evidence_boundary": {
+    "generated_reports_are_evidence": true,
+    "planned_work_is_evidence": false,
+    "missing_external_or_human_evidence_label": "missing evidence",
+    "public_claim_policy": "claim only what local validation, install proof, human review, or provider-backed evidence actually supports"
+  }
+}

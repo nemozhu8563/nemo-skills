@@ -1,0 +1,30 @@
+{
+  "key": "tool:shared-name",
+  "name": "Shared Name",
+  "source_report": "qualification-report.md",
+  "qualification": {
+    "status": "qualified",
+    "method": "fixture-review",
+    "checked_at": "2026-08-24T00:00:00Z",
+    "checks": [
+      {
+        "check_id": "problem-evidence",
+        "criterion": "A specific customer problem has direct evidence",
+        "status": "passed",
+        "evidence_refs": ["qualification-report.md#problem"],
+        "observations": {}
+      }
+    ]
+  },
+  "identities": [{"provider": "provider-a", "id": "111"}],
+  "business_hypothesis": {
+    "target_customer": "Small online businesses",
+    "customer_problem": "A recurring workflow is slow and error-prone",
+    "value_proposition": "A focused web tool completes the workflow with evidence",
+    "business_models": ["subscription"],
+    "primary_acquisition_channel": "search",
+    "primary_value_event": "workflow completed",
+    "riskiest_assumption": "The workflow happens often enough to justify payment",
+    "unknowns": ["repeat usage"]
+  }
+}

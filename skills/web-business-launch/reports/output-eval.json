@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "evidence_kind": "behavior_specification",
+  "summary": {
+    "total": 5,
+    "passed": 5
+  },
+  "checked_by": "deterministic contract test",
+  "checked_at": "2026-08-24",
+  "limitations": [
+    "No provider-backed deployment was run.",
+    "No human blind review was performed.",
+    "Passing assertions do not prove a live site."
+  ]
+}

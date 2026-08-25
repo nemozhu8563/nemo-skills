@@ -1,0 +1,149 @@
+{
+  "schema_version": "2.0.0-qiaomu-lite",
+  "generated_at": "2026-08-24",
+  "package": {
+    "name": "web-business-telemetry",
+    "version": "1.0.0",
+    "owner": "Nemo",
+    "maturity_tier": "governed",
+    "lifecycle_stage": "local",
+    "upstream_inspiration": null,
+    "upstream_sync": {}
+  },
+  "intent": {
+    "description": "Verify Google Search Console and Google Analytics for a deployed Web business, record existing or explicitly authorized property setup, read back authorized aggregate conversion or value events, separate indexing from performance data, schedule day-7 and day-14 observation when data is missing, and return the pipeline to observing. Use for Web 业务 GSC/GA、统计回读、价值事件回读、索引检查、sitemap、telemetry_verified、observing、第 7 天或第 14 天复盘；not for generic GSC SEO analysis, adding tracking without authorization, Google Indexing API submission, fabricated traffic or conversion values, credential capture, growth decisions, or creating properties without authorization.",
+    "job_to_be_done": "把“装了统计”拆成属性真实存在、数据是否有效、页面是否收录和下一次观察时间四层证据，避免把配置成功当成流量验证。",
+    "target_users": [
+      "Nemo",
+      "Web business operator"
+    ],
+    "inputs": [
+      "初次建站为 `deployed`；复查可从 `hold`；优化/扩展重发可从 `grow` 且 launch readback 已更新"
+    ],
+    "outputs": [
+      "GSC 与 GA 独立的 property readback",
+      "索引、sitemap 和技术检查证据",
+      "带真实时间区间的 analytics-snapshot.json",
+      "telemetry_verified/observing gate 和下一复查日期"
+    ],
+    "exclusions": [
+      "把 property 创建成功说成已有流量",
+      "用零填补尚未返回的数据",
+      "在没有授权时创建 GSC/GA 或读取其他站点"
+    ],
+    "creator_defaults": {}
+  },
+  "triggers": {
+    "should_trigger": [
+      "部署完成后做统计回读，核验 GSC property 并进入 telemetry_verified",
+      "检查 sitemap 和索引，没数据就安排第 7 天与第 14 天复盘",
+      "更新 GSC property 和观察窗口，再把 hold 项目带回 observing",
+      "Verify the deployed site's property setup, indexing, and observation window",
+      "从已有 GA property 做转化事件回读，保留聚合原始计数和观察时间窗，不要新增埋点"
+    ],
+    "should_not_trigger": [
+      "用 Google Indexing API 批量提交普通内容页",
+      "没有数据就把 clicks 和 impressions 填成 0",
+      "分析任意一个网站的通用 GSC CTR 机会"
+    ],
+    "near_neighbor": [
+      "为 deploy_ready 项目执行部署和 HTTP 回读",
+      "根据有效 GSC 数据决定 grow、hold 或 retire",
+      "按照 grow 复盘优化现有页或扩展有证据的新页面"
+    ]
+  },
+  "workflow": {
+    "router_rules": [
+      "GSC and GA properties are read back separately",
+      "existing and newly created properties are distinguished",
+      "indexing, configuration and performance are separate evidence",
+      "existing aggregate conversion/value events keep raw counts, definitions, period and source",
+      "missing GSC data creates technical checks plus day-7/day-14 reviews",
+      "完整全链路或当前阶段不明时，回到 `$web-business-pipeline`；机会发现仍由匹配的上游方法负责，只有 Steam/Roblox 游戏找词才使用 `$game-keyword-radar`。",
+      "同一项目同一时间只允许一个阶段 Skill 写产物；发现上游契约错误时停止并交回总编排器。"
+    ],
+    "compact_workflow": [
+      "运行中央 `status`/`validate`，核对部署 URL、canonical origin、source revision 与 HTTP readback。初次、hold 复查和 grow 优化/扩展三种模式必须明确，不能混用旧 snapshot。",
+      "优先查找并读取用户已有的准确 GSC/GA property。`setup_mode: existing` 只记录 readback；若必须创建，则 `gsc_setup` 和 `ga_setup` 分别取得精确授权，不能用 deployment 授权代替。",
+      "分别记录 GSC 与 GA 的 property ID、setup status、setup mode、readback time、data status、时间区间和真实指标。只读取页面/API 明确返回的值；无数据、权限错误和请求失败是不同状态。若现有授权 GA property 已返回转化或价值事件，在 `ga.metrics` 中保留事件定义、聚合原始计数和实际返回值，并把 `unknown`、`zero`、`not_applicable` 分开；第三方支付、广告或 Affiliate 后台数据不得伪装成 GA 数据。",
+      "单独检查 sitemap 可达性、robots、canonical、内部链接、页面状态码和 GSC 索引证据。普通攻略页不得使用 Google Indexing API；URL Inspection 或 sitemap 提交也不能冒充已收录。",
+      "写 `analytics-snapshot.json`。GSC 没有 valid data 时，记录技术检查和两个未来 review date，分别代表第 7 天和第 14 天；不得填造 clicks、impressions、queries 或 indexed pages。",
+      "初次模式先 `gate --target telemetry_verified` 并转移，再补齐 observation 后 `gate --target observing` 并转移。`hold` 复查或 grow 优化/扩展模式在新 snapshot 和全部前置证据更新后直接 gate/transition 到 `observing`。",
+      "最终分开报告 property 配置、索引、搜索性能、已有转化/价值事件、观察周期和 missing evidence；增长及商业结论交给 `$web-business-growth`。"
+    ],
+    "gate_ladder": [],
+    "output_contract": [
+      "GSC 与 GA 独立的 property readback",
+      "索引、sitemap 和技术检查证据",
+      "已有授权埋点中的聚合原始事件，或明确的 unknown/not_applicable",
+      "带真实时间区间的 analytics-snapshot.json",
+      "telemetry_verified/observing gate 和下一复查日期",
+      "最终回复分开列出：已验证事实、推断、人工决定、missing evidence、当前状态和下一阶段。",
+      "文件存在、模型判断、计划执行或授权记录都不能冒充 gate 通过、真实执行或线上回读。"
+    ]
+  },
+  "resources": {
+    "references": [],
+    "scripts": [],
+    "evals": [
+      "evals/output_cases.json",
+      "evals/trigger_cases.json"
+    ],
+    "reports": [
+      "reports/creation-handoff.md",
+      "reports/output-eval.json",
+      "reports/output-evidence.json",
+      "reports/prior-art-research.md",
+      "reports/skill-ir.json",
+      "reports/trigger-eval.json"
+    ]
+  },
+  "portability": {
+    "canonical_format": "agent-skills",
+    "adapter_targets": [
+      "openai",
+      "claude",
+      "generic",
+      "agent-skills-compatible"
+    ],
+    "activation": {
+      "mode": "manual",
+      "paths": []
+    },
+    "execution": {
+      "context": "inline",
+      "shell": "python3"
+    },
+    "trust": {
+      "source_tier": "local",
+      "remote_inline_execution": "forbid",
+      "remote_metadata_policy": "read-only access to the exact authorized GSC/GA properties and public sitemap/pages; creation only with separate authorization",
+      "generated_public_claims": "central-gate-and-evidence-bound"
+    },
+    "permissions": {
+      "network": "read-only access to the exact authorized GSC/GA properties and public sitemap/pages; creation only with separate authorization",
+      "file_write": "analytics-snapshot.json, 必要时由中央 CLI 写入的 gsc_setup/ga_setup 授权",
+      "subprocess": "central web-business-pipeline CLI plus project-local checks named by the project",
+      "interactive": "required for login, property selection ambiguity, CAPTCHA, or creating a new GSC/GA property"
+    },
+    "degradation": {
+      "openai": "central-cli-plus-available-scoped-tools",
+      "claude": "central-cli-plus-manual-provider-handoff",
+      "generic": "central-cli-and-human-evidence-handoff"
+    }
+  },
+  "gates": {
+    "governed": [
+      "GSC and GA properties are read back separately",
+      "existing and newly created properties are distinguished",
+      "indexing, configuration and performance are separate evidence",
+      "missing GSC data creates technical checks plus day-7/day-14 reviews"
+    ]
+  },
+  "evidence_boundary": {
+    "generated_reports_are_evidence": true,
+    "planned_work_is_evidence": false,
+    "missing_external_or_human_evidence_label": "missing evidence",
+    "public_claim_policy": "claim only what local validation, install proof, human review, or provider-backed evidence actually supports"
+  }
+}

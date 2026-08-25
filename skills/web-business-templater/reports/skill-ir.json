@@ -1,0 +1,143 @@
+{
+  "schema_version": "2.0.0-qiaomu-lite",
+  "generated_at": "2026-08-24",
+  "package": {
+    "name": "web-business-templater",
+    "version": "1.0.0",
+    "owner": "Nemo",
+    "maturity_tier": "production",
+    "lifecycle_stage": "local",
+    "upstream_inspiration": null,
+    "upstream_sync": {}
+  },
+  "intent": {
+    "description": "Extract a reusable local site template from a proven grow Web business by separating framework, per-project configuration, and independent content, removing project-specific branding, sources, telemetry IDs, domains, and secrets, then verifying a second-product substitution before marking templated. Use for Web 站点模板化、框架配置内容三层分离、抽站点模板、第二产品替换测试、动态导航 sitemap SEO、template_readiness；not for templating an unvalidated site, copying product-specific content, publishing a template, mass-cloning sites, or treating a working codebase as reusable proof.",
+    "job_to_be_done": "把第一个已验证 Web 业务中真正通用的基础设施提炼出来，同时显式排除项目专属品牌、内容、证据、域名和统计身份。",
+    "target_users": [
+      "Nemo",
+      "Web business operator"
+    ],
+    "inputs": [
+      "`grow` 且第一个站点已有人工批准的有效数据决策"
+    ],
+    "outputs": [
+      "框架/配置/内容三层边界清单",
+      "无产品身份和凭证的本地模板",
+      "第二产品 substitution test 与残留扫描证据",
+      "批准后的 template_readiness 和 templated gate"
+    ],
+    "exclusions": [
+      "把首个尚无数据的站点提前抽成框架",
+      "连同项目内容、品牌、来源和统计 ID 一起复制",
+      "以模板化为理由自动批量建十个站"
+    ],
+    "creator_defaults": {}
+  },
+  "triggers": {
+    "should_trigger": [
+      "把这个 grow 工具站做 Web 站点模板化和三层分离，抽成本地模板",
+      "抽出 site template 配置，让动态导航和 sitemap 自动生成",
+      "用第二个虚拟产品做替换测试，确认 template_readiness 再进入 templated",
+      "Extract a site template and run a substitution test with a second product"
+    ],
+    "should_not_trigger": [
+      "这个站还没上线，先抽象一套万能框架",
+      "把原项目内容和 GSC property 一起复制到模板",
+      "直接把模板发布到 GitHub 和 npm"
+    ],
+    "near_neighbor": [
+      "根据有效 GSC 数据选择 grow、hold 或 retire",
+      "按照 grow 复盘优化现有页或扩展有证据的新页面",
+      "对 build_ready 项目做本地 QA"
+    ]
+  },
+  "workflow": {
+    "router_rules": [
+      "framework, configuration and content layers are explicit",
+      "project-specific assets, claims, sources, domains and telemetry IDs are excluded",
+      "navigation, routes, SEO and sitemap derive from config/content",
+      "a second-product substitution test is reviewed before approval",
+      "完整全链路或当前阶段不明时，回到 `$web-business-pipeline`；机会发现仍由匹配的上游方法负责，只有 Steam/Roblox 游戏找词才使用 `$game-keyword-radar`。",
+      "同一项目同一时间只允许一个阶段 Skill 写产物；发现上游契约错误时停止并交回总编排器。"
+    ],
+    "compact_workflow": [
+      "运行中央 `status`/`validate`，确认当前为 `grow`；未跑通、hold 或 retire 的项目不能因代码可复制就模板化。",
+      "盘点站点并分三层：框架层（布局、组件、生成逻辑）、配置层（产品名、主题、导航、官方链接、SEO、locale）、内容层（各页事实、文案、翻译和来源）。先记录边界再改代码。",
+      "把产品名、主题、官方链接、导航、SEO 标题/描述等硬编码集中到配置；页面、路由、导航、结构化数据和 sitemap 从配置/内容动态生成。只做当前模板所需的最小重构。",
+      "从模板中移除或参数化产品专属品牌、文案、截图、价格/数值、source IDs、domain、GSC/GA property、广告 ID、环境配置和任何 secret。内容层不得作为示例默认发布。",
+      "在隔离的本地目标中用第二个虚拟/无商标产品配置做 substitution test：验证只改配置与内容即可切换，框架无需项目专属改动；运行 build、links、assets、SEO、sitemap 和残留扫描。",
+      "展示 reusable scope、product-specific exclusions、测试结果和仍需手工替换项。用户明确批准后写入 template_readiness 的 approved/by/at 字段。",
+      "运行 `gate --target templated` 并转移。不得因为模板目录存在就通过，也不因本地通过自动发布、创建仓库或复制第二个真实站。"
+    ],
+    "gate_ladder": [],
+    "output_contract": [
+      "框架/配置/内容三层边界清单",
+      "无产品身份和凭证的本地模板",
+      "第二产品 substitution test 与残留扫描证据",
+      "批准后的 template_readiness 和 templated gate",
+      "最终回复分开列出：已验证事实、推断、人工决定、missing evidence、当前状态和下一阶段。",
+      "文件存在、模型判断、计划执行或授权记录都不能冒充 gate 通过、真实执行或线上回读。"
+    ]
+  },
+  "resources": {
+    "references": [],
+    "scripts": [],
+    "evals": [
+      "evals/trigger_cases.json"
+    ],
+    "reports": [
+      "reports/creation-handoff.md",
+      "reports/prior-art-research.md",
+      "reports/skill-ir.json",
+      "reports/trigger-eval.json"
+    ]
+  },
+  "portability": {
+    "canonical_format": "agent-skills",
+    "adapter_targets": [
+      "openai",
+      "claude",
+      "generic",
+      "agent-skills-compatible"
+    ],
+    "activation": {
+      "mode": "manual",
+      "paths": []
+    },
+    "execution": {
+      "context": "inline",
+      "shell": "python3"
+    },
+    "trust": {
+      "source_tier": "local",
+      "remote_inline_execution": "forbid",
+      "remote_metadata_policy": "none; public repository publication or package release is out of scope",
+      "generated_public_claims": "central-gate-and-evidence-bound"
+    },
+    "permissions": {
+      "network": "none; public repository publication or package release is out of scope",
+      "file_write": "用户指定的本地模板目录, analytics-snapshot.json 中的 template_readiness, 中央 transition 追加的 decision-log.md",
+      "subprocess": "central web-business-pipeline CLI plus project-local checks named by the project",
+      "interactive": "required for reusable scope, product-specific exclusions, destination, and final substitution-test approval"
+    },
+    "degradation": {
+      "openai": "central-cli-plus-available-scoped-tools",
+      "claude": "central-cli-plus-manual-provider-handoff",
+      "generic": "central-cli-and-human-evidence-handoff"
+    }
+  },
+  "gates": {
+    "production": [
+      "framework, configuration and content layers are explicit",
+      "project-specific assets, claims, sources, domains and telemetry IDs are excluded",
+      "navigation, routes, SEO and sitemap derive from config/content",
+      "a second-product substitution test is reviewed before approval"
+    ]
+  },
+  "evidence_boundary": {
+    "generated_reports_are_evidence": true,
+    "planned_work_is_evidence": false,
+    "missing_external_or_human_evidence_label": "missing evidence",
+    "public_claim_policy": "claim only what local validation, install proof, human review, or provider-backed evidence actually supports"
+  }
+}

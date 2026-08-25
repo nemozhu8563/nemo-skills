@@ -1,0 +1,139 @@
+{
+  "ok": true,
+  "threshold": 0.5,
+  "description_concepts": [
+    "dynamic",
+    "layers",
+    "substitution",
+    "template"
+  ],
+  "missing_description_concepts": [],
+  "summary": {
+    "total": 10,
+    "passed": 10,
+    "false_positive": 0,
+    "false_negative": 0,
+    "pass_rate": 1.0
+  },
+  "failures": [],
+  "results": {
+    "should_trigger": [
+      {
+        "prompt": "把这个 grow 工具站做 Web 站点模板化和三层分离，抽成本地模板",
+        "family": "positive_1",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "layers",
+          "template"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "抽出 site template 配置，让动态导航和 sitemap 自动生成",
+        "family": "positive_2",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "dynamic",
+          "template"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "用第二个虚拟产品做替换测试，确认 template_readiness 再进入 templated",
+        "family": "positive_3",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "substitution",
+          "template"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "Extract a site template and run a substitution test with a second product",
+        "family": "positive_4",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "substitution",
+          "template"
+        ],
+        "negative_pattern": null
+      }
+    ],
+    "should_not_trigger": [
+      {
+        "prompt": "这个站还没上线，先抽象一套万能框架",
+        "family": "negative_1",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "把原项目内容和 GSC property 一起复制到模板",
+        "family": "negative_2",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "直接把模板发布到 GitHub 和 npm",
+        "family": "negative_3",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      }
+    ],
+    "near_neighbor": [
+      {
+        "prompt": "根据有效 GSC 数据选择 grow、hold 或 retire",
+        "family": "neighbor_1",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "按照 grow 复盘优化现有页或扩展有证据的新页面",
+        "family": "neighbor_2",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "对 build_ready 项目做本地 QA",
+        "family": "neighbor_3",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      }
+    ]
+  }
+}

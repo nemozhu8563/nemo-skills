@@ -1,0 +1,34 @@
+{
+  "name": "web-business-pipeline",
+  "version": "1.0.0",
+  "owner": "Nemo",
+  "updated_at": "2026-08-24",
+  "status": "active",
+  "maturity_tier": "governed",
+  "lifecycle_stage": "local",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "release_gates": [
+    "prior_art_research",
+    "creation_handoff",
+    "action_boundary",
+    "root_entrypoint_isolation",
+    "validate_skill",
+    "export_skill_ir",
+    "trigger_eval",
+    "local_project_tests",
+    "output_eval",
+    "secret_scan",
+    "public_claim_guard",
+    "explicit_external_authorization",
+    "provider_readback",
+    "rollback_boundary",
+    "stage_skill_suite_contract"
+  ]
+}

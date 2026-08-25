@@ -1,0 +1,99 @@
+{
+  "recommended_threshold": 0.25,
+  "description_required_concepts": [
+    "optimization",
+    "batch",
+    "quality",
+    "reentry"
+  ],
+  "positive_concepts": {
+    "optimization": [
+      "optimize existing pages",
+      "add new pages",
+      "按复盘优化网站",
+      "按照这个复盘优化网站",
+      "现有页优化",
+      "grow 后扩页",
+      "新增真实意图页"
+    ],
+    "batch": [
+      "finite change batch",
+      "evidence strength",
+      "review capacity",
+      "有限变更批次",
+      "证据强度",
+      "审核能力"
+    ],
+    "quality": [
+      "acceptance criteria",
+      "human-review every changed page",
+      "验收条件",
+      "每个变更页",
+      "差异化内容",
+      "真实来源"
+    ],
+    "reentry": [
+      "qa-launch-telemetry re-entry",
+      "relaunch telemetry",
+      "重新上线",
+      "回到 observing",
+      "qa launch telemetry"
+    ]
+  },
+  "negative_patterns": [
+    "不要使用这个 skill",
+    "跳过门禁",
+    "直接默认通过",
+    "只解释"
+  ],
+  "should_trigger": [
+    {
+      "text": "按照这个复盘优化网站",
+      "family": "user_wording_cn"
+    },
+    {
+      "text": "按照这次数据复盘优化现有页面，逐项写清证据、预期影响和验收条件",
+      "family": "optimize_existing_cn"
+    },
+    {
+      "text": "grow 后新增有真实搜索意图或客户旅程缺口的页面，批次大小按证据强度和审核能力决定",
+      "family": "expand_new_cn"
+    },
+    {
+      "text": "先修 CTR 低的标题和首屏，再重走 QA、launch、telemetry 回到 observing",
+      "family": "optimize_reentry_cn"
+    },
+    {
+      "text": "Optimize existing pages in a finite change batch, human-review every changed page, then use the QA-launch-telemetry re-entry",
+      "family": "optimize_existing_en"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "单篇还没做好，先自动生成一千个薄页",
+      "family": "thin_mass_generation"
+    },
+    {
+      "text": "这个站是 hold 状态，也直接大规模改页",
+      "family": "hold_bypass"
+    },
+    {
+      "text": "跳过上线和 telemetry，把本地文件直接记成 observing",
+      "family": "reentry_bypass"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "只根据第 14 天 GSC 数据做复盘，决定 grow、hold 还是 retire，不修改页面",
+      "family": "growth_decision_only"
+    },
+    {
+      "text": "把 grow 站点拆成框架、配置和内容三层模板",
+      "family": "templating"
+    },
+    {
+      "text": "只为一个候选页面收集双来源 claim 证据，不实现页面",
+      "family": "evidence_only"
+    }
+  ]
+}

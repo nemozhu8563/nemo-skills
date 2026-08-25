@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "candidate_key": "tool:invoice-currency-converter",
+  "sources": [
+    {
+      "source_id": "official-rate-docs",
+      "url": "https://provider.example/docs/rates",
+      "title": "Official rate-source documentation",
+      "source_type": "official_documentation",
+      "reliability": "official",
+      "retrieved_at": "2026-08-24T00:00:00Z",
+      "current_as_of": "2026-08-24T00:00:00Z"
+    },
+    {
+      "source_id": "independent-invoicing-guide",
+      "url": "https://reference.example/international-invoicing",
+      "title": "Independent international invoicing guide",
+      "source_type": "specialist_guide",
+      "reliability": "trusted",
+      "retrieved_at": "2026-08-24T00:00:00Z",
+      "current_as_of": "2026-08-24T00:00:00Z"
+    }
+  ],
+  "page_evidence": [
+    {
+      "page_id": "converter-en",
+      "source_ids": ["official-rate-docs", "independent-invoicing-guide"]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "official-rate-source-link",
+      "page_id": "converter-en",
+      "text": "Replace this example with the exact rate-source statement",
+      "claim_type": "official_link",
+      "evidence_requirement": "current_trusted",
+      "source_ids": ["official-rate-docs"],
+      "status": "verified",
+      "verified_at": "2026-08-24T00:00:00Z"
+    }
+  ]
+}

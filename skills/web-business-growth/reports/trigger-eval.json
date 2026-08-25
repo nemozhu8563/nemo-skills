@@ -1,0 +1,160 @@
+{
+  "ok": true,
+  "threshold": 0.5,
+  "description_concepts": [
+    "approval",
+    "data",
+    "decision",
+    "outcomes"
+  ],
+  "missing_description_concepts": [],
+  "summary": {
+    "total": 11,
+    "passed": 11,
+    "false_positive": 0,
+    "false_negative": 0,
+    "pass_rate": 1.0
+  },
+  "failures": [],
+  "results": {
+    "should_trigger": [
+      {
+        "prompt": "根据第 14 天有效 GSC 数据做数据复盘，决定 grow、hold 还是 retire",
+        "family": "positive_1",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.75,
+        "matched_concepts": [
+          "data",
+          "decision",
+          "outcomes"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "复盘 queries、pages 和 indexed pages，再让我确认是否继续投入",
+        "family": "positive_2",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "data",
+          "decision"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "没有 valid GSC data，只能给 hold 并保留复查日期",
+        "family": "positive_3",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.5,
+        "matched_concepts": [
+          "data",
+          "outcomes"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "Make a growth decision with human approval from valid GSC data: grow or retire",
+        "family": "positive_4",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 1.0,
+        "matched_concepts": [
+          "approval",
+          "data",
+          "decision",
+          "outcomes"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "这个 SaaS 有有效 GSC 流量但没有注册或付费转化，区分搜索增长、转化学习和商业放大后再让我批准 grow、hold 或 retire",
+        "family": "commercial_validation",
+        "expected_trigger": true,
+        "predicted_trigger": true,
+        "passed": true,
+        "score": 0.75,
+        "matched_concepts": [
+          "approval",
+          "data",
+          "outcomes"
+        ],
+        "negative_pattern": null
+      }
+    ],
+    "should_not_trigger": [
+      {
+        "prompt": "预测这个站下个月一定赚多少钱",
+        "family": "negative_1",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "没有 GSC 数据也直接 retire 并删除域名",
+        "family": "negative_2",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.25,
+        "matched_concepts": [
+          "outcomes"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "帮我创建 GA property 和 sitemap",
+        "family": "negative_3",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      }
+    ],
+    "near_neighbor": [
+      {
+        "prompt": "核验 GSC/GA property 并建立观察窗口",
+        "family": "neighbor_1",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "按照已批准的 grow 复盘优化现有页面或新增页面",
+        "family": "neighbor_2",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.25,
+        "matched_concepts": [
+          "outcomes"
+        ],
+        "negative_pattern": null
+      },
+      {
+        "prompt": "把已跑通站点拆成框架、配置和内容三层",
+        "family": "neighbor_3",
+        "expected_trigger": false,
+        "predicted_trigger": false,
+        "passed": true,
+        "score": 0.0,
+        "matched_concepts": [],
+        "negative_pattern": null
+      }
+    ]
+  }
+}

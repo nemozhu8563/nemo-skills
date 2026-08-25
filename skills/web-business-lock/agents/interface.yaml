@@ -1,0 +1,53 @@
+interface:
+  display_name: "Web Business Lock"
+  short_description: "人工确认上游合格机会并生成不可变候选锁"
+  default_prompt: "Use $web-business-lock within the central web-business-pipeline contract. Verify the current stage, own only this stage's artifacts, pass the central semantic gate, and report blockers without claiming external completion."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "agent-skills-compatible"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "python3"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "none; read existing local upstream evidence only"
+    generated_public_claims: "central-gate-and-evidence-bound"
+  permissions:
+    network: "none; read existing local upstream evidence only"
+    file_write: "candidate-lock.json, pipeline-state.json, decision-log.md"
+    subprocess: "central web-business-pipeline CLI plus project-local checks named by the project"
+    interactive: "required for exact candidate key approval, approver and rationale"
+  degradation:
+    openai: "central-cli-plus-available-scoped-tools"
+    claude: "central-cli-plus-manual-provider-handoff"
+    generic: "central-cli-and-human-evidence-handoff"
+gates:
+  production:
+    - "candidate still passes every recorded upstream qualification check"
+    - "provider identity is explicit and non-ambiguous"
+    - "exact current human confirmation exists"
+    - "business hypothesis fields remain explicit and unverified claims stay hypotheses"
+    - "existing candidate lock is never overwritten"
+name: web-business-lock
+version: 1.0.0
+mode: production
+inputs:
+  - "带完整资格检查的合格上游候选，且当前项目尚无 `candidate-lock.json`"
+outputs:
+  - "不可变、可哈希的候选身份"
+  - "由用户原话支持的批准记录"
+  - "中央 CLI 的 validate/status 结果"
+  - "下一步 planner handoff 与所有 missing evidence"
+side_effects:
+  default: "local project artifacts only"
+  external: "none unless the Skill explicitly owns and receives exact authorization"
+privacy:
+  prohibited: ["passwords", "cookies", "tokens", "private keys", "browser storage", "provider credentials"]
